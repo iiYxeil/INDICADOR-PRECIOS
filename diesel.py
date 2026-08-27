@@ -20,6 +20,7 @@ import re
 import statistics
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from urllib.parse import quote_plus
 
 RAIZ = Path(__file__).resolve().parent
 HTML = RAIZ / "diesel.html"
@@ -273,21 +274,28 @@ def pinta(datos):
     if datos.get("fx") is not None:
         poner("#fx", f"{1 / datos['fx']:.4f} $/€")
 
-    # tabla de las mas baratas
-    tbody = sopa.select_one("#tabla-estaciones tbody")
-    if tbody is not None and datos["estaciones"]:
-        tbody.clear()
+    # tarjetas de las mas baratas, cada una abre el mapa al tocarla
+    lista = sopa.select_one("#lista-estaciones")
+    if lista is not None and datos["estaciones"]:
+        lista.clear()
         for e in datos["estaciones"][:6]:
-            tr = sopa.new_tag("tr")
-            for valor, clase in ((f"{e['precio']:.3f} €", "num"),
-                                 (e["rotulo"] or "—", None),
-                                 (e["direccion"] or "—", "dir")):
-                td = sopa.new_tag("td")
-                if clase:
-                    td["class"] = [clase]
-                td.string = valor
-                tr.append(td)
-            tbody.append(tr)
+            consulta = ", ".join(x for x in (e["rotulo"], e["direccion"], "Tudela") if x)
+            a = sopa.new_tag("a", href="https://www.google.com/maps/search/?api=1&query="
+                                       + quote_plus(consulta))
+            a["class"] = ["est"]
+            a["target"] = "_blank"
+            a["rel"] = "noopener"
+
+            p = sopa.new_tag("b"); p["class"] = ["p"]; p.string = f"{e['precio']:.3f} €"
+            txt = sopa.new_tag("span"); txt["class"] = ["txt"]
+            n = sopa.new_tag("span"); n["class"] = ["n"]; n.string = e["rotulo"] or "Sin rótulo"
+            dr = sopa.new_tag("span"); dr["class"] = ["d"]
+            dr.string = e["direccion"] or (e["horario"] or "—")
+            txt.append(n); txt.append(dr)
+            go = sopa.new_tag("span"); go["class"] = ["go"]; go.string = "›"
+
+            a.append(p); a.append(txt); a.append(go)
+            lista.append(a)
 
     # tendencia y estimacion
     tend = datos.get("tendencia")
@@ -295,8 +303,7 @@ def pinta(datos):
     if caja is not None:
         if tend is None:
             poner("#tendencia-valor", "—")
-            poner("#tendencia-texto", "Aún no hay histórico suficiente. "
-                                      "Se acumula solo, un dato por día.")
+            poner("#tendencia-texto", "acumulando histórico")
             caja["data-tono"] = "neutro"
         else:
             poner("#tendencia-valor", cent(tend))
@@ -304,23 +311,27 @@ def pinta(datos):
             sube = tend > 0.002
             caja["data-tono"] = "baja" if baja else ("sube" if sube else "neutro")
             poner("#tendencia-texto",
-                  "El surtidor viene bajando estos días."
-                  if baja else "El surtidor viene subiendo estos días."
-                  if sube else "El surtidor lleva días prácticamente plano.")
+                  "el surtidor viene bajando" if baja else
+                  "el surtidor viene subiendo" if sube else
+                  "el surtidor lleva días plano")
 
     pend, motivo = datos["pendiente"], datos["motivo"]
     box = sopa.select_one("#prevision")
     if box is not None:
         if pend is None:
+            poner("#prevision-titulo", "Acumulando")
             poner("#prevision-valor", "—")
             poner("#prevision-texto",
                   "Necesita unas dos semanas de histórico para poder estimar. "
                   f"({motivo})")
             box["data-tono"] = "neutro"
         else:
-            poner("#prevision-valor", cent(pend))
+            poner("#prevision-valor", cent(pend) + " por litro")
             senal = clasifica(pend)
             box["data-tono"] = senal
+            poner("#prevision-titulo", {"baja": "Espera",
+                                        "sube": "Llena ya",
+                                        "neutro": "Da igual"}[senal])
             if senal == "baja":
                 t = ("El crudo ya ha bajado más de lo que ha bajado el surtidor. "
                      "Si la relación habitual se cumple, eso debería llegar al "

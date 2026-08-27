@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>¿Lleno o espero?</title>
-<meta content="#e8eae3" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#0a0c08" media="(prefers-color-scheme: dark)" name="theme-color"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Diésel">
+<meta name="application-name" content="Diésel">
+<meta name="theme-color" content="#e8eae3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0c08" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c08'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle'%3E%E2%9B%BD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme: light;
@@ -18,9 +23,10 @@
     --line:rgba(23,26,21,0.13); --line-strong:rgba(23,26,21,0.26);
     --grid:rgba(23,26,21,0.045); --gold:#8a6a22; --gold-soft:rgba(138,106,34,0.13);
     --shadow:0 1px 2px rgba(23,26,21,0.05), 0 6px 18px -10px rgba(23,26,21,0.20);
-    --good:#0ca30c; --good-soft:rgba(12,163,12,0.12);
-    --serious:#ec835a; --serious-soft:rgba(236,131,90,0.14);
-    --neutral:#6b6e66; --neutral-soft:rgba(107,110,102,0.12);
+    --lift:0 2px 4px rgba(23,26,21,0.06), 0 14px 30px -16px rgba(23,26,21,0.34);
+    --good:#0a8f0a; --good-ink:#0a8f0a; --good-soft:rgba(12,163,12,0.11);
+    --bad:#c9552a;  --bad-ink:#c9552a;  --bad-soft:rgba(201,85,42,0.11);
+    --neutral:#6b6e66; --neutral-soft:rgba(107,110,102,0.10);
     --font-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
     --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
     --font-display:"Instrument Serif",Georgia,"Times New Roman",serif;
@@ -33,8 +39,10 @@
       --line:rgba(255,255,255,0.11); --line-strong:rgba(255,255,255,0.24);
       --grid:rgba(255,255,255,0.032); --gold:#d4a94a; --gold-soft:rgba(212,169,74,0.15);
       --shadow:0 1px 2px rgba(0,0,0,0.5), 0 8px 22px -12px rgba(0,0,0,0.75);
-      --good-soft:rgba(12,163,12,0.18); --serious-soft:rgba(236,131,90,0.18);
-      --neutral:#a3a59c; --neutral-soft:rgba(163,165,156,0.16);
+      --lift:0 2px 6px rgba(0,0,0,0.55), 0 18px 34px -18px rgba(0,0,0,0.9);
+      --good:#35c235; --good-ink:#5fdc5f; --good-soft:rgba(53,194,53,0.15);
+      --bad:#ec835a;  --bad-ink:#f79a76;  --bad-soft:rgba(236,131,90,0.16);
+      --neutral:#a3a59c; --neutral-soft:rgba(163,165,156,0.13);
     }
   }
   :root[data-theme="dark"]{
@@ -44,10 +52,13 @@
     --line:rgba(255,255,255,0.11); --line-strong:rgba(255,255,255,0.24);
     --grid:rgba(255,255,255,0.032); --gold:#d4a94a; --gold-soft:rgba(212,169,74,0.15);
     --shadow:0 1px 2px rgba(0,0,0,0.5), 0 8px 22px -12px rgba(0,0,0,0.75);
-    --good-soft:rgba(12,163,12,0.18); --serious-soft:rgba(236,131,90,0.18);
-    --neutral:#a3a59c; --neutral-soft:rgba(163,165,156,0.16);
+    --lift:0 2px 6px rgba(0,0,0,0.55), 0 18px 34px -18px rgba(0,0,0,0.9);
+    --good:#35c235; --good-ink:#5fdc5f; --good-soft:rgba(53,194,53,0.15);
+    --bad:#ec835a;  --bad-ink:#f79a76;  --bad-soft:rgba(236,131,90,0.16);
+    --neutral:#a3a59c; --neutral-soft:rgba(163,165,156,0.13);
   }
-  *{box-sizing:border-box}
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{
     margin:0; color:var(--ink); font-family:var(--font-sans);
     -webkit-font-smoothing:antialiased;
@@ -55,122 +66,233 @@
     background-image:linear-gradient(var(--grid) 1px,transparent 1px),
                      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
     background-size:34px 34px;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right)
+            env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
-  .wrap{max-width:760px;margin:0 auto;padding:40px 20px 64px}
-  header{display:flex;flex-direction:column;gap:11px;margin-bottom:30px;
-         padding-bottom:22px;border-bottom:1px solid var(--line-strong)}
+  .wrap{max-width:640px;margin:0 auto;padding:26px 16px 44px}
+
+  header{margin-bottom:18px}
   .eyebrow{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);
-           font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-           color:var(--gold);font-weight:600}
+           font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+           color:var(--gold);font-weight:600;margin-bottom:9px}
   .eyebrow .rule{flex:1;height:1px;background:linear-gradient(to right,var(--gold-soft),transparent)}
-  h1{margin:0;font-family:var(--font-display);font-weight:400;
-     font-size:clamp(38px,7vw,60px);line-height:.96;letter-spacing:-.015em}
-  h1 em{font-style:italic;color:var(--gold)}
-  .lede{margin:0;max-width:60ch;color:var(--ink-2);font-size:15px;line-height:1.55}
-  .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--font-mono);
-        font-size:12px;color:var(--muted)}
+  .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-family:var(--font-mono);
+        font-size:11px;color:var(--muted)}
   .meta b{color:var(--ink-2);font-weight:600}
   .meta i{font-style:normal;opacity:.6}
 
-  .card{background:var(--raised);border:1px solid var(--line);border-radius:10px;
-        box-shadow:var(--shadow);padding:22px 24px;margin-bottom:16px}
-  .precio-fila{display:flex;flex-wrap:wrap;align-items:flex-end;gap:26px}
+  .hero{position:relative;overflow:hidden;border-radius:18px;padding:22px 22px 20px;
+        margin-bottom:14px;background:var(--raised);box-shadow:var(--lift);
+        border:1px solid var(--line);
+        animation:surge .5s cubic-bezier(.16,1,.3,1) both}
+  .hero::before{content:"";position:absolute;top:0;bottom:0;left:0;width:4px;background:var(--neutral)}
+  .hero .et{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;
+            text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .veredicto{font-family:var(--font-display);font-weight:400;font-size:clamp(42px,12.5vw,62px);
+             line-height:.9;letter-spacing:-.02em;color:var(--neutral);margin-bottom:7px}
+  .hero .cifra{display:block;font-family:var(--font-mono);font-size:15px;font-weight:600;
+               color:var(--ink-2);margin-bottom:12px;font-variant-numeric:tabular-nums}
+  .hero p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+  .hero[data-tono="baja"]{background:linear-gradient(180deg,var(--good-soft),var(--raised) 62%)}
+  .hero[data-tono="baja"]::before{background:var(--good)}
+  .hero[data-tono="baja"] .veredicto{color:var(--good-ink)}
+  .hero[data-tono="sube"]{background:linear-gradient(180deg,var(--bad-soft),var(--raised) 62%)}
+  .hero[data-tono="sube"]::before{background:var(--bad)}
+  .hero[data-tono="sube"] .veredicto{color:var(--bad-ink)}
+  @keyframes surge{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .precios{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;
+           background:var(--line);border:1px solid var(--line);border-radius:14px;
+           overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
+  .precio{background:var(--raised);padding:15px 13px}
   .precio b{display:block;font-family:var(--font-display);font-weight:400;
-            font-size:56px;line-height:.85;letter-spacing:-.02em}
-  .precio.sec b{font-size:30px;color:var(--ink-2)}
-  .precio span{display:block;font-family:var(--font-mono);font-size:10.5px;
-               letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
-               margin-top:9px}
+            font-size:34px;line-height:.9;letter-spacing:-.02em}
+  .precio.sec b{font-size:23px;color:var(--ink-2)}
+  .precio span{display:block;font-family:var(--font-mono);font-size:9.5px;
+               letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-top:8px}
 
-  .aviso{border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.55;
-         border-left:3px solid var(--neutral);background:var(--neutral-soft);
-         color:var(--ink-2);margin-bottom:16px}
-  .aviso b{display:block;color:var(--ink);font-family:var(--font-mono);
-           font-size:22px;margin-bottom:3px;letter-spacing:-.01em}
-  .aviso[data-tono="baja"]{border-left-color:var(--good);background:var(--good-soft)}
-  .aviso[data-tono="baja"] b{color:var(--good)}
-  .aviso[data-tono="sube"]{border-left-color:var(--serious);background:var(--serious-soft)}
-  .aviso[data-tono="sube"] b{color:var(--serious)}
-  .aviso .et{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;
-             text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .chip{display:flex;align-items:baseline;gap:7px;padding:8px 13px;border-radius:999px;
+        background:var(--neutral-soft);border:1px solid var(--line);font-size:12px;
+        color:var(--ink-2);line-height:1.3}
+  .chip .et{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+            text-transform:uppercase;color:var(--muted)}
+  .chip b{font-family:var(--font-mono);font-weight:600;color:var(--ink);
+          font-variant-numeric:tabular-nums}
+  .chip[data-tono="baja"]{background:var(--good-soft)}
+  .chip[data-tono="baja"] b{color:var(--good-ink)}
+  .chip[data-tono="sube"]{background:var(--bad-soft)}
+  .chip[data-tono="sube"] b{color:var(--bad-ink)}
 
-  h2{margin:26px 0 10px;font-family:var(--font-mono);font-size:11px;
-     letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th{text-align:left;font-family:var(--font-mono);font-size:10.5px;
-     letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
-     font-weight:600;padding:0 10px 8px 0;border-bottom:1px solid var(--line-strong)}
-  td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
-  td.num{font-family:var(--font-mono);font-weight:600;white-space:nowrap;
-         font-variant-numeric:tabular-nums}
-  td.dir{color:var(--muted);font-size:12px}
-  tr:first-child td.num{color:var(--good)}
+  #grafico-caja{display:none;background:var(--raised);border:1px solid var(--line);
+                border-radius:14px;box-shadow:var(--shadow);padding:16px 16px 12px;
+                margin-bottom:20px}
+  #grafico-caja.on{display:block}
+  #grafico{display:block;width:100%;height:110px}
+  .g-pie{display:flex;justify-content:space-between;font-family:var(--font-mono);
+         font-size:10px;color:var(--muted);margin-top:8px}
 
-  .metodo{background:var(--raised);border:1px solid var(--line);border-radius:10px;
-          box-shadow:var(--shadow);padding:20px 22px;font-size:13px;
-          color:var(--ink-2);line-height:1.6;margin-top:26px}
-  .metodo h3{margin:0 0 6px;font-size:13px;color:var(--ink)}
-  .metodo code{font-family:var(--font-mono);font-size:12px;color:var(--ink)}
-  .metodo p{margin:0 0 12px}
+  h2{margin:0 0 10px;font-family:var(--font-mono);font-size:10.5px;
+     letter-spacing:.19em;text-transform:uppercase;color:var(--gold);font-weight:600}
+
+  #lista-estaciones{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .est{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;
+       background:var(--raised);border:1px solid var(--line);border-radius:13px;
+       padding:13px 15px;box-shadow:var(--shadow);
+       transition:transform .13s ease, box-shadow .13s ease}
+  .est:active{transform:scale(.982);box-shadow:none}
+  .est .p{font-family:var(--font-mono);font-weight:700;font-size:17px;
+          font-variant-numeric:tabular-nums;white-space:nowrap;min-width:74px}
+  .est:first-child .p{color:var(--good-ink)}
+  .est .txt{flex:1;min-width:0}
+  .est .n{display:block;font-weight:600;font-size:14px;
+          white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .est .d{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;
+          white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .est .go{color:var(--muted);font-size:16px;flex:none}
+  .pista{font-size:11.5px;color:var(--muted);margin:0 0 22px;padding-left:2px}
+
+  details{background:var(--raised);border:1px solid var(--line);border-radius:14px;
+          box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+  summary{cursor:pointer;list-style:none;padding:15px 17px;font-family:var(--font-mono);
+          font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+          font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:16px;color:var(--muted);font-family:var(--font-sans)}
+  details[open] summary::after{content:"−"}
+  .metodo{padding:0 17px 17px;font-size:13px;color:var(--ink-2);line-height:1.62}
+  .metodo p{margin:0 0 11px}
   .metodo p:last-child{margin-bottom:0}
-  footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
+  .metodo code{font-family:var(--font-mono);font-size:11.5px;color:var(--ink);
+               background:var(--neutral-soft);padding:2px 6px;border-radius:5px}
+  footer{font-size:11.5px;color:var(--muted);line-height:1.65;padding:0 2px}
   footer a{color:var(--gold)}
-  @media (max-width:600px){
-    .wrap{padding:26px 15px 48px}
-    .precio b{font-size:44px}
-    .precio.sec b{font-size:24px}
-    .precio-fila{gap:18px}
-    td.dir{display:none}
+  @media (max-width:420px){
+    .precios{grid-template-columns:1fr 1fr}
+    .precios .precio:first-child{grid-column:1 / -1}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>
-<div class="eyebrow"><span>Gasóleo A · Tudela</span><span class="rule"></span></div>
-<h1>¿<em>Lleno</em> o <em>espero</em>?</h1>
-<p class="lede">El precio real de las gasolineras de Tudela, y si conviene repostar ya o aguantar unos días.</p>
-<div class="meta">
-<span>Datos del: <b id="fecha">27/08/2026</b></span>
-<span>Estaciones: <b id="n-est">18 en Tudela · 235 en Navarra</b></span>
-<span>Brent: <b id="brent">—</b> <i id="brent-fecha"></i></span>
-<span>Euro: <b id="fx">1.1645 $/€</b></span>
-<span>No es asesoramiento</span>
-</div>
-</header>
-<div class="card">
-<div class="precio-fila">
-<div class="precio"><b id="precio-min">1.667 €</b><span>más barata hoy</span></div>
-<div class="precio sec"><b id="precio-med">1.722 €</b><span>mediana Tudela</span></div>
-<div class="precio sec"><b id="precio-prov">1.789 €</b><span>mediana Navarra</span></div>
-</div>
-</div>
-<div class="aviso" data-tono="neutro" id="tendencia">
-<span class="et">Tendencia · última semana</span>
-<b id="tendencia-valor">—</b>
-<span id="tendencia-texto">Aún no hay histórico suficiente. Se acumula solo, un dato por día.</span>
-</div>
-<div class="aviso" data-tono="neutro" id="prevision">
-<span class="et">Recorrido pendiente · 1–2 semanas</span>
-<b id="prevision-valor">—</b>
-<span id="prevision-texto">Necesita unas dos semanas de histórico para poder estimar. (faltan datos de hoy)</span>
-</div>
-<h2>Las más baratas de Tudela</h2>
-<table id="tabla-estaciones">
-<thead><tr><th>Precio</th><th>Gasolinera</th><th>Dirección</th></tr></thead>
-<tbody><tr><td class="num">1.667 €</td><td>E.S. BARDENAS</td><td class="dir">POLIGONO LA SERNA - CALLE B - A68(N232) SALIDA 91, S/N</td></tr><tr><td class="num">1.669 €</td><td>GM OIL</td><td class="dir">CARRER CANAL DE LODOSA, S/N</td></tr><tr><td class="num">1.685 €</td><td>TUDEFRIGO LOGISTICA</td><td class="dir">VIAL RIOJA, 3,1</td></tr><tr><td class="num">1.689 €</td><td>PLENERGY</td><td class="dir">AVENIDA ZARAGOZA, S/N</td></tr><tr><td class="num">1.689 €</td><td>PETROPRIX</td><td class="dir">CALLE CANAL DE TAUSTE, 290</td></tr><tr><td class="num">1.693 €</td><td>BONAREA</td><td class="dir">CALLE CANAL DE MAÑERU, 332</td></tr></tbody>
-</table>
-<div class="metodo">
-<h3>Cómo se calcula</h3>
-<p><b>El precio es un hecho.</b> Sale de la API oficial del Ministerio, que publica a diario lo que cobra cada gasolinera de España. No es una estimación ni una media de portal: es el precio declarado.</p>
-<p><b>El recorrido pendiente es una estimación.</b> El surtidor español sigue al crudo con una o dos semanas de retraso, y de forma asimétrica — sube rápido y baja despacio. Así que se compara cuánto se ha movido el crudo en euros con cuánto ha llegado ya al surtidor, y la diferencia es lo que debería llegar:</p>
-<p><code>pendiente = (Δcrudo €/l × 1,21 IVA × 0,80) − Δsurtidor</code></p>
-<p>El 0,80 es porque históricamente al surtidor llega en torno al 80% del movimiento del crudo, no todo. Crudo: Brent diario (FRED). Cambio euro-dólar: Banco Central Europeo.</p>
-<p><b>Y sus límites.</b> Es una tendencia estadística, no una ley. Una huelga en una refinería, un cambio de impuestos o un salto brusco del euro la rompen. Navarra además tiene régimen fiscal propio, así que su precio no sigue exactamente al del resto de España.</p>
-</div>
-<footer>
-    Fuentes: <a href="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/">Ministerio para la Transición Ecológica</a> (precios), <a href="https://fred.stlouisfed.org/series/DCOILBRENTEU">FRED</a> (Brent), <a href="https://frankfurter.dev">Frankfurter</a> / BCE (euro-dólar). Se actualiza solo cada noche. Página informativa.
+
+  <header>
+    <div class="eyebrow"><span>Gasóleo A · Tudela</span><span class="rule"></span></div>
+    <div class="meta">
+      <span>Datos del: <b id="fecha">—</b></span>
+      <span>Estaciones: <b id="n-est">—</b></span>
+      <span>Brent: <b id="brent">—</b> <i id="brent-fecha"></i></span>
+      <span>Euro: <b id="fx">—</b></span>
+    </div>
+  </header>
+
+  <section class="hero" id="prevision" data-tono="neutro">
+    <span class="et">Recorrido pendiente · 1–2 semanas</span>
+    <div class="veredicto" id="prevision-titulo">Acumulando</div>
+    <b class="cifra" id="prevision-valor">—</b>
+    <p id="prevision-texto">Necesita unas dos semanas de histórico para poder estimar.</p>
+  </section>
+
+  <div class="precios">
+    <div class="precio"><b id="precio-min">—</b><span>más barata hoy</span></div>
+    <div class="precio sec"><b id="precio-med">—</b><span>mediana Tudela</span></div>
+    <div class="precio sec"><b id="precio-prov">—</b><span>mediana Navarra</span></div>
+  </div>
+
+  <div class="chips">
+    <div class="chip" id="tendencia" data-tono="neutro">
+      <span class="et">Ya ocurrido · 7 días</span>
+      <b id="tendencia-valor">—</b>
+      <span id="tendencia-texto">acumulando</span>
+    </div>
+  </div>
+
+  <div id="grafico-caja">
+    <h2>Evolución de la más barata</h2>
+    <svg id="grafico" viewBox="0 0 300 110" aria-hidden="true"></svg>
+    <div class="g-pie"><span id="g-desde"></span><span id="g-rango"></span><span id="g-hasta"></span></div>
+  </div>
+
+  <h2>Las más baratas de Tudela</h2>
+  <div id="lista-estaciones">
+    <div class="est"><b class="p">—</b><span class="txt"><span class="n">Sin datos todavía</span><span class="d">Se rellena en la próxima actualización</span></span></div>
+  </div>
+  <p class="pista">Toca una gasolinera para abrirla en el mapa.</p>
+
+  <details>
+    <summary>Cómo se calcula</summary>
+    <div class="metodo">
+      <p><b>El precio es un hecho.</b> Sale de la API oficial del Ministerio, que publica a diario lo que cobra cada gasolinera de España. No es una estimación ni una media de portal: es el precio declarado.</p>
+      <p><b>El recorrido pendiente es una estimación.</b> El surtidor español sigue al crudo con una o dos semanas de retraso, y de forma asimétrica — sube rápido y baja despacio. Se compara cuánto se ha movido el crudo en euros con cuánto ha llegado ya al surtidor, y la diferencia es lo que debería llegar:</p>
+      <p><code>pendiente = (Δcrudo €/l × 1,21 IVA × 0,80) − Δsurtidor</code></p>
+      <p>El 0,80 es porque históricamente al surtidor llega en torno al 80% del movimiento del crudo, no todo. Crudo: Brent diario (FRED), que se publica con algunos días de retraso — por eso su fecha aparece arriba. Cambio euro-dólar: Banco Central Europeo.</p>
+      <p><b>Y sus límites.</b> Es una tendencia estadística, no una ley. Una huelga en una refinería, un cambio de impuestos o un salto brusco del euro la rompen. Navarra además tiene régimen fiscal propio, así que su precio no sigue exactamente al del resto de España.</p>
+    </div>
+  </details>
+
+  <footer>
+    Fuentes: <a href="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/">Ministerio para la Transición Ecológica</a> (precios), <a href="https://fred.stlouisfed.org/series/DCOILBRENTEU">FRED</a> (Brent), <a href="https://frankfurter.dev">Frankfurter</a> / BCE (euro-dólar). Se actualiza solo cada noche. Página informativa, no es asesoramiento.
   </footer>
+
 </div>
+
+<script>
+/* Grafico de la evolucion del precio. Lee el historico que deja el robot cada
+   noche. Si no existe todavia, o hay menos de tres dias, la caja no aparece:
+   mas vale no ensenar nada que ensenar una linea que no dice nada. */
+(function(){
+  var caja = document.getElementById('grafico-caja');
+  if (!caja || location.protocol === 'file:') return;
+
+  fetch('historico-diesel.json?v=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(h){
+      if (!h) return;
+      var pts = Object.keys(h).sort().map(function(f){
+        var r = h[f] || {};
+        var v = (r.min !== null && r.min !== undefined) ? r.min : r.municipio;
+        return (typeof v === 'number') ? {f: f, v: v} : null;
+      }).filter(Boolean).slice(-45);
+      if (pts.length < 3) return;
+
+      var vs = pts.map(function(p){ return p.v; });
+      var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
+      if (hi - lo < 0.004) { lo -= 0.01; hi += 0.01; }   /* linea plana: no exagerarla */
+      var W = 300, H = 110, pad = 9;
+
+      var xy = pts.map(function(p, i){
+        return [pad + i * (W - 2*pad) / (pts.length - 1),
+                H - pad - (p.v - lo) / (hi - lo) * (H - 2*pad)];
+      });
+      var d = xy.map(function(c, i){
+        return (i ? 'L' : 'M') + c[0].toFixed(1) + ' ' + c[1].toFixed(1);
+      }).join(' ');
+      var area = d + ' L' + xy[xy.length-1][0].toFixed(1) + ' ' + H +
+                 ' L' + xy[0][0].toFixed(1) + ' ' + H + ' Z';
+
+      var sube = vs[vs.length-1] > vs[0];
+      var col = sube ? 'var(--bad)' : 'var(--good)';
+      var ult = xy[xy.length-1];
+      document.getElementById('grafico').innerHTML =
+        '<defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="' + col + '" stop-opacity=".24"/>' +
+        '<stop offset="100%" stop-color="' + col + '" stop-opacity="0"/>' +
+        '</linearGradient></defs>' +
+        '<path d="' + area + '" fill="url(#gr)"/>' +
+        '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="2" ' +
+        'stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + ult[0].toFixed(1) + '" cy="' + ult[1].toFixed(1) +
+        '" r="3.5" fill="' + col + '"/>';
+
+      function corta(f){ var p = f.split('-'); return p[2] + '/' + p[1]; }
+      document.getElementById('g-desde').textContent = corta(pts[0].f);
+      document.getElementById('g-hasta').textContent = corta(pts[pts.length-1].f);
+      document.getElementById('g-rango').textContent =
+        lo.toFixed(3) + ' – ' + hi.toFixed(3) + ' €';
+      caja.className = 'on';
+    })
+    .catch(function(){ /* sin grafico, el resto de la pagina va igual */ });
+})();
+</script>
 </body>
 </html>
