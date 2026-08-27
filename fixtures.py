@@ -6,7 +6,7 @@ que el test falle si algo no se escribe.
 """
 
 _STATS = """<table>
-<tr><td>Current Price</td><td>{precio}</td></tr>
+<tr><td>52-Week Price Change</td><td>{cambio52}%</td></tr>
 <tr><td>PEG Ratio</td><td>{peg}</td></tr>
 <tr><td>Forward PE</td><td>{fwd}</td></tr>
 <tr><td>FCF Yield</td><td>{fcf}%</td></tr>
@@ -16,7 +16,16 @@ _STATS = """<table>
 <tr><td>Relative Strength Index (RSI)</td><td>{rsi}</td></tr>
 </table>"""
 
-_FORECAST = "<table><tr><td>Price Target</td><td>{obj}</td></tr></table>"
+# Con los tres "... Change" presentes: si la busqueda no es exacta,
+# "Target Low Change" puede ganarle a "Target Change".
+_FORECAST = """<table>
+<tr><td>Target Price</td><td>${obj}</td></tr>
+<tr><td>Target Change</td><td>{chg}%</td></tr>
+<tr><td>Target Low</td><td>${low}</td></tr>
+<tr><td>Target Low Change</td><td>-21.67%</td></tr>
+<tr><td>Target High</td><td>${high}</td></tr>
+<tr><td>Target High Change</td><td>+124.11%</td></tr>
+</table>"""
 
 # ticker -> (precio, peg, fwd, fcf, roic, sma200, ev, rsi, objetivo)
 DATOS = {
@@ -61,8 +70,10 @@ def get(url):
         if tk not in DATOS:
             raise RuntimeError("ticker no previsto: " + tk)
         p, peg, fwd, fcf, roic, sma, ev, rsi, obj = DATOS[tk]
+        chg = (obj / p - 1) * 100
         if url.endswith("forecast/"):
-            return _FORECAST.format(obj=obj)
-        return _STATS.format(precio=p, peg=peg, fwd=fwd, fcf=fcf,
+            return _FORECAST.format(obj=round(obj, 2), chg=round(chg, 2),
+                                    low=round(obj * 0.8, 2), high=round(obj * 1.4, 2))
+        return _STATS.format(cambio52=-23.52, peg=peg, fwd=fwd, fcf=fcf,
                              roic=roic, sma=sma, ev=ev, rsi=rsi)
     raise RuntimeError("url no prevista: " + url)

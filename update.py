@@ -147,6 +147,13 @@ def _tabla_stockanalysis(html):
 _VETADAS = ("target", "/", "sales", "book", "earnings ratio", "52-week", "52 week")
 
 
+def _exacto(tabla, etiqueta):
+    """Coincidencia exacta de etiqueta. Imprescindible cuando conviven
+    'Target Change', 'Target Low Change' y 'Target High Change': con
+    busqueda por 'contiene' cualquiera de las tres puede ganar."""
+    return tabla.get(etiqueta.strip().lower())
+
+
 def _busca(tabla, *claves):
     """Primera fila cuya etiqueta contenga la clave, ignorando parecidos
     peligrosos: 'Price Target' o 'Price/Sales' no son 'Current Price'."""
@@ -169,15 +176,36 @@ def recoge_accion(ticker, get):
         d["sma"]   = _num(_busca(t, "200-day moving average", "200 day moving average"), 0.5, 100000)
         d["ev"]    = _num(_busca(t, "ev/ebitda", "ev / ebitda"), -200, 2000)
         d["rsi"]   = _num(_busca(t, "relative strength index", "rsi"), 0, 100)
-        d["precio"] = _num(_busca(t, "current price", "stock price", "share price"), 0.5, 100000)
+        # Aqui NO se busca el precio: /statistics/ no tiene fila de precio,
+        # y la unica que contiene "Price" es "52-Week Price Change", que es
+        # un porcentaje. Buscarlo aqui fue lo que puso $-23.52 en Meta.
     except Exception as e:
         aviso(f"{ticker}: estadisticas no leidas ({e})")
     try:
-        t2 = _tabla_stockanalysis(get(f"https://stockanalysis.com/stocks/{ticker}/forecast/"))
-        d["objetivo"] = _num(_busca(t2, "price target", "average price target"))
+        t2 = _tabla_stockanalysis(f"https://stockanalysis.com/stocks/{ticker}/forecast/"
+                                  if False else get(f"https://stockanalysis.com/stocks/{ticker}/forecast/"))
+        obj = _num(_exacto(t2, "target price"), 0.5, 100000)
+        chg = _num(_exacto(t2, "target change"), -95, 500)
+        if obj is not None and chg is not None:
+            d["objetivo"] = obj
+            d["consenso"] = chg                    # el potencial, ya en %
+            d["precio"] = obj / (1 + chg / 100.0)  # el precio, deducido
+        else:
+            aviso(f"{ticker}: objetivo o potencial no leidos")
     except Exception as e:
         aviso(f"{ticker}: prevision no leida ({e})")
-    return {k: v for k, v in d.items() if v is not None}
+
+    d = {k: v for k, v in d.items() if v is not None}
+
+    # Comprobacion del cociente, no solo de los datos sueltos: una accion
+    # grande no cotiza un 60% lejos de su media de 200 dias. Si sale eso,
+    # alguno de los dos numeros es falso y se descarta la metrica.
+    if "precio" in d and "sma" in d:
+        desv = d["precio"] / d["sma"] - 1
+        if not (-0.6 <= desv <= 1.5):
+            aviso(f"{ticker}: precio vs SMA200 incoherente ({desv * 100:.0f}%), se descarta")
+            d.pop("sma")
+    return d
 
 
 def recoge_btc(get):
@@ -386,8 +414,8 @@ def pinta_acciones(sopa, filas):
         if i == 3:
             ev = d.get("ev", C.EV_EBITDA_RESERVA[tk])
             return f"{dev(ev, C.EV_EBITDA_MEDIANA_10A[tk]):+.0f}%".replace("-", "−"), s["ev"]
-        if i == 4 and "cons" in s and "objetivo" in d and d.get("precio"):
-            return f"{dev(d['objetivo'], d['precio']):+.0f}%".replace("-", "−"), s["cons"]
+        if i == 4 and "cons" in s and "consenso" in d:
+            return f"{d['consenso']:+.0f}%".replace("-", "−"), s["cons"]
         if i == 5 and "roic" in d: return f"{d['roic']:.0f}%", s["roic"]
         if i == 6 and "sma" in d and d.get("precio"):
             return f"{dev(d['precio'], d['sma']):+.0f}%".replace("-", "−"), s["sma"]
@@ -497,8 +525,8 @@ def main(selftest=False):
         if "fcf" in d:  sc["fcf"] = s_fcf(d["fcf"])
         ev = d.get("ev", C.EV_EBITDA_RESERVA[tk])
         sc["ev"] = s_ev(ev / C.EV_EBITDA_MEDIANA_10A[tk])
-        if "objetivo" in d and precio:
-            sc["cons"] = s_cons((d["objetivo"] / precio - 1) * 100)
+        if "consenso" in d:
+            sc["cons"] = s_cons(d["consenso"])
         if "roic" in d: sc["roic"] = s_roic(d["roic"])
         if "sma" in d and precio:
             sc["sma"] = s_sma(precio / d["sma"] - 1)
