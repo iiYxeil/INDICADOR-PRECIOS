@@ -65,9 +65,9 @@
   } catch (e) {}
 })();
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
     color-scheme: light;
@@ -977,497 +977,462 @@
   }
   footer a{ color:var(--gold); }
 </style>
-
 <div class="wrap">
+<header class="top">
+<div class="eyebrow">
+<span>Panel de valoración</span>
+<span aria-hidden="true" class="rule"></span>
+<button aria-pressed="false" class="dense-btn" id="dense-toggle" type="button">
+<span aria-hidden="true" class="dense-ico"></span>
+<span class="dense-label">Solo puntuaciones</span>
+</button>
+</div>
+<h1>¿<em>Barato</em> o <em>caro</em> ahora mismo?</h1>
+<p class="lede">Bitcoin y las Magníficas 7, cada uno con <b>dos notas de 0 a 100</b> — 100 es muy barato. Una mide el fondo; la otra, el corto plazo. No se promedian a propósito: cuando discrepan, esa discrepancia <i>es</i> la señal.</p>
+<div class="meta-row">
+<span>Datos al: <b>27 ago 2026</b></span>
+<span>Se refresca: <b>automáticamente, 1 vez al día</b></span>
+<span>No es asesoramiento financiero</span>
+</div>
+</header>
+<section class="block">
+<div class="block-title"><h2>Vista general</h2></div>
+<div class="quad-card">
+<div class="quad-head">
+<h3>Los ocho, en un plano</h3>
+<span>Cada activo situado por sus dos notas. Las esquinas opuestas son las historias interesantes.</span>
+</div>
+<svg aria-label="Mapa de los ocho activos: valoración en el eje horizontal, momento en el vertical." class="quad" role="img" viewbox="0 0 570 400">
+<defs>
+<clippath id="qclip"><rect height="328" rx="4" width="472" x="62" y="28"></rect></clippath>
+</defs>
+<g clip-path="url(#qclip)">
+<rect class="q-good" height="164.0" width="236.0" x="298.0" y="28"></rect>
+<rect class="q-bad" height="164.0" width="236.0" x="62" y="192.0"></rect>
+<rect class="q-warn" height="164.0" width="236.0" x="298.0" y="192.0"></rect>
+<rect class="q-warn" height="164.0" width="236.0" x="62" y="28"></rect>
+</g>
+<g class="q-grid">
+<line x1="180" x2="180" y1="28" y2="356"></line>
+<line x1="62" x2="534" y1="274" y2="274"></line>
+<line x1="298" x2="298" y1="28" y2="356"></line>
+<line x1="62" x2="534" y1="192" y2="192"></line>
+<line x1="416" x2="416" y1="28" y2="356"></line>
+<line x1="62" x2="534" y1="110" y2="110"></line>
+</g>
+<rect class="q-frame" height="328" rx="4" width="472" x="62" y="28"></rect>
+<line class="q-mid" x1="298.0" x2="298.0" y1="28" y2="356"></line>
+<line class="q-mid" x1="62" x2="534" y1="192.0" y2="192.0"></line>
+<g class="q-quadlabel">
+<text text-anchor="end" x="524" y="46">barata · tranquila</text>
+<text text-anchor="end" x="524" y="347">barata · recalentada</text>
+<text x="72" y="46">cara · castigada</text>
+<text x="72" y="347">cara · caliente</text>
+</g>
+<g class="q-points">
+<g class="q-pt good is-btc">
+<circle cx="444.3" cy="267.4" id="q-btc" r="9"></circle>
+<text id="q-btc-label" text-anchor="start" x="457.3" y="271.4">Bitcoin</text>
+</g>
+<g class="q-pt good">
+<circle cx="477.4" cy="198.6" r="7"></circle>
+<text text-anchor="end" x="464.4" y="202.6">NVDA</text>
+</g>
+<g class="q-pt good">
+<circle cx="392.4" cy="149.4" r="7"></circle>
+<text text-anchor="start" x="404.4" y="153.4">META</text>
+</g>
+<g class="q-pt good">
+<circle cx="345.2" cy="205.1" r="7"></circle>
+<text text-anchor="start" x="357.2" y="209.1">AMZN</text>
+</g>
+<g class="q-pt neutral">
+<circle cx="316.9" cy="251.0" r="7"></circle>
+<text text-anchor="start" x="328.9" y="255.0">MSFT</text>
+</g>
+<g class="q-pt neutral">
+<circle cx="298.0" cy="175.6" r="7"></circle>
+<text text-anchor="middle" x="298.0" y="162.6">GOOGL</text>
+</g>
+<g class="q-pt serious">
+<circle cx="231.9" cy="211.7" r="7"></circle>
+<text text-anchor="end" x="219.9" y="215.7">AAPL</text>
+</g>
+<g class="q-pt critical">
+<circle cx="123.4" cy="126.4" r="7"></circle>
+<text text-anchor="start" x="135.4" y="130.4">TSLA</text>
+</g>
+</g>
+<g class="q-axis">
+<text x="62" y="382">← cara</text>
+<text text-anchor="middle" x="298" y="382">VALORACIÓN (fondo)</text>
+<text text-anchor="end" x="534" y="382">barata →</text>
+<text text-anchor="middle" transform="translate(20,192) rotate(-90)">MOMENTO (corto plazo)</text>
+</g>
+</svg>
+</div>
+</section>
+<section class="block">
+<div class="block-title"><h2>Bitcoin</h2></div>
+<div class="btc-card">
+<div class="btc-top">
+<div class="btc-id">
+<div class="coin-badge">₿</div>
+<div>
+<div class="name">Bitcoin</div>
+<div class="ticker">BTC · Dos lecturas, sin promediar</div>
+</div>
+</div>
+<div class="btc-price">
+<div class="num" id="btc-price">$78,940</div>
+<div class="cap">precio spot</div>
+</div>
+</div>
+<div class="live-strip" data-mode="static" id="live-strip">
+<span aria-hidden="true" class="live-dot"></span>
+<span id="live-text">Cargando datos en vivo…</span>
+</div>
+<div class="dual">
+<div class="sblock">
+<div class="sblock-head">
+<span class="sblock-label">Valoración</span>
+<span class="status-pill good" id="val-pill">▼▼ Muy barata</span>
+</div>
+<div class="sblock-num"><b id="val-score" style="color:var(--good)">81</b><span>/ 100</span></div>
+<div class="sblock-bar"><i class="good" id="val-bar" style="width:81%"></i></div>
+<div class="sblock-sub">6 métricas de fondo: dónde está el precio respecto a lo que pagaron los tenedores y a su propia tendencia.</div>
+</div>
+<div class="sblock">
+<div class="sblock-head">
+<span class="sblock-label">Momento</span>
+<span class="status-pill serious" id="mom-pill">▲ Cara</span>
+</div>
+<div class="sblock-num"><b id="mom-score" style="color:var(--serious)">27</b><span>/ 100</span></div>
+<div class="sblock-bar"><i class="serious" id="mom-bar" style="width:27%"></i></div>
+<div class="sblock-sub">2 métricas de corto plazo: si el precio viene de moverse rápido y cómo está de eufórico el mercado.</div>
+</div>
+</div>
+<div class="verdict" data-kind="split" id="verdict">
+<b id="verdict-title">Las dos lecturas se contradicen</b>
+<span id="verdict-body">Barata por fundamentales, recalentada a corto plazo. Históricamente eso no ha sido una señal de venta, pero sí un mal momento para entrar de golpe.</span>
+</div>
+<div class="group-head"><span>Valoración</span><span class="group-meta">6 métricas · media <b id="val-avg">81</b></span></div>
+<div class="ind-list">
+<div class="ind-row" data-g="val" data-k="mvrv">
+<div class="ind-main">
+<div class="ind-name">MVRV Z-Score <span class="tag-daily">diario</span></div>
+<div class="ind-desc">Capitalización de mercado vs. capitalización realizada (coste medio). Por debajo de 0 ha marcado suelos de ciclo.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">38.00</span><span class="ind-tag critical">Muy cara</span></div>
+<div class="ind-bar"><i class="critical" style="width:0%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="val" data-k="puell">
+<div class="ind-main">
+<div class="ind-name">Puell Multiple <span class="tag-live">en vivo</span></div>
+<div class="ind-desc">Emisión diaria de BTC valorada en dólares vs. su media de 365 días. Por debajo de 0.5 refleja capitulación de mineros.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">0.96×</span><span class="ind-tag good">Muy barata</span></div>
+<div class="ind-bar"><i class="good" style="width:87%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="val" data-k="realized">
+<div class="ind-main">
+<div class="ind-name">Precio realizado <span class="tag-live">en vivo</span></div>
+<div class="ind-desc">Coste medio de compra de todo el BTC en circulación (<span data-anchor="realized">$38</span>). Cotizar por debajo de ese precio marca zonas de acumulación de bajo riesgo.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">1.49×</span><span class="ind-tag good">Barata</span></div>
+<div class="ind-bar"><i class="good" style="width:76%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="val" data-k="rhodl">
+<div class="ind-main">
+<div class="ind-name">RHODL Ratio <span class="tag-daily">diario</span></div>
+<div class="ind-desc">Compara monedas movidas hace poco con las inmóviles hace +1 año. Valores bajos = mercado dominado por holders de largo plazo.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">38</span><span class="ind-tag good">Muy barata</span></div>
+<div class="ind-bar"><i class="good" style="width:100%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="val" data-k="mayer">
+<div class="ind-main">
+<div class="ind-name">Mayer Multiple <span class="tag-live">en vivo</span></div>
+<div class="ind-desc">Precio actual vs. su media móvil de 200 días (<span data-anchor="sma200">$1</span>). Por debajo de 0.8× señala un descuento significativo.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">1.14×</span><span class="ind-tag good">Barata</span></div>
+<div class="ind-bar"><i class="good" style="width:79%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="val" data-k="rainbow">
+<div class="ind-main">
+<div class="ind-name">Bandas de regresión logarítmica <span class="tag-live">en vivo</span></div>
+<div class="ind-desc">Ajusta la ley de rendimientos decrecientes de BTC a largo plazo. Tocar la banda inferior marca el "suelo" teórico del modelo.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">"BUY!"</span><span class="ind-tag good">Muy barata</span></div>
+<div class="ind-bar"><i class="good" style="width:88%"></i></div>
+</div>
+</div>
+</div>
+<div class="group-head"><span>Momento</span><span class="group-meta">2 métricas · media <b id="mom-avg">27</b></span></div>
+<div class="ind-list">
+<div class="ind-row" data-g="mom" data-k="rsi">
+<div class="ind-main">
+<div class="ind-name">RSI (14 días) <span class="tag-live">en vivo</span></div>
+<div class="ind-desc">Impulso del precio, método de Wilder sobre velas <b>diarias</b>. Por debajo de 30 indica agotamiento vendedor; por encima de 70, sobrecompra. Ojo: en un gráfico <b>semanal</b> verás un número bastante más bajo — la vela semanal suaviza el mismo movimiento. No son comparables.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">81.5</span><span class="ind-tag critical">Muy cara</span></div>
+<div class="ind-bar"><i class="critical" style="width:19%"></i></div>
+</div>
+</div>
+<div class="ind-row" data-g="mom" data-k="fg">
+<div class="ind-main">
+<div class="ind-name">Fear &amp; Greed Index <span class="tag-daily">diario</span></div>
+<div class="ind-desc">Sentimiento de mercado a corto plazo. Miedo extremo (10–25) ha sido zona de acumulación para inversores de valor. El índice solo publica un valor al día.</div>
+</div>
+<div class="ind-val-wrap">
+<div class="ind-val-top"><span class="ind-val">71</span><span class="ind-tag serious">Cara</span></div>
+<div class="ind-bar"><i class="serious" style="width:29%"></i></div>
+</div>
+</div>
+</div>
+<p class="btc-note" style="margin-top:14px;">Las dos notas <b>no se promedian a propósito</b>. Las seis métricas de valoración miden variantes de lo mismo — dónde está el precio frente a un ancla histórica — así que meterlas en una media con las dos de momento les daría el 75% del voto solo por ser más numerosas. Separadas, cuando discrepan lo ves; una nota única lo escondería.</p>
+</div>
+<div class="context-heading">
+<h3>Otro contexto de Bitcoin</h3>
+<span class="tag">— no entra en ninguna de las dos notas</span>
+</div>
+<div class="context-grid">
+<div class="context-card solo">
+<div class="ctx-head">
+<span class="ctx-title">Liquidez global (M2)</span>
+</div>
+<span class="liq-pill">Muy por debajo de su "valor justo" por M2</span>
+<p>Comparado con la oferta monetaria (M2) global, BTC cotiza cerca de sus mínimos históricos frente a esa relación — un desajuste que antes casi siempre se corrigió al alza.</p>
+<p class="caveat">Ojo: varios analistas creen que esta correlación se rompió durante 2026 ("desacople"), así que es una lectura macro de fondo, no una señal fiable por sí sola.</p>
+</div>
+</div>
+</section>
+<section class="block">
+<div class="block-title"><h2>Las Magníficas 7</h2><span class="group-meta">ordenadas por valoración</span></div>
+<div class="grid">
 
-  <header class="top">
-    <div class="eyebrow">
-      <span>Panel de valoración</span>
-      <span class="rule" aria-hidden="true"></span>
-      <button type="button" id="dense-toggle" class="dense-btn" aria-pressed="false">
-        <span class="dense-ico" aria-hidden="true"></span>
-        <span class="dense-label">Solo puntuaciones</span>
-      </button>
-    </div>
-    <h1>¿<em>Barato</em> o <em>caro</em> ahora mismo?</h1>
-    <p class="lede">Bitcoin y las Magníficas 7, cada uno con <b>dos notas de 0 a 100</b> — 100 es muy barato. Una mide el fondo; la otra, el corto plazo. No se promedian a propósito: cuando discrepan, esa discrepancia <i>es</i> la señal.</p>
-    <div class="meta-row">
-      <span>Datos al: <b>27 ago 2026</b></span>
-      <span>Se refresca: <b>automáticamente, 1 vez al día</b></span>
-      <span>No es asesoramiento financiero</span>
-    </div>
-  </header>
 
-  <section class="block">
-    <div class="block-title"><h2>Vista general</h2></div>
-    <div class="quad-card">
-      <div class="quad-head">
-        <h3>Los ocho, en un plano</h3>
-        <span>Cada activo situado por sus dos notas. Las esquinas opuestas son las historias interesantes.</span>
-      </div>
-        <svg class="quad" viewBox="0 0 570 400" role="img"
-             aria-label="Mapa de los ocho activos: valoración en el eje horizontal, momento en el vertical.">
-          <defs>
-            <clipPath id="qclip"><rect x="62" y="28" width="472" height="328" rx="4"/></clipPath>
-          </defs>
-          <g clip-path="url(#qclip)">
-            <rect x="298.0" y="28" width="236.0" height="164.0" class="q-good"/>
-            <rect x="62" y="192.0" width="236.0" height="164.0" class="q-bad"/>
-            <rect x="298.0" y="192.0" width="236.0" height="164.0" class="q-warn"/>
-            <rect x="62" y="28" width="236.0" height="164.0" class="q-warn"/>
-          </g>
-          <g class="q-grid">
-            <line x1="180" y1="28" x2="180" y2="356"/>
-            <line x1="62" y1="274" x2="534" y2="274"/>
-            <line x1="298" y1="28" x2="298" y2="356"/>
-            <line x1="62" y1="192" x2="534" y2="192"/>
-            <line x1="416" y1="28" x2="416" y2="356"/>
-            <line x1="62" y1="110" x2="534" y2="110"/>
-          </g>
-          <rect x="62" y="28" width="472" height="328" rx="4" class="q-frame"/>
-          <line x1="298.0" y1="28" x2="298.0" y2="356" class="q-mid"/>
-          <line x1="62" y1="192.0" x2="534" y2="192.0" class="q-mid"/>
-          <g class="q-quadlabel">
-            <text x="524" y="46" text-anchor="end">barata · tranquila</text>
-            <text x="524" y="347" text-anchor="end">barata · recalentada</text>
-            <text x="72" y="46">cara · castigada</text>
-            <text x="72" y="347">cara · caliente</text>
-          </g>
-          <g class="q-points">
-            <g class="q-pt good is-btc">
-              <circle id="q-btc" cx="444.3" cy="267.4" r="9"/>
-              <text id="q-btc-label" x="457.3" y="271.4" text-anchor="start">Bitcoin</text>
-            </g>
-            <g class="q-pt good">
-              <circle cx="477.4" cy="198.6" r="7"/>
-              <text x="464.4" y="202.6" text-anchor="end">NVDA</text>
-            </g>
-            <g class="q-pt good">
-              <circle cx="392.4" cy="149.4" r="7"/>
-              <text x="404.4" y="153.4" text-anchor="start">META</text>
-            </g>
-            <g class="q-pt good">
-              <circle cx="345.2" cy="205.1" r="7"/>
-              <text x="357.2" y="209.1" text-anchor="start">AMZN</text>
-            </g>
-            <g class="q-pt neutral">
-              <circle cx="316.9" cy="251.0" r="7"/>
-              <text x="328.9" y="255.0" text-anchor="start">MSFT</text>
-            </g>
-            <g class="q-pt neutral">
-              <circle cx="298.0" cy="175.6" r="7"/>
-              <text x="298.0" y="162.6" text-anchor="middle">GOOGL</text>
-            </g>
-            <g class="q-pt serious">
-              <circle cx="231.9" cy="211.7" r="7"/>
-              <text x="219.9" y="215.7" text-anchor="end">AAPL</text>
-            </g>
-            <g class="q-pt critical">
-              <circle cx="123.4" cy="126.4" r="7"/>
-              <text x="135.4" y="130.4" text-anchor="start">TSLA</text>
-            </g>
-          </g>
-          <g class="q-axis">
-            <text x="62" y="382">← cara</text>
-            <text x="298" y="382" text-anchor="middle">VALORACIÓN (fondo)</text>
-            <text x="534" y="382" text-anchor="end">barata →</text>
-            <text transform="translate(20,192) rotate(-90)" text-anchor="middle">MOMENTO (corto plazo)</text>
-          </g>
-        </svg>
-    </div>
-  </section>
 
-  <section class="block">
-    <div class="block-title"><h2>Bitcoin</h2></div>
-    <div class="btc-card">
-      <div class="btc-top">
-        <div class="btc-id">
-          <div class="coin-badge">₿</div>
-          <div>
-            <div class="name">Bitcoin</div>
-            <div class="ticker">BTC · Dos lecturas, sin promediar</div>
-          </div>
+
+
+
+
+<div class="card">
+<div class="card-head">
+<div><div class="co">Nvidia</div><div class="tk">NVDA · $16.60</div></div>
+<span class="status-pill good">▼▼ Muy barata</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">87</span></div>
+<div class="mini-bar"><i class="good" style="width:87%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">77</span></div>
+<div class="mini-bar"><i class="good" style="width:77%"></i></div>
+</div>
+</div>
+<p class="card-note">Los mejores fundamentales del grupo con diferencia: PEG de 0.43, EV/EBITDA un 39% bajo su mediana de 10 años y ROIC del 103%. El momento ni ayuda ni estorba.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Meta</div><div class="tk">META · $-23.52</div></div>
+<span class="status-pill good">▼ Barata</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">68</span></div>
+<div class="mini-bar"><i class="good" style="width:68%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">76</span></div>
+<div class="mini-bar"><i class="good" style="width:76%"></i></div>
+</div>
+</div>
+<p class="card-note">La única donde las dos lecturas coinciden en barata: múltiplos por debajo de su historia y, además, la única del grupo cotizando bajo su SMA200.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Amazon</div><div class="tk">AMZN · $14.19</div></div>
+<span class="status-pill neutral">● Justa</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">56</span></div>
+<div class="mini-bar"><i class="neutral" style="width:56%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">75</span></div>
+<div class="mini-bar"><i class="good" style="width:75%"></i></div>
+</div>
+</div>
+<p class="card-note">Barata por múltiplos (EV/EBITDA un 58% bajo su mediana), pero su flujo de caja libre es <b>negativo</b> por el capex en IA y el ROIC del 12% es de los más bajos.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Microsoft</div><div class="tk">MSFT · $-1.56</div></div>
+<span class="status-pill neutral">● Justa</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">55</span></div>
+<div class="mini-bar"><i class="neutral" style="width:55%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">66</span></div>
+<div class="mini-bar"><i class="good" style="width:66%"></i></div>
+</div>
+</div>
+<p class="card-note">Valoración razonable, pero cero descuento técnico: cotiza un 15% sobre su SMA200 y con el RSI más alto del grupo (66). El fondo dice justa, el corto dice cara.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Apple</div><div class="tk">AAPL · $37.99</div></div>
+<span class="status-pill neutral">● Justa</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">41</span></div>
+<div class="mini-bar"><i class="neutral" style="width:41%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">74</span></div>
+<div class="mini-bar"><i class="good" style="width:74%"></i></div>
+</div>
+</div>
+<p class="card-note">Negocio magnífico a precio exigente: ROIC del 102%, pero PEG de 3.21, EV/EBITDA un 31% sobre su mediana y apenas +4% de recorrido según el consenso.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Alphabet</div><div class="tk">GOOGL · $64.04</div></div>
+<span class="status-pill serious">▲ Cara</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--serious)">35</span></div>
+<div class="mini-bar"><i class="serious" style="width:35%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">77</span></div>
+<div class="mini-bar"><i class="good" style="width:77%"></i></div>
+</div>
+</div>
+<div class="conflict-flag">⚠ Las dos lecturas se contradicen</div><p class="card-note">Ni fría ni caliente en ninguna de las dos lecturas. EV/EBITDA un 29% bajo su mediana, pero PEG cerca de 2 y forward P/E por encima de su media histórica.</p>
+</div><div class="card">
+<div class="card-head">
+<div><div class="co">Tesla</div><div class="tk">TSLA · $-0.23</div></div>
+<span class="status-pill critical">▲▲ Muy cara</span>
+</div>
+<div class="mini-scores">
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--critical)">9</span></div>
+<div class="mini-bar"><i class="critical" style="width:9%"></i></div>
+</div>
+<div class="mini">
+<div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">75</span></div>
+<div class="mini-bar"><i class="good" style="width:75%"></i></div>
+</div>
+</div>
+<div class="conflict-flag">⚠ Las dos lecturas se contradicen</div>
+<p class="card-note">El caso más claro de contradicción: la más cara del grupo por fundamentales (PEG 6.71, ROIC 5%), pero un 14% por debajo de su SMA200 — barata solo en sentido técnico.</p>
+</div></div>
+<div class="context-heading"><h3>Las 8 métricas, una a una</h3><span class="tag">— el valor real en cada celda; el color es su puntuación 0–100</span></div>
+<p class="scroll-hint">Desliza la tabla horizontalmente para ver todas las empresas →</p>
+<div class="matrix-wrap">
+<table class="matrix">
+<thead>
+<tr>
+<th class="metric">Métrica</th>
+<th>NVDA</th><th>META</th><th>AMZN</th><th>MSFT</th><th>AAPL</th><th>GOOGL</th><th>TSLA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="grp"><th class="metric">Valoración</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr>
+<th class="metric">PEG Ratio<br/><span style="color:var(--muted);font-size:11px">&lt; 1.0 = descuento vs. su crecimiento</span></th>
+<td class="c-vgood">0.39</td><td class="c-vgood">0.93</td><td class="c-good">1.35</td><td class="c-mid">1.56</td><td class="c-vbad">3.24</td><td class="c-mid">1.95</td><td class="c-vbad">6.71</td>
+</tr>
+<tr>
+<th class="metric">Forward P/E vs. su media 5a<br/><span style="color:var(--muted);font-size:11px">negativo = cotiza por debajo de su media</span></th>
+<td class="c-vgood">−71%</td><td class="c-good">−22%</td><td class="c-vgood">−55%</td><td class="c-good">−20%</td><td class="c-bad">+14%</td><td class="c-bad">+13%</td><td class="c-bad">+24%</td>
+</tr>
+<tr>
+<th class="metric">FCF Yield<br/><span style="color:var(--muted);font-size:11px">&gt; 4–5% = genera mucha caja vs. su precio</span></th>
+<td class="c-mid">2.51%</td><td class="c-mid">2.79%</td><td class="c-vbad">−0.41%</td><td class="c-bad">1.82%</td><td class="c-mid">2.99%</td><td class="c-bad">1.27%</td><td class="c-vbad">0.42%</td>
+</tr>
+<tr>
+<th class="metric">EV/EBITDA vs. su mediana 10a<br/><span style="color:var(--muted);font-size:11px">negativo = mínimos de su rango histórico</span></th>
+<td class="c-vgood">−42%</td><td class="c-good">−23%</td><td class="c-vgood">−36%</td><td class="c-mid">−2%</td><td class="c-bad">+29%</td><td class="c-vbad">+35%</td><td class="c-vbad">+67%</td>
+</tr>
+<tr>
+<th class="metric">Consenso de analistas<br/><span style="color:var(--muted);font-size:11px">potencial hasta el precio objetivo medio</span></th>
+<td class="c-vgood">+46%</td><td class="c-good">+31%</td><td class="c-good">+26%</td><td class="c-bad">+15%</td><td class="c-good">+25%</td><td class="c-vbad">+4%</td><td class="c-bad">+13%</td>
+</tr>
+<tr>
+<th class="metric">ROIC<br/><span style="color:var(--muted);font-size:11px">&gt; 15–20% confirma ventaja competitiva</span></th>
+<td class="c-vgood">103%</td><td class="c-good">25%</td><td class="c-bad">12%</td><td class="c-good">26%</td><td class="c-vgood">102%</td><td class="c-good">25%</td><td class="c-vbad">5%</td>
+</tr>
+<tr class="grp"><th class="metric">Momento</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr>
+<th class="metric">Precio vs. SMA 200 días<br/><span style="color:var(--muted);font-size:11px">negativo = zona de soporte estructural</span></th>
+<td class="c-vgood">−92%</td><td class="c-vgood">−104%</td><td class="c-vgood">−94%</td><td class="c-vgood">−100%</td><td class="c-vgood">−87%</td><td class="c-vgood">−81%</td><td class="c-vgood">−100%</td>
+</tr>
+<tr>
+<th class="metric">RSI (14 días)<br/><span style="color:var(--muted);font-size:11px">&lt; 40 indica agotamiento vendedor</span></th>
+<td class="c-mid">46</td><td class="c-mid">49</td><td class="c-mid">51</td><td class="c-bad">67</td><td class="c-mid">51</td><td class="c-mid">45</td><td class="c-mid">50</td>
+</tr>
+<tr class="total">
+<th class="metric">Valoración</th>
+<td class="c-vgood" style="color:var(--good)">87</td><td class="c-good" style="color:var(--good)">68</td><td class="c-mid" style="color:var(--neutral)">56</td><td class="c-mid" style="color:var(--neutral)">55</td><td class="c-mid" style="color:var(--neutral)">41</td><td class="c-bad" style="color:var(--serious)">35</td><td class="c-vbad" style="color:var(--critical)">9</td>
+</tr>
+<tr class="total">
+<th class="metric">Momento</th>
+<td class="c-good" style="color:var(--good)">77</td><td class="c-good" style="color:var(--good)">76</td><td class="c-good" style="color:var(--good)">75</td><td class="c-good" style="color:var(--good)">66</td><td class="c-good" style="color:var(--good)">74</td><td class="c-good" style="color:var(--good)">77</td><td class="c-good" style="color:var(--good)">75</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="matrix-legend">
+<span><span class="swatch c-vgood"></span> Muy barata (80–100)</span>
+<span><span class="swatch c-good"></span> Barata (60–80)</span>
+<span><span class="swatch c-mid"></span> Justa (40–60)</span>
+<span><span class="swatch c-bad"></span> Cara (20–40)</span>
+<span><span class="swatch c-vbad"></span> Muy cara (0–20)</span>
+</div>
+</section>
+<section class="block">
+<div class="method">
+<div class="cols">
+<div>
+<h3>Cómo se mide Bitcoin</h3>
+<b>Dos notas, no una.</b> <i>Valoración</i> promedia 6 métricas de fondo (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple y bandas de regresión); <i>Momento</i> promedia 2 de corto plazo (RSI y Fear &amp; Greed). Cada métrica se normaliza de 0 (muy cara) a 100 (muy barata) según sus umbrales históricos. No se promedian entre sí: las seis de valoración miden variantes de lo mismo, así que en una media única se llevarían el 75% del voto solo por ser más numerosas — y cuando las dos lecturas discrepan, esa discrepancia <i>es</i> la información.
         </div>
-        <div class="btc-price">
-          <div class="num" id="btc-price">$78,940</div>
-          <div class="cap">precio spot</div>
+<div>
+<h3>Cómo se miden las acciones</h3>
+<b>Dos notas, igual que Bitcoin.</b> <i>Valoración</i> promedia 6 métricas de fondo (PEG, forward P/E vs. su media 5a, FCF Yield, EV/EBITDA vs. su mediana 10a, consenso de analistas y ROIC); <i>Momento</i> promedia 2 técnicas (precio vs. SMA200 y RSI). El ranking va por valoración, que es la que responde a "¿está barata?". Cuatro de las ocho comparan cada empresa <b>contra su propia historia</b>, no contra las demás, porque negocios distintos tienen múltiplos "normales" distintos.
         </div>
-      </div>
-
-      <div class="live-strip" id="live-strip" data-mode="static">
-        <span class="live-dot" aria-hidden="true"></span>
-        <span id="live-text">Cargando datos en vivo…</span>
-      </div>
-
-      <div class="dual">
-        <div class="sblock">
-          <div class="sblock-head">
-            <span class="sblock-label">Valoración</span>
-            <span class="status-pill good" id="val-pill">▼▼ Muy barata</span>
-          </div>
-          <div class="sblock-num"><b id="val-score" style="color:var(--good)">81</b><span>/ 100</span></div>
-          <div class="sblock-bar"><i class="good" id="val-bar" style="width:81%"></i></div>
-          <div class="sblock-sub">6 métricas de fondo: dónde está el precio respecto a lo que pagaron los tenedores y a su propia tendencia.</div>
-        </div>
-        <div class="sblock">
-          <div class="sblock-head">
-            <span class="sblock-label">Momento</span>
-            <span class="status-pill serious" id="mom-pill">▲ Cara</span>
-          </div>
-          <div class="sblock-num"><b id="mom-score" style="color:var(--serious)">27</b><span>/ 100</span></div>
-          <div class="sblock-bar"><i class="serious" id="mom-bar" style="width:27%"></i></div>
-          <div class="sblock-sub">2 métricas de corto plazo: si el precio viene de moverse rápido y cómo está de eufórico el mercado.</div>
-        </div>
-      </div>
-
-      <div class="verdict" id="verdict" data-kind="split">
-        <b id="verdict-title">Las dos lecturas se contradicen</b>
-        <span id="verdict-body">Barata por fundamentales, recalentada a corto plazo. Históricamente eso no ha sido una señal de venta, pero sí un mal momento para entrar de golpe.</span>
-      </div>
-
-      <div class="group-head"><span>Valoración</span><span class="group-meta">6 métricas · media <b id="val-avg">81</b></span></div>
-      <div class="ind-list">
-
-        <div class="ind-row" data-k="mvrv" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">MVRV Z-Score <span class="tag-daily">diario</span></div>
-            <div class="ind-desc">Capitalización de mercado vs. capitalización realizada (coste medio). Por debajo de 0 ha marcado suelos de ciclo.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">0.88</span><span class="ind-tag good">Muy barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:87%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="puell" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">Puell Multiple <span class="tag-live">en vivo</span></div>
-            <div class="ind-desc">Emisión diaria de BTC valorada en dólares vs. su media de 365 días. Por debajo de 0.5 refleja capitulación de mineros.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">0.96×</span><span class="ind-tag good">Muy barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:87%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="realized" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">Precio realizado <span class="tag-live">en vivo</span></div>
-            <div class="ind-desc">Coste medio de compra de todo el BTC en circulación (<span data-anchor="realized">$52,970</span>). Cotizar por debajo de ese precio marca zonas de acumulación de bajo riesgo.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">1.49×</span><span class="ind-tag good">Barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:76%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="rhodl" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">RHODL Ratio <span class="tag-daily">diario</span></div>
-            <div class="ind-desc">Compara monedas movidas hace poco con las inmóviles hace +1 año. Valores bajos = mercado dominado por holders de largo plazo.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">1,830</span><span class="ind-tag good">Barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:74%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="mayer" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">Mayer Multiple <span class="tag-live">en vivo</span></div>
-            <div class="ind-desc">Precio actual vs. su media móvil de 200 días (<span data-anchor="sma200">$69,140</span>). Por debajo de 0.8× señala un descuento significativo.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">1.14×</span><span class="ind-tag good">Barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:79%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="rainbow" data-g="val">
-          <div class="ind-main">
-            <div class="ind-name">Bandas de regresión logarítmica <span class="tag-live">en vivo</span></div>
-            <div class="ind-desc">Ajusta la ley de rendimientos decrecientes de BTC a largo plazo. Tocar la banda inferior marca el "suelo" teórico del modelo.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">"BUY!"</span><span class="ind-tag good">Muy barata</span></div>
-            <div class="ind-bar"><i class="good" style="width:88%"></i></div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="group-head"><span>Momento</span><span class="group-meta">2 métricas · media <b id="mom-avg">27</b></span></div>
-      <div class="ind-list">
-
-        <div class="ind-row" data-k="rsi" data-g="mom">
-          <div class="ind-main">
-            <div class="ind-name">RSI (14 días) <span class="tag-live">en vivo</span></div>
-            <div class="ind-desc">Impulso del precio, método de Wilder sobre velas <b>diarias</b>. Por debajo de 30 indica agotamiento vendedor; por encima de 70, sobrecompra. Ojo: en un gráfico <b>semanal</b> verás un número bastante más bajo — la vela semanal suaviza el mismo movimiento. No son comparables.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">81.5</span><span class="ind-tag critical">Muy cara</span></div>
-            <div class="ind-bar"><i class="critical" style="width:19%"></i></div>
-          </div>
-        </div>
-
-        <div class="ind-row" data-k="fg" data-g="mom">
-          <div class="ind-main">
-            <div class="ind-name">Fear &amp; Greed Index <span class="tag-daily">diario</span></div>
-            <div class="ind-desc">Sentimiento de mercado a corto plazo. Miedo extremo (10–25) ha sido zona de acumulación para inversores de valor. El índice solo publica un valor al día.</div>
-          </div>
-          <div class="ind-val-wrap">
-            <div class="ind-val-top"><span class="ind-val">65</span><span class="ind-tag serious">Cara</span></div>
-            <div class="ind-bar"><i class="serious" style="width:35%"></i></div>
-          </div>
-        </div>
-
-      </div>
-
-      <p class="btc-note" style="margin-top:14px;">Las dos notas <b>no se promedian a propósito</b>. Las seis métricas de valoración miden variantes de lo mismo — dónde está el precio frente a un ancla histórica — así que meterlas en una media con las dos de momento les daría el 75% del voto solo por ser más numerosas. Separadas, cuando discrepan lo ves; una nota única lo escondería.</p>
-    </div>
-
-    <div class="context-heading">
-      <h3>Otro contexto de Bitcoin</h3>
-      <span class="tag">— no entra en ninguna de las dos notas</span>
-    </div>
-    <div class="context-grid">
-      <div class="context-card solo">
-        <div class="ctx-head">
-          <span class="ctx-title">Liquidez global (M2)</span>
-        </div>
-        <span class="liq-pill">Muy por debajo de su "valor justo" por M2</span>
-        <p>Comparado con la oferta monetaria (M2) global, BTC cotiza cerca de sus mínimos históricos frente a esa relación — un desajuste que antes casi siempre se corrigió al alza.</p>
-        <p class="caveat">Ojo: varios analistas creen que esta correlación se rompió durante 2026 ("desacople"), así que es una lectura macro de fondo, no una señal fiable por sí sola.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="block-title"><h2>Las Magníficas 7</h2><span class="group-meta">ordenadas por valoración</span></div>
-    <div class="grid">
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Nvidia</div><div class="tk">NVDA · $209.66</div></div>
-          <span class="status-pill good">▼▼ Muy barata</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">88</span></div>
-            <div class="mini-bar"><i class="good" style="width:88%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">48</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:48%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">Los mejores fundamentales del grupo con diferencia: PEG de 0.43, EV/EBITDA un 39% bajo su mediana de 10 años y ROIC del 103%. El momento ni ayuda ni estorba.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Meta</div><div class="tk">META · $576.14</div></div>
-          <span class="status-pill good">▼ Barata</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">70</span></div>
-            <div class="mini-bar"><i class="good" style="width:70%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">63</span></div>
-            <div class="mini-bar"><i class="good" style="width:63%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">La única donde las dos lecturas coinciden en barata: múltiplos por debajo de su historia y, además, la única del grupo cotizando bajo su SMA200.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Amazon</div><div class="tk">AMZN · $260.28</div></div>
-          <span class="status-pill good">▼ Barata</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">60</span></div>
-            <div class="mini-bar"><i class="good" style="width:60%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">46</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:46%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">Barata por múltiplos (EV/EBITDA un 58% bajo su mediana), pero su flujo de caja libre es <b>negativo</b> por el capex en IA y el ROIC del 12% es de los más bajos.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Microsoft</div><div class="tk">MSFT · $496.37</div></div>
-          <span class="status-pill neutral">● Justa</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">54</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:54%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--serious)">32</span></div>
-            <div class="mini-bar"><i class="serious" style="width:32%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">Valoración razonable, pero cero descuento técnico: cotiza un 15% sobre su SMA200 y con el RSI más alto del grupo (66). El fondo dice justa, el corto dice cara.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Alphabet</div><div class="tk">GOOGL · $342.00</div></div>
-          <span class="status-pill neutral">● Justa</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">50</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:50%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">55</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:55%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">Ni fría ni caliente en ninguna de las dos lecturas. EV/EBITDA un 29% bajo su mediana, pero PEG cerca de 2 y forward P/E por encima de su media histórica.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Apple</div><div class="tk">AAPL · $313.45</div></div>
-          <span class="status-pill serious">▲ Cara</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--serious)">36</span></div>
-            <div class="mini-bar"><i class="serious" style="width:36%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">44</span></div>
-            <div class="mini-bar"><i class="neutral" style="width:44%"></i></div>
-          </div>
-        </div>
-        <p class="card-note">Negocio magnífico a precio exigente: ROIC del 102%, pero PEG de 3.21, EV/EBITDA un 31% sobre su mediana y apenas +4% de recorrido según el consenso.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div><div class="co">Tesla</div><div class="tk">TSLA · $345.82</div></div>
-          <span class="status-pill critical">▲▲ Muy cara</span>
-        </div>
-        <div class="mini-scores">
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--critical)">13</span></div>
-            <div class="mini-bar"><i class="critical" style="width:13%"></i></div>
-          </div>
-          <div class="mini">
-            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">70</span></div>
-            <div class="mini-bar"><i class="good" style="width:70%"></i></div>
-          </div>
-        </div>
-        <div class="conflict-flag">⚠ Las dos lecturas se contradicen</div>
-        <p class="card-note">El caso más claro de contradicción: la más cara del grupo por fundamentales (PEG 6.71, ROIC 5%), pero un 14% por debajo de su SMA200 — barata solo en sentido técnico.</p>
-      </div>
-
-    </div>
-
-    <div class="context-heading"><h3>Las 8 métricas, una a una</h3><span class="tag">— el valor real en cada celda; el color es su puntuación 0–100</span></div>
-    <p class="scroll-hint">Desliza la tabla horizontalmente para ver todas las empresas →</p>
-    <div class="matrix-wrap">
-      <table class="matrix">
-        <thead>
-          <tr>
-            <th class="metric">Métrica</th>
-            <th>NVDA</th><th>META</th><th>AMZN</th><th>MSFT</th><th>GOOGL</th><th>AAPL</th><th>TSLA</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="grp"><th class="metric">Valoración</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr>
-            <th class="metric">PEG Ratio<br><span style="color:var(--muted);font-size:11px">&lt; 1.0 = descuento vs. su crecimiento</span></th>
-            <td class="c-vgood">0.43</td><td class="c-vgood">0.93</td><td class="c-good">1.35</td><td class="c-mid">1.56</td><td class="c-mid">1.98</td><td class="c-vbad">3.21</td><td class="c-vbad">6.71</td>
-          </tr>
-          <tr>
-            <th class="metric">Forward P/E vs. su media 5a<br><span style="color:var(--muted);font-size:11px">negativo = cotiza por debajo de su media</span></th>
-            <td class="c-vgood">−69%</td><td class="c-good">−23%</td><td class="c-vgood">−55%</td><td class="c-good">−20%</td><td class="c-bad">+15%</td><td class="c-bad">+12%</td><td class="c-bad">+24%</td>
-          </tr>
-          <tr>
-            <th class="metric">FCF Yield<br><span style="color:var(--muted);font-size:11px">&gt; 4–5% = genera mucha caja vs. su precio</span></th>
-            <td class="c-mid">2.50%</td><td class="c-mid">2.79%</td><td class="c-vbad">−0.41%</td><td class="c-bad">1.82%</td><td class="c-bad">1.27%</td><td class="c-mid">3.00%</td><td class="c-vbad">0.42%</td>
-          </tr>
-          <tr>
-            <th class="metric">EV/EBITDA vs. su mediana 10a<br><span style="color:var(--muted);font-size:11px">negativo = mínimos de su rango histórico</span></th>
-            <td class="c-vgood">−39%</td><td class="c-good">−25%</td><td class="c-vgood">−58%</td><td class="c-good">−12%</td><td class="c-good">−29%</td><td class="c-vbad">+31%</td><td class="c-vbad">+50%</td>
-          </tr>
-          <tr>
-            <th class="metric">Consenso de analistas<br><span style="color:var(--muted);font-size:11px">potencial hasta el precio objetivo medio</span></th>
-            <td class="c-vgood">+46%</td><td class="c-good">+31%</td><td class="c-good">+26%</td><td class="c-bad">+15%</td><td class="c-good">+25%</td><td class="c-vbad">+4%</td><td class="c-bad">+13%</td>
-          </tr>
-          <tr>
-            <th class="metric">ROIC<br><span style="color:var(--muted);font-size:11px">&gt; 15–20% confirma ventaja competitiva</span></th>
-            <td class="c-vgood">103%</td><td class="c-good">25%</td><td class="c-bad">12%</td><td class="c-good">26%</td><td class="c-good">25%</td><td class="c-vgood">102%</td><td class="c-vbad">5%</td>
-          </tr>
-          <tr class="grp"><th class="metric">Momento</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr>
-            <th class="metric">Precio vs. SMA 200 días<br><span style="color:var(--muted);font-size:11px">negativo = zona de soporte estructural</span></th>
-            <td class="c-mid">+7%</td><td class="c-good">−8%</td><td class="c-mid">+9%</td><td class="c-bad">+15%</td><td class="c-mid">+2%</td><td class="c-bad">+11%</td><td class="c-vgood">−14%</td>
-          </tr>
-          <tr>
-            <th class="metric">RSI (14 días)<br><span style="color:var(--muted);font-size:11px">&lt; 40 indica agotamiento vendedor</span></th>
-            <td class="c-mid">49</td><td class="c-mid">49</td><td class="c-mid">51</td><td class="c-bad">66</td><td class="c-mid">45</td><td class="c-mid">51</td><td class="c-mid">51</td>
-          </tr>
-          <tr class="total">
-            <th class="metric">Valoración</th>
-            <td class="c-vgood" style="color:var(--good)">88</td><td class="c-good" style="color:var(--good)">70</td><td class="c-good" style="color:var(--good)">60</td><td class="c-mid" style="color:var(--neutral)">54</td><td class="c-mid" style="color:var(--neutral)">50</td><td class="c-bad" style="color:var(--serious)">36</td><td class="c-vbad" style="color:var(--critical)">13</td>
-          </tr>
-          <tr class="total">
-            <th class="metric">Momento</th>
-            <td class="c-mid" style="color:var(--neutral)">48</td><td class="c-good" style="color:var(--good)">63</td><td class="c-mid" style="color:var(--neutral)">46</td><td class="c-bad" style="color:var(--serious)">32</td><td class="c-mid" style="color:var(--neutral)">55</td><td class="c-mid" style="color:var(--neutral)">44</td><td class="c-good" style="color:var(--good)">70</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="matrix-legend">
-      <span><span class="swatch c-vgood"></span> Muy barata (80–100)</span>
-      <span><span class="swatch c-good"></span> Barata (60–80)</span>
-      <span><span class="swatch c-mid"></span> Justa (40–60)</span>
-      <span><span class="swatch c-bad"></span> Cara (20–40)</span>
-      <span><span class="swatch c-vbad"></span> Muy cara (0–20)</span>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="method">
-      <div class="cols">
-        <div>
-          <h3>Cómo se mide Bitcoin</h3>
-          <b>Dos notas, no una.</b> <i>Valoración</i> promedia 6 métricas de fondo (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple y bandas de regresión); <i>Momento</i> promedia 2 de corto plazo (RSI y Fear &amp; Greed). Cada métrica se normaliza de 0 (muy cara) a 100 (muy barata) según sus umbrales históricos. No se promedian entre sí: las seis de valoración miden variantes de lo mismo, así que en una media única se llevarían el 75% del voto solo por ser más numerosas — y cuando las dos lecturas discrepan, esa discrepancia <i>es</i> la información.
-        </div>
-        <div>
-          <h3>Cómo se miden las acciones</h3>
-          <b>Dos notas, igual que Bitcoin.</b> <i>Valoración</i> promedia 6 métricas de fondo (PEG, forward P/E vs. su media 5a, FCF Yield, EV/EBITDA vs. su mediana 10a, consenso de analistas y ROIC); <i>Momento</i> promedia 2 técnicas (precio vs. SMA200 y RSI). El ranking va por valoración, que es la que responde a "¿está barata?". Cuatro de las ocho comparan cada empresa <b>contra su propia historia</b>, no contra las demás, porque negocios distintos tienen múltiplos "normales" distintos.
-        </div>
-      </div>
-      <div class="legend">
-        <span><span class="dot good"></span> Barata / muy barata: 60–100</span>
-        <span><span class="dot neutral"></span> Justa: 40–60</span>
-        <span><span class="dot serious"></span> Cara: 20–40</span>
-        <span><span class="dot critical"></span> Muy cara: 0–20</span>
-      </div>
-      <p style="margin:14px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.5;">
-        <b style="color:var(--ink-2)">Dos sustituciones honestas.</b> Las <i>revisiones de beneficios</i> por empresa no se publican en fuentes gratuitas, así que en su lugar se usa el <i>consenso de analistas</i> (potencial hasta el precio objetivo medio), que captura la misma idea: si los analistas ven recorrido, la valoración está por detrás de las expectativas. Y el RSI es el de <i>14 días</i> en vez del semanal, por el mismo motivo de disponibilidad — es la misma señal, algo más ruidosa. El benchmark del forward P/E es la media de 5 años del P/E <i>trailing</i>, ya que no existe histórico gratuito del forward P/E; en empresas con beneficios muy volátiles (Amazon, Nvidia, Tesla) esa media está inflada y exagera el descuento, razón de más para no fiarse de una sola métrica.
+</div>
+<div class="legend">
+<span><span class="dot good"></span> Barata / muy barata: 60–100</span>
+<span><span class="dot neutral"></span> Justa: 40–60</span>
+<span><span class="dot serious"></span> Cara: 20–40</span>
+<span><span class="dot critical"></span> Muy cara: 0–20</span>
+</div>
+<p style="margin:14px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.5;">
+<b style="color:var(--ink-2)">Dos sustituciones honestas.</b> Las <i>revisiones de beneficios</i> por empresa no se publican en fuentes gratuitas, así que en su lugar se usa el <i>consenso de analistas</i> (potencial hasta el precio objetivo medio), que captura la misma idea: si los analistas ven recorrido, la valoración está por detrás de las expectativas. Y el RSI es el de <i>14 días</i> en vez del semanal, por el mismo motivo de disponibilidad — es la misma señal, algo más ruidosa. El benchmark del forward P/E es la media de 5 años del P/E <i>trailing</i>, ya que no existe histórico gratuito del forward P/E; en empresas con beneficios muy volátiles (Amazon, Nvidia, Tesla) esa media está inflada y exagera el descuento, razón de más para no fiarse de una sola métrica.
       </p>
-    </div>
-  </section>
-
-  <footer>
-    <b>Acciones:</b> StockAnalysis (PEG, forward P/E, FCF Yield, ROIC, SMA200, consenso de analistas), GuruFocus (EV/EBITDA y su mediana de 10 años), FullRatio (media 5a del P/E) y Barchart (RSI 14d). <b>Bitcoin:</b> Newhedge (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple, liquidez global M2), Alternative.me (Fear &amp; Greed Index), Investtech (RSI semanal), Finbold (bandas de regresión logarítmica) y TradingView/Cointelegraph (Bitcoin vs M2). Cotizaciones del 26–27 de agosto de 2026. Algunas métricas (RSI semanal de BTC, banda de regresión) se toman de la lectura pública más reciente disponible más que de una API exacta. Esta página es informativa, no es una recomendación de inversión.
+</div>
+</section>
+<footer>
+<b>Acciones:</b> StockAnalysis (PEG, forward P/E, FCF Yield, ROIC, SMA200, consenso de analistas), GuruFocus (EV/EBITDA y su mediana de 10 años), FullRatio (media 5a del P/E) y Barchart (RSI 14d). <b>Bitcoin:</b> Newhedge (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple, liquidez global M2), Alternative.me (Fear &amp; Greed Index), Investtech (RSI semanal), Finbold (bandas de regresión logarítmica) y TradingView/Cointelegraph (Bitcoin vs M2). Cotizaciones del 26–27 de agosto de 2026. Algunas métricas (RSI semanal de BTC, banda de regresión) se toman de la lectura pública más reciente disponible más que de una API exacta. Esta página es informativa, no es una recomendación de inversión.
   </footer>
-
 <script>
 /* Modo denso: esconde toda la prosa y deja solo las cifras.
    La eleccion se recuerda en este navegador; si el almacenamiento
@@ -1497,7 +1462,6 @@
   });
 })();
 </script>
-
 <script>
 /* ------------------------------------------------------------------
    Bitcoin en vivo via el conector Crypto.com.
@@ -1515,15 +1479,15 @@
   // Anclas refrescadas cada noche por la tarea programada.
   var ANCHOR = {
     price:         78943,
-    sma200:        69140,
-    realizedPrice: 52970,
-    puell:         0.96,
+    sma200:        1,
+    realizedPrice: 38,
+    puell:         38,
     puellAtPrice:  78943,
     rsiFallback:   81.5
   };
 
   // Puntuaciones de las metricas que no tienen version intradia.
-  var DAILY = { mvrv: 87.4, rhodl: 73.8, fg: 35.0 };
+  var DAILY = { mvrv: 0.0, rhodl: 100.0, fg: 29.0 };
 
   // Umbrales del rainbow chart, de mas barata a mas cara.
   var BANDS = [
@@ -1948,5 +1912,4 @@
   })();
 })();
 </script>
-
 </div>
