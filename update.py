@@ -196,22 +196,33 @@ def recoge_accion(ticker, get):
     try:
         t2 = _tabla_stockanalysis(f"https://stockanalysis.com/stocks/{ticker}/forecast/"
                                   if False else get(f"https://stockanalysis.com/stocks/{ticker}/forecast/"))
-        # Matriz:  (vacio) | Target | Change
-        #          Price    | $317   | +37.98%
-        # La etiqueta de la fila es solo "Price"; el objetivo esta en la
-        # primera celda y el potencial en la segunda.
-        obj = _num(_exacto(t2, "price", 0), 0.5, 100000)
-        chg = _num(_exacto(t2, "price", 1), -95, 500)
-        if obj is None or chg is None:      # por si vuelven al formato plano
-            obj = obj if obj is not None else _num(_exacto(t2, "target price"), 0.5, 100000)
-            chg = chg if chg is not None else _num(_exacto(t2, "target change"), -95, 500)
+        # La tabla esta transpuesta y con tres columnas:
+        #   Target | Low     | Average  | Median
+        #   Price  | $580    | $754.72  | $750
+        #   Change | +1.82%  | +32.49%  | +31.66%
+        # La columna buena es la de "Average", y se localiza por su nombre
+        # en la fila "Target" en vez de asumir una posicion fija: si algun
+        # dia reordenan las columnas, esto sigue funcionando.
+        columnas = t2.get(_norm("target")) or []
+        idx = None
+        for pref in ("average", "median"):
+            for i, c in enumerate(columnas):
+                if _norm(c).strip() == pref:
+                    idx = i
+                    break
+            if idx is not None:
+                break
+        if idx is None:
+            idx = 1 if len(columnas) > 1 else 0
+        obj = _num(_exacto(t2, "price", idx), 0.5, 100000)
+        chg = _num(_exacto(t2, "change", idx), -95, 500)
         if obj is not None and chg is not None:
             d["objetivo"] = obj
             d["consenso"] = chg                    # el potencial, ya en %
             d["precio"] = obj / (1 + chg / 100.0)  # el precio, deducido
         else:
             # Diagnostico en vez de adivinanzas: si la web cambia de
-            # formato, el registro dice que etiquetas encontro de verdad.
+            # formato, el registro dice que etiquetas y valores encontro.
             vistas = {k: v[:3] for k, v in list(t2.items())[:8]}
             aviso(f"{ticker}: no se pudo leer objetivo/potencial. Tabla vista: {vistas}")
     except Exception as e:

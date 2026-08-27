@@ -18,12 +18,14 @@ _STATS = """<table>
 
 # Con los tres "... Change" presentes: si la busqueda no es exacta,
 # "Target Low Change" puede ganarle a "Target Change".
+# Estructura real de stockanalysis (comprobada en el registro del robot):
+# transpuesta, con las columnas Low / Average / Median.
 _FORECAST = """<table>
-<tr><th>Target</th><th>Change</th></tr>
-<tr><td>Price</td><td>${obj}</td><td>{chg}%</td></tr>
-<tr><td>Low</td><td>${low}</td><td>-21.67%</td></tr>
-<tr><td>High</td><td>${high}</td><td>+124.11%</td></tr>
-<tr><td>Median</td><td>${obj}</td><td>{chg}%</td></tr>
+<tr><th>Target</th><th>Low</th><th>Average</th><th>Median</th></tr>
+<tr><td>Price</td><td>${low}</td><td>${obj}</td><td>${med}</td></tr>
+<tr><td>Change</td><td>-21.67%</td><td>{chg}%</td><td>+31.66%</td></tr>
+<tr><td>Rating</td><td>Mar '26</td><td>Apr '26</td><td>May '26</td></tr>
+<tr><td>Strong Buy</td><td>50</td><td>47</td><td>49</td></tr>
 </table>"""
 
 # ticker -> (precio, peg, fwd, fcf, roic, sma200, ev, rsi, objetivo)
@@ -72,7 +74,7 @@ def get(url):
         chg = (obj / p - 1) * 100
         if url.endswith("forecast/"):
             return _FORECAST.format(obj=round(obj, 2), chg=round(chg, 2),
-                                    low=round(obj * 0.8, 2), high=round(obj * 1.4, 2))
+                                    low=round(obj * 0.6, 2), med=round(obj * 0.99, 2))
         return _STATS.format(cambio52=-23.52, peg=peg, fwd=fwd, fcf=fcf,
                              roic=roic, sma=sma, ev=ev, rsi=rsi)
     raise RuntimeError("url no prevista: " + url)
