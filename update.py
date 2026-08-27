@@ -130,14 +130,24 @@ def _tras_etiqueta(texto, etiquetas, lo, hi, hueco=14):
     return None
 
 
+def _norm(t):
+    """Etiqueta comparable: minusculas, sin signos y sin espacios de sobra.
+    Las webs meten iconos de ayuda y espacios raros dentro de las celdas."""
+    return re.sub(r"[^a-z0-9 ]+", " ", str(t).lower())
+
+
 def _tabla_stockanalysis(html):
-    """Devuelve {etiqueta_en_minusculas: texto_valor} de todas las filas."""
+    """{etiqueta_normalizada: texto_valor} de todas las filas.
+
+    Acepta tanto <td>etiqueta</td> como <th>etiqueta</th>: la tabla de
+    previsiones usa <th> para la primera columna, y mirar solo <td> hacia
+    que no se encontrara ni el precio ni el objetivo."""
     sopa = BeautifulSoup(html, "lxml")
     out = {}
     for tr in sopa.find_all("tr"):
-        celdas = tr.find_all("td")
+        celdas = tr.find_all(["td", "th"])
         if len(celdas) >= 2:
-            k = celdas[0].get_text(" ", strip=True).lower()
+            k = _norm(celdas[0].get_text(" ", strip=True))
             v = celdas[1].get_text(" ", strip=True)
             if k and k not in out:
                 out[k] = v
@@ -151,15 +161,16 @@ def _exacto(tabla, etiqueta):
     """Coincidencia exacta de etiqueta. Imprescindible cuando conviven
     'Target Change', 'Target Low Change' y 'Target High Change': con
     busqueda por 'contiene' cualquiera de las tres puede ganar."""
-    return tabla.get(etiqueta.strip().lower())
+    return tabla.get(_norm(etiqueta))
 
 
 def _busca(tabla, *claves):
     """Primera fila cuya etiqueta contenga la clave, ignorando parecidos
     peligrosos: 'Price Target' o 'Price/Sales' no son 'Current Price'."""
     for c in claves:
+        cn = _norm(c)
         for k, v in tabla.items():
-            if c in k and not any(x in k for x in _VETADAS if x not in c):
+            if cn in k and not any(_norm(x) in k for x in _VETADAS if _norm(x) not in cn):
                 return v
     return None
 
@@ -191,7 +202,11 @@ def recoge_accion(ticker, get):
             d["consenso"] = chg                    # el potencial, ya en %
             d["precio"] = obj / (1 + chg / 100.0)  # el precio, deducido
         else:
-            aviso(f"{ticker}: objetivo o potencial no leidos")
+            # Diagnostico en vez de adivinanzas: si la web cambia de
+            # formato, el registro dice que etiquetas encontro de verdad.
+            vistas = [k for k in t2 if "target" in k or "price" in k][:10]
+            aviso(f"{ticker}: falta 'target price' o 'target change'. "
+                  f"Etiquetas con target/price vistas: {vistas or list(t2)[:10]}")
     except Exception as e:
         aviso(f"{ticker}: prevision no leida ({e})")
 
