@@ -1,0 +1,17 @@
+{
+  "name": "Diésel Tudela",
+  "short_name": "Diésel",
+  "description": "Precio real del gasóleo A en Tudela y si conviene repostar ya o esperar.",
+  "start_url": "./diesel.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "es",
+  "background_color": "#0a0c08",
+  "theme_color": "#0a0c08",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
