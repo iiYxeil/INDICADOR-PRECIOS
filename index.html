@@ -1,0 +1,1952 @@
+<title>¿Barato o Caro?</title>
+<script>
+(function () {
+  try {
+    var head = document.head || document.getElementsByTagName('head')[0];
+    if (!head) return;
+    var ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAIsUlEQVR42u3dT2wcZxnH8d/zzszu+t/GcYLtWC0gq0EgpWqh6YmWSi1CLUhQ4MCBA/SGQOoJiR7hUvXcnnpAHFr1XhBcKPRAkRACgtQ2EqilDiJN2qRxbK+9f2bmfTiM01alQdn1Znfj/X6kvUTKvOv1d999Z+WZ15ZX11zAIRF4CUDQAEEDBA0QNAgaIGiAoAGCBggaBA0QNEDQAEEDBA2CBggaIGiAoAGCBkEDBA0QNEDQAEGDoAGCBggaIGiAoEHQAEEDBA0QNEDQIGhggqW8BLAB/58TNCZJEkzuUl7GgeLMgikEU4w+MXET9DTOyFZNr5vtXFliWp6tV//W56x+pZ2r1cm1UE+VhaDSnaAx4pMmM/XKqCK6vn/37frmZ1e1vjSr1KyvWdZMOr/d0ctvvadn/3pOVzu5Fmrp2KM2Nt6cppilXuk6Uk/1zFdP6eE7lpXHqG4RB1o/ZyFoJgs6e6mlH/36Vf3twtbYoyboqTr5M7WLUi98+/P62mdWdKHVUWKmYIOdFrq7CnctNTK9vdPVw8//SZd2c9UTUxzXm5Zf85ScAJppq5vru3eu6eE7lnVxp6NaCErMZPtr4n4fwUy1EHSlneuTR2b0k/tOqlOWMrOx/ZwEPSV8/1uJRz93QnmMCmF40WVJ0E630JfXj+v2ZkPdMsoIGjdvqSH1yqjlubrWj86qW8SBlxnXO34eo47NZDq5NKfOkI9P0LjuNxPJTQwtmN3U4xM0xrK0IWiAoAGCBkEDBA0QNEDQAEGDoAGCBggaGBiXYE2AQf+ex7k0g6AnSXXVtSsvfaCY08SUBFN0J26CHv+MvLVbKk2kY810/++Hb6xKV/WnmputQtt7peYbidJUipHXlqBHfdJiUq9wldH1nQcW9ci9TX16pVbN1v28KSRd3Mz1yuu7eu6lK9raKzXXCFMfNUGPeGbuFa7mbKInHzuhB+9eUF64esVgS4bjRxKdPjmrR+5t6omfv61XN9pTHzXfcoySS2V0PfnYmr5yT1OXtwq12lF54SrK/h97XdelrULrqzU9/cPbtLKYqpe7xnzRCEFPxwmgtN0u9a37FvXg3fO6uJkrS00hVDP3II9gUpaarrZK3XY80+OPLqtD0BjJ5OxSlpgeOX1EeelDvfYuTUw7e1H3n5rX2lKqvJjeqAl6RGvnvHQdb6b61Eqmbm+4wZlJRXQdnU+0vlpXp0fQGFHYSbiZV11XS5tpRtCH77yToAGCBggaIGiAoEHQAEEDBA0QNEDQIGjg1sUVK9Lh2uyaoKf888kllQPGnHzoGMRN0OOekW3X5Inkzdj/LG2StUy2Z/KGV68kV10T9FhiLqr48gd6Kk735MtxoLMJ2zQlZzNlv69Xb46GEzVBjzjmUvJZV+97bRV35VIpWT7g1sBHosqTpYrTueq/mFGykRL1BKwip0tpVcxfyGXbJmtbtYYe5NE12ZYprpTq/mBPcTFK+QFOMkHQ/fyk1jYVX+yquCuXXbXq8ylIA292bdVnnO2a4rGo/OudgWd7EHTf30p4kMp7imp2HWZ3SfVmKU8Viktx+McHQX/s2rkZFVfKaha1IR8/Sj4fFVdvwvFB0NcNL9zCxwdBg6ABggYIGiBogKBB0ABBAwQNEDRA0CBogKABggYObDKuKeS+GDgUQXNfDByKoLkvBg5N0NwXA4cmaO6LgRGsYkeL+2LgUATNfTFwqILmvhg4NEFzXwwcyjU098XAoTspBAgaIGgQNEDQAEEDBA0QNAgaIGiAoAGCBggaBA0QNEDQAEEDBA2CBggaIGiAoAGCBkEDBA0QNEDQAEGDoAGC3mdjHmPM49sI7vJrYx4/2DQE7dVI1jLZZpAnPtxt2LwKydomuxzk6UeOP+bx3aU0mDZbpS5sFspSkw9xfHcpMdNOO+r85Vy1jxzfVY3/3l6u8zsdZcHkPtx98JJg2u4WOrfVUS0Z/vEnb4YOknVMydlUqmm4QUXJ665wLlV4N6m2uvDJGj8E024n6o+vt9Somcoh/sJjdM02TK9ttLXxTk/17H/fMGkwtXqFXt54T40sURGHN34RXXNZojMXt/Tm5q4aaTK2fZtGuyXFjCv9XV3J+UQ+69X2bgdVSsokK03ZL+syv87H/pjHj+6abwQ999IV/eM/XS3OJcoLP/D7qihdWRaUl9IzL16qjvcx45fRtVDP9OxfzunspZaWZjL1ynjw8aOrlgTlpeupV96Q+3g3T0jm5hd+OrrRpNA2hY1E8VQhP+qy0gbfhi1UkZpLtRdmlf49k8/8n23dxjx+klTLglff6uhLd85r5WimopTK+MFmuP08QpAWZhLJpZ89f1EvnWmpORsUrzN+tr8sOHNhSw+tf0JrC3UVpat0H3B8U7OeSib9+Ldn9Zt/vqsj9Wyonz59n0Msr66NdvQgqWPyxWrXquJUIc3Hwd7WbVOykSj7VUPJm2k168bJHj8JUqsTtbKY6vFvLOv+O+d0dD5RsP6fwE671GsbHT394iWdeWNPzbnkujG/P76ZdnqF1hYaeuK+O/TQ+nEdm8n6Gv/ah9B2N9eZi9t66g9v6M/nr2qxMd6YxxP0tahySbnJl6J8NcqDf/BK3eBJZrgcZO9WM5T62XBzzOOHIPVyVzd3nVjKtH6ith/Ujf8qzEznL/e08U5PLmm+EVTe4PiJmTpFqU4ZdXtzRieX5pT0caLokoKZ/r3V1r829+Tumq+lY495fEFfW+dZFZYVduMxfXhNnLqUfehVvoXGN6sevdzVK/z9taff4FN3SVlqqmdWbQI2wPhBpm4Z1S36W0tX41dr50ZabTQZJyDm8Qb90bAG/brMb+3xr4U96Nd1B+3I9mf7QZ5ClGtCOv7g25yxP4NhRHkLjz+MKA/8409albfE13YAQQMEDYIGCBogaICgAYIGQQMEDRA0QNAAQYOgAYIGCBogaICgQdAAQQMEDRA0QNAgaICgAYIGDuq/gH/7UIFCYJ4AAAAASUVORK5CYII=';
+
+    function meta(attr, key, val) {
+      if (head.querySelector('meta[' + attr + '="' + key + '"]')) return;
+      var m = document.createElement('meta');
+      m.setAttribute(attr, key);
+      m.setAttribute('content', val);
+      head.appendChild(m);
+    }
+    function link(rel, href, extra) {
+      var l = document.createElement('link');
+      l.setAttribute('rel', rel);
+      l.setAttribute('href', href);
+      if (extra) for (var k in extra) l.setAttribute(k, extra[k]);
+      head.appendChild(l);
+    }
+
+    // Sin esto el movil maqueta a 980px y encoge toda la pagina.
+    meta('name', 'viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
+
+    // Pantalla completa al abrir desde el icono de inicio.
+    meta('name', 'mobile-web-app-capable', 'yes');
+    meta('name', 'apple-mobile-web-app-capable', 'yes');
+    meta('name', 'apple-mobile-web-app-status-bar-style', 'black-translucent');
+    meta('name', 'apple-mobile-web-app-title', 'Barato o Caro');
+    meta('name', 'application-name', 'Barato o Caro');
+
+    // Color de la barra del sistema, por tema.
+    var mt = document.createElement('meta');
+    mt.setAttribute('name', 'theme-color');
+    mt.setAttribute('media', '(prefers-color-scheme: light)');
+    mt.setAttribute('content', '#f2f3ee');
+    head.appendChild(mt);
+    var mtd = document.createElement('meta');
+    mtd.setAttribute('name', 'theme-color');
+    mtd.setAttribute('media', '(prefers-color-scheme: dark)');
+    mtd.setAttribute('content', '#0d0f0e');
+    head.appendChild(mtd);
+
+    if (!head.querySelector('link[rel="apple-touch-icon"]')) {
+      link('apple-touch-icon', ICON, { sizes: '180x180' });
+      link('icon', ICON, { type: 'image/png', sizes: '180x180' });
+    }
+
+    if (!head.querySelector('link[rel="manifest"]')) {
+      var manifest = {
+        name: '\u00bfBarato o Caro?',
+        short_name: 'Barato o Caro',
+        description: 'Puntuacion 0-100 de Bitcoin y las Magnificas 7',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#0d0f0e',
+        theme_color: '#0d0f0e',
+        icons: [{ src: ICON, sizes: '180x180', type: 'image/png', purpose: 'any' }]
+      };
+      link('manifest', 'data:application/manifest+json;charset=utf-8,' +
+        encodeURIComponent(JSON.stringify(manifest)));
+    }
+  } catch (e) {}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --paper:      #e8eae3;
+    --surface:    #f6f7f3;
+    --raised:     #fdfdfb;
+    --ink:        #171a15;
+    --ink-2:      #4e534a;
+    --muted:      #8b9086;
+    --line:       rgba(23,26,21,0.13);
+    --line-strong:rgba(23,26,21,0.26);
+    --grid:       rgba(23,26,21,0.045);
+    --gold:       #8a6a22;
+    --gold-soft:  rgba(138,106,34,0.13);
+    --shadow:     0 1px 2px rgba(23,26,21,0.05), 0 6px 18px -10px rgba(23,26,21,0.20);
+    --good:       #0ca30c;
+    --good-soft:  rgba(12,163,12,0.12);
+    --warning:    #fab219;
+    --serious:    #ec835a;
+    --serious-soft: rgba(236,131,90,0.14);
+    --critical:   #d03b3b;
+    --critical-soft: rgba(208,59,59,0.13);
+    --neutral:    #6b6e66;
+    --neutral-soft: rgba(107,110,102,0.12);
+    --font-sans:    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --paper:      #0a0c08;
+      --surface:    #141711;
+      --raised:     #1b1f18;
+      --ink:        #f1f3ea;
+      --ink-2:      #b9bdaf;
+      --muted:      #7f8479;
+      --line:       rgba(255,255,255,0.11);
+      --line-strong:rgba(255,255,255,0.24);
+      --grid:       rgba(255,255,255,0.032);
+      --gold:       #d4a94a;
+      --gold-soft:  rgba(212,169,74,0.15);
+      --shadow:     0 1px 2px rgba(0,0,0,0.5), 0 8px 22px -12px rgba(0,0,0,0.75);
+      --good:       #0ca30c;
+      --good-soft:  rgba(12,163,12,0.18);
+      --warning:    #fab219;
+      --serious:    #ec835a;
+      --serious-soft: rgba(236,131,90,0.18);
+      --critical:   #e66767;
+      --critical-soft: rgba(230,103,103,0.18);
+      --neutral:    #a3a59c;
+      --neutral-soft: rgba(163,165,156,0.16);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --paper:      #0a0c08;
+    --surface:    #141711;
+    --raised:     #1b1f18;
+    --ink:        #f1f3ea;
+    --ink-2:      #b9bdaf;
+    --muted:      #7f8479;
+    --line:       rgba(255,255,255,0.11);
+    --line-strong:rgba(255,255,255,0.24);
+    --grid:       rgba(255,255,255,0.032);
+    --gold:       #d4a94a;
+    --gold-soft:  rgba(212,169,74,0.15);
+    --shadow:     0 1px 2px rgba(0,0,0,0.5), 0 8px 22px -12px rgba(0,0,0,0.75);
+    --good:       #0ca30c;
+    --good-soft:  rgba(12,163,12,0.18);
+    --warning:    #fab219;
+    --serious:    #ec835a;
+    --serious-soft: rgba(236,131,90,0.18);
+    --critical:   #e66767;
+    --critical-soft: rgba(230,103,103,0.18);
+    --neutral:    #a3a59c;
+    --neutral-soft: rgba(163,165,156,0.16);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+    /* papel milimetrado: la retícula solo asoma entre las tarjetas */
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:34px 34px;
+    background-position:center top;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:44px 20px 68px;
+  }
+  header.top{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:34px;
+    padding-bottom:26px;
+    border-bottom:1px solid var(--line-strong);
+  }
+  .eyebrow{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+  }
+  .eyebrow .rule{
+    flex:1 1 auto; height:1px; min-width:12px;
+    background:linear-gradient(to right, var(--gold-soft), transparent);
+  }
+
+  /* ---- interruptor de modo denso ---- */
+  .dense-btn{
+    display:inline-flex; align-items:center; gap:7px;
+    flex:none;
+    font-family:var(--font-mono);
+    font-size:10px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600;
+    color:var(--muted);
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:5px 11px 5px 8px;
+    cursor:pointer;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .dense-btn:hover{ color:var(--ink-2); border-color:var(--line-strong); }
+  .dense-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .dense-ico{
+    width:16px; height:11px; flex:none;
+    border:1px solid currentColor; border-radius:2px;
+    position:relative;
+  }
+  /* el icono se "rellena" cuando el modo esta activo */
+  .dense-ico::after{
+    content:''; position:absolute; left:1px; top:1px; bottom:1px;
+    width:0; background:currentColor; border-radius:1px;
+    transition:width .2s ease;
+  }
+  .dense-btn[aria-pressed="true"]{
+    color:var(--gold); border-color:var(--gold-soft); background:var(--gold-soft);
+  }
+  .dense-btn[aria-pressed="true"] .dense-ico::after{ width:calc(100% - 2px); }
+  @media (prefers-reduced-motion: reduce){
+    .dense-btn, .dense-ico::after{ transition:none; }
+  }
+
+  /* ---- MODO DENSO: fuera toda la prosa, quedan los numeros ---- */
+  body[data-dense="on"] .lede,
+  body[data-dense="on"] .sblock-sub,
+  body[data-dense="on"] #verdict-body,
+  body[data-dense="on"] .ind-desc,
+  body[data-dense="on"] .btc-note,
+  body[data-dense="on"] .card-note,
+  body[data-dense="on"] .context-heading,
+  body[data-dense="on"] .context-grid,
+  body[data-dense="on"] .scroll-hint,
+  body[data-dense="on"] table.matrix th.metric span,
+  body[data-dense="on"] .method,
+  body[data-dense="on"] footer{
+    display:none;
+  }
+  /* y se aprieta el espaciado, que si no quedan huecos raros */
+  body[data-dense="on"] header.top{ gap:9px; margin-bottom:24px; padding-bottom:16px; }
+  body[data-dense="on"] section.block{ margin-bottom:24px; }
+  body[data-dense="on"] .btc-card{ gap:13px; padding:20px 22px; }
+  body[data-dense="on"] .ind-row{ padding:8px 0; }
+  body[data-dense="on"] .ind-list{ margin-top:2px; }
+  body[data-dense="on"] .group-head{ margin:14px 0 -2px; }
+  body[data-dense="on"] .card{ gap:9px; padding:15px 16px 14px; }
+  body[data-dense="on"] .sblock{ padding:13px 15px 15px; }
+  body[data-dense="on"] #verdict{ padding:9px 12px; }
+  body[data-dense="on"] table.matrix th, body[data-dense="on"] table.matrix td{ padding:7px 10px; }
+  body[data-dense="on"] table.matrix th.metric{ min-width:150px; }
+  h1{
+    margin:0;
+    font-family:var(--font-display);
+    font-size:clamp(40px,7.5vw,66px);
+    line-height:0.96;
+    letter-spacing:-0.015em;
+    text-wrap:balance;
+    font-weight:400;
+  }
+  h1 em{ font-style:italic; color:var(--gold); }
+  .lede{
+    margin:0;
+    max-width:60ch;
+    color:var(--ink-2);
+    font-size:15px;
+    line-height:1.55;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+    margin-top:6px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .meta-row b{ color:var(--ink-2); font-weight:600; }
+
+  section.block{ margin-bottom:36px; }
+  .block-title{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .block-title h2{
+    margin:0;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+  }
+
+
+  /* ---- mapa de cuadrantes: las dos notas como coordenadas ---- */
+  .quad-card{
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:20px 20px 16px;
+  }
+  .quad-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:12px; flex-wrap:wrap; margin-bottom:8px;
+  }
+  .quad-head h3{
+    margin:0; font-family:var(--font-display); font-weight:400;
+    font-size:23px; letter-spacing:-0.01em;
+  }
+  .quad-head span{ font-size:12px; color:var(--muted); }
+  .quad{ display:block; width:100%; height:auto; overflow:visible; }
+  .q-good{ fill:var(--good); opacity:0.06; }
+  .q-bad { fill:var(--critical); opacity:0.06; }
+  .q-warn{ fill:var(--warning); opacity:0.05; }
+  .q-grid line{ stroke:var(--line); stroke-width:1; }
+  .q-frame{ fill:none; stroke:var(--line-strong); stroke-width:1; }
+  .q-mid{ stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 4; }
+  .q-quadlabel text{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em;
+    text-transform:uppercase; fill:var(--muted); opacity:0.85;
+  }
+  .q-axis text{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em;
+    text-transform:uppercase; fill:var(--muted);
+  }
+  .q-pt circle{ stroke:var(--raised); stroke-width:2.5; transition:cx .35s ease, cy .35s ease; }
+  .q-pt text{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:600;
+    fill:var(--ink-2); transition:x .35s ease, y .35s ease;
+  }
+  .q-pt.good circle{ fill:var(--good); }
+  .q-pt.neutral circle{ fill:var(--neutral); }
+  .q-pt.serious circle{ fill:var(--serious); }
+  .q-pt.critical circle{ fill:var(--critical); }
+  .q-pt.is-btc circle{ fill:var(--gold); stroke-width:3; }
+  .q-pt.is-btc text{ fill:var(--ink); font-weight:700; }
+  @media (prefers-reduced-motion: reduce){
+    .q-pt circle, .q-pt text{ transition:none; }
+  }
+  @media (max-width:640px){
+    .quad-card{ padding:16px 14px 12px; }
+    .quad-head h3{ font-size:20px; }
+    .q-pt text{ font-size:13px; }
+    .q-quadlabel text{ font-size:11px; }
+    .q-axis text{ font-size:11px; }
+  }
+
+  /* ---- Bitcoin hero card ---- */
+  .btc-card{
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    padding:26px 28px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .btc-top{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .btc-id{ display:flex; align-items:center; gap:12px; }
+  .coin-badge{
+    width:42px;height:42px;border-radius:50%;
+    background:var(--gold-soft);
+    color:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:16px;
+    border:1px solid var(--line);
+    flex:none;
+  }
+  .btc-id .name{ font-family:var(--font-display); font-size:27px; font-weight:400; line-height:1; letter-spacing:-0.01em; }
+  .btc-id .ticker{ font-family:var(--font-mono); font-size:12px; color:var(--muted); letter-spacing:0.04em;}
+  .btc-price{ text-align:right; }
+  .btc-price .num{
+    font-family:var(--font-mono); font-size:29px; font-weight:600;
+    font-variant-numeric:tabular-nums; letter-spacing:-0.02em;
+  }
+  .btc-price .cap{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+
+  .status-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 11px; border-radius:999px;
+    font-size:12.5px; font-weight:600;
+    white-space:nowrap;
+    border:1px solid transparent;
+  }
+  .status-pill.good{ background:var(--good-soft); color:var(--good); }
+  .status-pill.neutral{ background:var(--neutral-soft); color:var(--neutral); }
+  .status-pill.serious{ background:var(--serious-soft); color:var(--serious); }
+  .status-pill.critical{ background:var(--critical-soft); color:var(--critical); }
+
+  .gauge-label-row{
+    display:flex; justify-content:space-between;
+    font-family:var(--font-mono); font-size:11px; color:var(--muted);
+    margin-bottom:6px;
+  }
+  .gauge{
+    position:relative;
+    height:10px;
+    border-radius:999px;
+    background:
+      linear-gradient(to right,
+        var(--good) 0%, var(--good) 31.25%,
+        var(--neutral) 31.25%, var(--neutral) 75%,
+        var(--serious) 75%, var(--serious) 100%);
+    opacity:0.9;
+  }
+  .gauge .marker{
+    position:absolute;
+    top:-5px;
+    width:3px; height:20px;
+    background:var(--ink);
+    border-radius:2px;
+    transform:translateX(-50%);
+  }
+  .gauge .marker::after{
+    content:attr(data-v);
+    position:absolute;
+    top:-22px; left:50%;
+    transform:translateX(-50%);
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .gauge .boundary{
+    position:absolute;
+    top:0; bottom:0; width:1px;
+    background:rgba(0,0,0,0.28);
+    transform:translateX(-50%);
+  }
+  :root:not([data-theme="light"]) .gauge .boundary{ background:rgba(255,255,255,0.4); }
+  :root[data-theme="dark"] .gauge .boundary{ background:rgba(255,255,255,0.4); }
+  .gauge .boundary span{
+    position:absolute;
+    bottom:-18px; left:50%;
+    transform:translateX(-50%);
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .gauge-ticks{
+    display:flex; justify-content:space-between;
+    font-family:var(--font-mono); font-size:10px; color:var(--muted);
+    margin-top:6px;
+  }
+  .btc-note{ font-size:13px; color:var(--ink-2); line-height:1.5; margin:0; }
+
+  /* ---- secondary context (fear&greed / liquidity) ---- */
+  .context-heading{
+    display:flex; align-items:baseline; gap:8px;
+    margin:22px 0 12px;
+  }
+  .context-heading h3{
+    margin:0; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;
+  }
+  .context-heading .tag{
+    font-size:11px; color:var(--muted); font-style:italic;
+  }
+  .context-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:14px;
+  }
+  .context-card{
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:16px 18px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .context-card .ctx-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .context-card .ctx-title{ font-size:13.5px; font-weight:600; }
+  .context-card .ctx-value{
+    font-family:var(--font-mono); font-size:22px; font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  .fg-gauge{
+    position:relative; height:8px; border-radius:999px;
+    background:linear-gradient(to right, var(--gold-soft), var(--gold));
+  }
+  .fg-gauge .marker{
+    position:absolute; top:-4px; width:3px; height:16px;
+    background:var(--ink); border-radius:2px; transform:translateX(-50%);
+  }
+  .fg-scale{
+    display:flex; justify-content:space-between;
+    font-family:var(--font-mono); font-size:9.5px; color:var(--muted);
+    margin-top:5px;
+  }
+  .liq-pill{
+    display:inline-flex; align-self:flex-start;
+    padding:4px 10px; border-radius:999px;
+    background:var(--gold-soft); color:var(--gold);
+    font-size:12px; font-weight:600;
+  }
+  .context-card p{ margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5; }
+  .context-card p.caveat{ color:var(--muted); font-size:11.5px; }
+  .context-card.solo{ max-width:480px; }
+
+  /* ---- dos notas: valoracion y momento ---- */
+  .dual{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:14px;
+  }
+  .sblock{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--raised);
+    padding:16px 18px 18px;
+    display:flex; flex-direction:column; gap:10px;
+    box-shadow:var(--shadow);
+  }
+  .sblock-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .sblock-label{
+    font-family:var(--font-mono);
+    font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;
+  }
+  .sblock-num{ display:flex; align-items:baseline; gap:7px; }
+  .sblock-num b{
+    font-family:var(--font-display); font-size:62px; font-weight:400;
+    line-height:0.82; letter-spacing:-0.02em;
+  }
+  .sblock-num span{ font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+  .sblock-bar{
+    position:relative; height:7px; border-radius:999px;
+    background:var(--line);
+    margin-bottom:9px;
+  }
+  /* marcas de escala cada 20 puntos, como la regleta de un instrumento */
+  .sblock-bar::after{
+    content:''; position:absolute; left:0; right:0; top:calc(100% + 4px); height:4px;
+    background:repeating-linear-gradient(to right,
+      var(--line-strong) 0 1px, transparent 1px 20%);
+  }
+  .sblock-bar i{ position:absolute; top:0; bottom:0; left:0; border-radius:999px; transition:width .35s ease; }
+  .sblock-bar i.good{ background:var(--good); }
+  .sblock-bar i.neutral{ background:var(--neutral); }
+  .sblock-bar i.serious{ background:var(--serious); }
+  .sblock-bar i.critical{ background:var(--critical); }
+  .sblock-sub{ font-size:11.5px; color:var(--muted); line-height:1.45; }
+
+  .verdict{
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13px;
+    line-height:1.5;
+    border-left:3px solid var(--neutral);
+    background:var(--neutral-soft);
+    color:var(--ink-2);
+  }
+  .verdict b{ display:block; color:var(--ink); margin-bottom:2px; }
+  .verdict[data-kind="split"]{ border-left-color:var(--warning); background:rgba(250,178,25,0.10); }
+  .verdict[data-kind="agree-cheap"]{ border-left-color:var(--good); background:var(--good-soft); }
+  .verdict[data-kind="agree-rich"]{ border-left-color:var(--serious); background:var(--serious-soft); }
+
+  .group-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    margin:20px 0 -2px;
+    padding-bottom:7px;
+    border-bottom:1px solid var(--line-strong);
+  }
+  .group-head > span:first-child{
+    font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink); font-weight:700;
+  }
+  .group-meta{ font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+  .group-meta b{ color:var(--ink-2); }
+
+  @media (prefers-reduced-motion: reduce){ .sblock-bar i{ transition:none; } }
+
+  /* ---- composite 0-100 score ---- */
+  .score-wrap{
+    padding-top:18px; margin-top:2px; border-top:1px solid var(--line);
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .score-head{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .score-head .label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); font-weight:600; }
+  .score-num{ display:flex; align-items:baseline; gap:6px; }
+  .score-num b{ font-family:var(--font-mono); font-size:40px; font-weight:700; line-height:1; }
+  .score-num .of100{ font-family:var(--font-mono); font-size:15px; color:var(--muted); }
+  .score-bar{
+    position:relative; height:12px; border-radius:999px;
+    background:linear-gradient(to right,
+      var(--critical) 0%, var(--critical) 20%,
+      var(--serious) 20%, var(--serious) 40%,
+      var(--neutral) 40%, var(--neutral) 60%,
+      var(--good) 60%, var(--good) 100%);
+  }
+  .score-bar .marker{
+    position:absolute; top:-6px; width:3px; height:24px;
+    background:var(--ink); border-radius:2px; transform:translateX(-50%);
+  }
+  /* El numero grande de .score-num ya dice el valor; la etiqueta sobre
+     el marcador solo se solapaba con el titular. */
+  .score-scale{
+    display:flex; justify-content:space-between;
+    font-family:var(--font-mono); font-size:9.5px; color:var(--muted); margin-top:4px;
+  }
+  .score-note{ font-size:12.5px; color:var(--ink-2); line-height:1.55; margin:2px 0 0; }
+
+  .ind-list{ margin-top:8px; }
+  .ind-row{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    gap:6px 16px; padding:12px 0; border-top:1px dashed var(--line);
+  }
+  .ind-row:first-child{ border-top:1px solid var(--line); }
+  .ind-main{ flex:1 1 260px; min-width:0; }
+  .ind-name{ font-size:13.5px; font-weight:600; }
+  .ind-desc{ font-size:11.5px; color:var(--muted); line-height:1.4; margin-top:2px; }
+  .ind-val-wrap{ flex:0 0 150px; display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+  .ind-val-top{ display:flex; align-items:center; gap:8px; }
+  .ind-val{ font-family:var(--font-mono); font-size:13.5px; font-weight:600; white-space:nowrap; }
+  .ind-tag{ font-size:10.5px; font-weight:700; white-space:nowrap; }
+  .ind-tag.good{ color:var(--good); }
+  .ind-tag.neutral{ color:var(--neutral); }
+  .ind-tag.serious{ color:var(--serious); }
+  .ind-tag.critical{ color:var(--critical); }
+  .ind-bar{ width:120px; max-width:100%; height:6px; border-radius:999px; background:var(--line); position:relative; }
+  .ind-bar i{ position:absolute; top:0; bottom:0; left:0; border-radius:999px; }
+  .ind-bar i.good{ background:var(--good); }
+  .ind-bar i.neutral{ background:var(--neutral); }
+  .ind-bar i.serious{ background:var(--serious); }
+  .ind-bar i.critical{ background:var(--critical); }
+  .ind-bar i{ transition:width .35s ease; }
+
+  /* ---- etiquetas en vivo / diario ---- */
+  .tag-live, .tag-daily{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 6px;
+    border-radius:4px;
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    vertical-align:1px;
+  }
+  .tag-live{ background:var(--good-soft); color:var(--good); }
+  .tag-daily{ background:var(--neutral-soft); color:var(--neutral); }
+
+  .live-strip{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11.5px;
+    color:var(--muted);
+    padding-bottom:2px;
+  }
+  .live-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--muted); flex:none;
+  }
+  .live-strip[data-mode="live"]{ color:var(--good); }
+  .live-strip[data-mode="live"] .live-dot{ background:var(--good); animation:pulse 2.4s ease-in-out infinite; }
+  .live-strip[data-mode="wait"] .live-dot{ background:var(--warning); }
+  .live-strip[data-mode="warn"]{ color:var(--serious); }
+  .live-strip[data-mode="warn"] .live-dot{ background:var(--serious); }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+  @media (prefers-reduced-motion: reduce){
+    .live-strip[data-mode="live"] .live-dot{ animation:none; }
+    .ind-bar i{ transition:none; }
+  }
+
+  /* ---- dos mini-notas por accion ---- */
+  .mini-scores{ display:flex; flex-direction:column; gap:9px; }
+  .mini{ display:flex; flex-direction:column; gap:4px; }
+  .mini-top{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .mini-label{
+    font-family:var(--font-mono);
+    font-size:9.5px; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;
+  }
+  .mini-num{ font-family:var(--font-display); font-size:30px; font-weight:400; line-height:0.85; letter-spacing:-0.01em; }
+  .mini-bar{ position:relative; height:6px; border-radius:999px; background:var(--line); }
+  .mini-bar i{ position:absolute; top:0; bottom:0; left:0; border-radius:999px; }
+  .mini-bar i.good{ background:var(--good); }
+  .mini-bar i.neutral{ background:var(--neutral); }
+  .mini-bar i.serious{ background:var(--serious); }
+  .mini-bar i.critical{ background:var(--critical); }
+
+  .conflict-flag{
+    font-size:11.5px; font-weight:600;
+    color:var(--gold);
+    background:var(--gold-soft);
+    border-radius:6px;
+    padding:6px 9px;
+    line-height:1.35;
+  }
+
+  /* cabeceras de grupo dentro de la matriz */
+  table.matrix tr.grp th.metric{
+    font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    font-weight:700; color:var(--ink);
+    padding-top:14px; padding-bottom:5px;
+  }
+  table.matrix tr.grp td{ padding-top:14px; padding-bottom:5px; }
+  table.matrix tr.grp th, table.matrix tr.grp td{ border-top:1px solid var(--line-strong); }
+
+  /* ---- per-stock composite score ---- */
+  .stock-score{ display:flex; flex-direction:column; gap:7px; }
+  .ss-num{ display:flex; align-items:baseline; gap:5px; }
+  .ss-num b{ font-family:var(--font-mono); font-size:30px; font-weight:700; line-height:1; }
+  .ss-num span{ font-family:var(--font-mono); font-size:12px; color:var(--muted); }
+  .ss-bar{ position:relative; height:7px; border-radius:999px; background:var(--line); }
+  .ss-bar i{ position:absolute; top:0; bottom:0; left:0; border-radius:999px; }
+  .ss-bar i.good{ background:var(--good); }
+  .ss-bar i.neutral{ background:var(--neutral); }
+  .ss-bar i.serious{ background:var(--serious); }
+  .ss-bar i.critical{ background:var(--critical); }
+
+  /* ---- metrics matrix ---- */
+  .matrix-wrap{
+    overflow-x:auto;
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:4px 2px 2px;
+  }
+  table.matrix{
+    border-collapse:collapse;
+    width:100%;
+    min-width:660px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    font-variant-numeric:tabular-nums;
+  }
+  table.matrix th, table.matrix td{
+    padding:9px 10px;
+    text-align:center;
+    white-space:nowrap;
+  }
+  table.matrix thead th{
+    font-size:11px; font-weight:700; color:var(--ink);
+    border-bottom:1px solid var(--line-strong);
+    letter-spacing:0.03em;
+  }
+  table.matrix thead th:first-child{ text-align:left; }
+  table.matrix th.metric{
+    text-align:left;
+    font-family:var(--font-sans);
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-2);
+    white-space:normal;
+    min-width:190px;
+    line-height:1.35;
+    /* se queda fija al deslizar la tabla en horizontal */
+    position:sticky;
+    left:0;
+    z-index:2;
+    background:var(--raised);
+    box-shadow:1px 0 0 var(--line);
+    transition:color .15s ease, box-shadow .15s ease;
+  }
+  table.matrix thead th.metric{ z-index:3; }
+  table.matrix tbody tr:not(.grp):hover th.metric{
+    color:var(--ink);
+    box-shadow:2px 0 0 var(--gold);
+  }
+  @media (hover:hover){
+    .card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 2px 4px rgba(0,0,0,0.06), 0 14px 30px -14px rgba(0,0,0,0.30);
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+    .card:hover{ transform:none; }
+  }
+  table.matrix tbody tr + tr th, table.matrix tbody tr + tr td{ border-top:1px solid var(--line); }
+  table.matrix td{ color:var(--ink); font-weight:500; }
+  td.c-vgood{ background:rgba(12,163,12,0.20); }
+  td.c-good { background:rgba(12,163,12,0.10); }
+  td.c-mid  { background:rgba(107,110,102,0.11); }
+  td.c-bad  { background:rgba(236,131,90,0.17); }
+  td.c-vbad { background:rgba(208,59,59,0.16); }
+  :root:not([data-theme="light"]) td.c-mid{ background:rgba(163,165,156,0.13); }
+  :root:not([data-theme="light"]) td.c-vbad{ background:rgba(230,103,103,0.18); }
+  :root[data-theme="dark"] td.c-mid{ background:rgba(163,165,156,0.13); }
+  :root[data-theme="dark"] td.c-vbad{ background:rgba(230,103,103,0.18); }
+  table.matrix tr.total th, table.matrix tr.total td{
+    border-top:1px solid var(--line-strong);
+    font-weight:700;
+    font-size:13.5px;
+    padding-top:12px; padding-bottom:12px;
+  }
+  table.matrix tr.total th{ font-family:var(--font-sans); font-size:12.5px; color:var(--ink); }
+  .matrix-legend{
+    display:flex; flex-wrap:wrap; gap:8px 14px;
+    margin-top:10px; font-size:11.5px; color:var(--ink-2);
+  }
+  .matrix-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .swatch{ width:14px; height:14px; border-radius:4px; display:inline-block; border:1px solid var(--line); }
+  .swatch.c-vgood{ background:rgba(12,163,12,0.20); }
+  .swatch.c-good { background:rgba(12,163,12,0.10); }
+  .swatch.c-mid  { background:rgba(107,110,102,0.11); }
+  .swatch.c-bad  { background:rgba(236,131,90,0.17); }
+  .swatch.c-vbad { background:rgba(208,59,59,0.16); }
+
+  .scroll-hint{
+    display:none;
+    margin:0 0 8px;
+    font-size:11.5px;
+    color:var(--muted);
+  }
+
+  /* ---- movil ---- */
+  @media (max-width: 640px){
+    .wrap{ padding:26px 15px 48px; }
+    header.top{ margin-bottom:24px; padding-bottom:18px; }
+    .lede{ font-size:14px; }
+    .meta-row{ font-size:11px; gap:5px 12px; }
+
+    .btc-card{ padding:18px 16px; gap:16px; border-radius:12px; }
+    .btc-top{ align-items:flex-start; gap:12px; }
+    .btc-price{ text-align:left; }
+    .btc-price .num{ font-size:25px; }
+    .coin-badge{ width:36px; height:36px; font-size:14px; }
+    .btc-id .name{ font-size:17px; }
+
+    .score-num b{ font-size:33px; }
+    .sblock{ padding:14px 15px 16px; }
+    .sblock-num b{ font-size:48px; }
+    .mini-num{ font-size:26px; }
+    .card-head .co{ font-size:20px; }
+    .btc-id .name{ font-size:23px; }
+    .btc-price .num{ font-size:26px; }
+    .verdict{ font-size:12.5px; padding:11px 12px; }
+    .score-scale{ font-size:9px; }
+    .gauge-ticks{ font-size:9px; }
+    .gauge .boundary span{ font-size:9px; }
+
+    /* filas de indicador: valor debajo del nombre, no al lado */
+    .ind-row{ flex-direction:column; align-items:stretch; gap:9px; }
+    .ind-main{ flex:1 1 auto; }
+    .ind-val-wrap{
+      flex:1 1 auto;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .ind-val-top{ order:2; }
+    .ind-bar{ order:1; width:auto; flex:1 1 auto; }
+
+    .scroll-hint{ display:block; }
+    table.matrix{ font-size:11.5px; min-width:600px; }
+    table.matrix th.metric{ min-width:150px; font-size:11.5px; }
+    table.matrix th, table.matrix td{ padding:8px 8px; }
+
+    .method{ padding:17px 16px; font-size:13px; }
+    .context-heading{ flex-wrap:wrap; gap:2px 8px; }
+    .context-card.solo{ max-width:none; }
+  }
+
+  /* ---- stock grid ---- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(255px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:18px 18px 16px;
+    transition:transform .18s ease, box-shadow .18s ease;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .card-head{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  }
+  .card-head .co{ font-family:var(--font-display); font-size:22px; font-weight:400; line-height:1.1; letter-spacing:-0.01em; }
+  .card-head .tk{ font-family:var(--font-mono); font-size:11.5px; color:var(--muted); }
+  .price-line{
+    display:flex; align-items:baseline; gap:8px;
+    font-family:var(--font-mono);
+  }
+  .price-line .price{ font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .price-line .dev{ font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .dev.neg{ color:var(--good); }
+  .dev.mid{ color:var(--neutral); }
+  .dev.pos{ color:var(--serious); }
+  .dev.pos-hi{ color:var(--critical); }
+
+  .pe-line{
+    display:flex; gap:14px;
+    padding-top:8px; border-top:1px dashed var(--line);
+  }
+  .pe-line .stat{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+  .pe-line .stat .lbl{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .pe-line .stat b{
+    font-family:var(--font-mono); font-size:14px; color:var(--ink); font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .bar-track{
+    position:relative;
+    height:6px; border-radius:999px;
+    background:var(--line);
+    margin-top:2px;
+  }
+  .bar-zero{
+    position:absolute; top:-3px; bottom:-3px; width:1px;
+    background:var(--line-strong);
+  }
+  .bar-fill{
+    position:absolute; top:0; bottom:0;
+    border-radius:999px;
+  }
+  .bar-fill.good{ background:var(--good); }
+  .bar-fill.neutral{ background:var(--neutral); }
+  .bar-fill.serious{ background:var(--serious); }
+  .bar-fill.critical{ background:var(--critical); }
+
+  .card-note{
+    font-size:12px; color:var(--muted); line-height:1.45; margin:0;
+  }
+
+  /* ---- methodology / footer ---- */
+  .method{
+    background:var(--raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:20px 22px;
+    font-size:13.5px;
+    color:var(--ink-2);
+    line-height:1.6;
+  }
+  .method h3{ margin:0 0 6px; font-size:13px; color:var(--ink); }
+  .method .cols{ display:grid; grid-template-columns:1fr; gap:16px; }
+  @media (min-width:640px){ .method .cols{ grid-template-columns:1fr 1fr; } }
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px 16px;
+    margin-top:14px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--ink-2);
+  }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot.good{ background:var(--good); }
+  .dot.neutral{ background:var(--neutral); }
+  .dot.serious{ background:var(--serious); }
+  .dot.critical{ background:var(--critical); }
+
+  footer{
+    margin-top:28px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  footer a{ color:var(--gold); }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">
+      <span>Panel de valoración</span>
+      <span class="rule" aria-hidden="true"></span>
+      <button type="button" id="dense-toggle" class="dense-btn" aria-pressed="false">
+        <span class="dense-ico" aria-hidden="true"></span>
+        <span class="dense-label">Solo puntuaciones</span>
+      </button>
+    </div>
+    <h1>¿<em>Barato</em> o <em>caro</em> ahora mismo?</h1>
+    <p class="lede">Bitcoin y las Magníficas 7, cada uno con <b>dos notas de 0 a 100</b> — 100 es muy barato. Una mide el fondo; la otra, el corto plazo. No se promedian a propósito: cuando discrepan, esa discrepancia <i>es</i> la señal.</p>
+    <div class="meta-row">
+      <span>Datos al: <b>27 ago 2026</b></span>
+      <span>Se refresca: <b>automáticamente, 1 vez al día</b></span>
+      <span>No es asesoramiento financiero</span>
+    </div>
+  </header>
+
+  <section class="block">
+    <div class="block-title"><h2>Vista general</h2></div>
+    <div class="quad-card">
+      <div class="quad-head">
+        <h3>Los ocho, en un plano</h3>
+        <span>Cada activo situado por sus dos notas. Las esquinas opuestas son las historias interesantes.</span>
+      </div>
+        <svg class="quad" viewBox="0 0 570 400" role="img"
+             aria-label="Mapa de los ocho activos: valoración en el eje horizontal, momento en el vertical.">
+          <defs>
+            <clipPath id="qclip"><rect x="62" y="28" width="472" height="328" rx="4"/></clipPath>
+          </defs>
+          <g clip-path="url(#qclip)">
+            <rect x="298.0" y="28" width="236.0" height="164.0" class="q-good"/>
+            <rect x="62" y="192.0" width="236.0" height="164.0" class="q-bad"/>
+            <rect x="298.0" y="192.0" width="236.0" height="164.0" class="q-warn"/>
+            <rect x="62" y="28" width="236.0" height="164.0" class="q-warn"/>
+          </g>
+          <g class="q-grid">
+            <line x1="180" y1="28" x2="180" y2="356"/>
+            <line x1="62" y1="274" x2="534" y2="274"/>
+            <line x1="298" y1="28" x2="298" y2="356"/>
+            <line x1="62" y1="192" x2="534" y2="192"/>
+            <line x1="416" y1="28" x2="416" y2="356"/>
+            <line x1="62" y1="110" x2="534" y2="110"/>
+          </g>
+          <rect x="62" y="28" width="472" height="328" rx="4" class="q-frame"/>
+          <line x1="298.0" y1="28" x2="298.0" y2="356" class="q-mid"/>
+          <line x1="62" y1="192.0" x2="534" y2="192.0" class="q-mid"/>
+          <g class="q-quadlabel">
+            <text x="524" y="46" text-anchor="end">barata · tranquila</text>
+            <text x="524" y="347" text-anchor="end">barata · recalentada</text>
+            <text x="72" y="46">cara · castigada</text>
+            <text x="72" y="347">cara · caliente</text>
+          </g>
+          <g class="q-points">
+            <g class="q-pt good is-btc">
+              <circle id="q-btc" cx="444.3" cy="267.4" r="9"/>
+              <text id="q-btc-label" x="457.3" y="271.4" text-anchor="start">Bitcoin</text>
+            </g>
+            <g class="q-pt good">
+              <circle cx="477.4" cy="198.6" r="7"/>
+              <text x="464.4" y="202.6" text-anchor="end">NVDA</text>
+            </g>
+            <g class="q-pt good">
+              <circle cx="392.4" cy="149.4" r="7"/>
+              <text x="404.4" y="153.4" text-anchor="start">META</text>
+            </g>
+            <g class="q-pt good">
+              <circle cx="345.2" cy="205.1" r="7"/>
+              <text x="357.2" y="209.1" text-anchor="start">AMZN</text>
+            </g>
+            <g class="q-pt neutral">
+              <circle cx="316.9" cy="251.0" r="7"/>
+              <text x="328.9" y="255.0" text-anchor="start">MSFT</text>
+            </g>
+            <g class="q-pt neutral">
+              <circle cx="298.0" cy="175.6" r="7"/>
+              <text x="298.0" y="162.6" text-anchor="middle">GOOGL</text>
+            </g>
+            <g class="q-pt serious">
+              <circle cx="231.9" cy="211.7" r="7"/>
+              <text x="219.9" y="215.7" text-anchor="end">AAPL</text>
+            </g>
+            <g class="q-pt critical">
+              <circle cx="123.4" cy="126.4" r="7"/>
+              <text x="135.4" y="130.4" text-anchor="start">TSLA</text>
+            </g>
+          </g>
+          <g class="q-axis">
+            <text x="62" y="382">← cara</text>
+            <text x="298" y="382" text-anchor="middle">VALORACIÓN (fondo)</text>
+            <text x="534" y="382" text-anchor="end">barata →</text>
+            <text transform="translate(20,192) rotate(-90)" text-anchor="middle">MOMENTO (corto plazo)</text>
+          </g>
+        </svg>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title"><h2>Bitcoin</h2></div>
+    <div class="btc-card">
+      <div class="btc-top">
+        <div class="btc-id">
+          <div class="coin-badge">₿</div>
+          <div>
+            <div class="name">Bitcoin</div>
+            <div class="ticker">BTC · Dos lecturas, sin promediar</div>
+          </div>
+        </div>
+        <div class="btc-price">
+          <div class="num" id="btc-price">$78,940</div>
+          <div class="cap">precio spot</div>
+        </div>
+      </div>
+
+      <div class="live-strip" id="live-strip" data-mode="static">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span id="live-text">Cargando datos en vivo…</span>
+      </div>
+
+      <div class="dual">
+        <div class="sblock">
+          <div class="sblock-head">
+            <span class="sblock-label">Valoración</span>
+            <span class="status-pill good" id="val-pill">▼▼ Muy barata</span>
+          </div>
+          <div class="sblock-num"><b id="val-score" style="color:var(--good)">81</b><span>/ 100</span></div>
+          <div class="sblock-bar"><i class="good" id="val-bar" style="width:81%"></i></div>
+          <div class="sblock-sub">6 métricas de fondo: dónde está el precio respecto a lo que pagaron los tenedores y a su propia tendencia.</div>
+        </div>
+        <div class="sblock">
+          <div class="sblock-head">
+            <span class="sblock-label">Momento</span>
+            <span class="status-pill serious" id="mom-pill">▲ Cara</span>
+          </div>
+          <div class="sblock-num"><b id="mom-score" style="color:var(--serious)">27</b><span>/ 100</span></div>
+          <div class="sblock-bar"><i class="serious" id="mom-bar" style="width:27%"></i></div>
+          <div class="sblock-sub">2 métricas de corto plazo: si el precio viene de moverse rápido y cómo está de eufórico el mercado.</div>
+        </div>
+      </div>
+
+      <div class="verdict" id="verdict" data-kind="split">
+        <b id="verdict-title">Las dos lecturas se contradicen</b>
+        <span id="verdict-body">Barata por fundamentales, recalentada a corto plazo. Históricamente eso no ha sido una señal de venta, pero sí un mal momento para entrar de golpe.</span>
+      </div>
+
+      <div class="group-head"><span>Valoración</span><span class="group-meta">6 métricas · media <b id="val-avg">81</b></span></div>
+      <div class="ind-list">
+
+        <div class="ind-row" data-k="mvrv" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">MVRV Z-Score <span class="tag-daily">diario</span></div>
+            <div class="ind-desc">Capitalización de mercado vs. capitalización realizada (coste medio). Por debajo de 0 ha marcado suelos de ciclo.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">0.88</span><span class="ind-tag good">Muy barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:87%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="puell" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">Puell Multiple <span class="tag-live">en vivo</span></div>
+            <div class="ind-desc">Emisión diaria de BTC valorada en dólares vs. su media de 365 días. Por debajo de 0.5 refleja capitulación de mineros.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">0.96×</span><span class="ind-tag good">Muy barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:87%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="realized" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">Precio realizado <span class="tag-live">en vivo</span></div>
+            <div class="ind-desc">Coste medio de compra de todo el BTC en circulación (<span data-anchor="realized">$52,970</span>). Cotizar por debajo de ese precio marca zonas de acumulación de bajo riesgo.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">1.49×</span><span class="ind-tag good">Barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:76%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="rhodl" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">RHODL Ratio <span class="tag-daily">diario</span></div>
+            <div class="ind-desc">Compara monedas movidas hace poco con las inmóviles hace +1 año. Valores bajos = mercado dominado por holders de largo plazo.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">1,830</span><span class="ind-tag good">Barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:74%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="mayer" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">Mayer Multiple <span class="tag-live">en vivo</span></div>
+            <div class="ind-desc">Precio actual vs. su media móvil de 200 días (<span data-anchor="sma200">$69,140</span>). Por debajo de 0.8× señala un descuento significativo.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">1.14×</span><span class="ind-tag good">Barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:79%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="rainbow" data-g="val">
+          <div class="ind-main">
+            <div class="ind-name">Bandas de regresión logarítmica <span class="tag-live">en vivo</span></div>
+            <div class="ind-desc">Ajusta la ley de rendimientos decrecientes de BTC a largo plazo. Tocar la banda inferior marca el "suelo" teórico del modelo.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">"BUY!"</span><span class="ind-tag good">Muy barata</span></div>
+            <div class="ind-bar"><i class="good" style="width:88%"></i></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="group-head"><span>Momento</span><span class="group-meta">2 métricas · media <b id="mom-avg">27</b></span></div>
+      <div class="ind-list">
+
+        <div class="ind-row" data-k="rsi" data-g="mom">
+          <div class="ind-main">
+            <div class="ind-name">RSI (14 días) <span class="tag-live">en vivo</span></div>
+            <div class="ind-desc">Impulso del precio, método de Wilder sobre velas <b>diarias</b>. Por debajo de 30 indica agotamiento vendedor; por encima de 70, sobrecompra. Ojo: en un gráfico <b>semanal</b> verás un número bastante más bajo — la vela semanal suaviza el mismo movimiento. No son comparables.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">81.5</span><span class="ind-tag critical">Muy cara</span></div>
+            <div class="ind-bar"><i class="critical" style="width:19%"></i></div>
+          </div>
+        </div>
+
+        <div class="ind-row" data-k="fg" data-g="mom">
+          <div class="ind-main">
+            <div class="ind-name">Fear &amp; Greed Index <span class="tag-daily">diario</span></div>
+            <div class="ind-desc">Sentimiento de mercado a corto plazo. Miedo extremo (10–25) ha sido zona de acumulación para inversores de valor. El índice solo publica un valor al día.</div>
+          </div>
+          <div class="ind-val-wrap">
+            <div class="ind-val-top"><span class="ind-val">65</span><span class="ind-tag serious">Cara</span></div>
+            <div class="ind-bar"><i class="serious" style="width:35%"></i></div>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="btc-note" style="margin-top:14px;">Las dos notas <b>no se promedian a propósito</b>. Las seis métricas de valoración miden variantes de lo mismo — dónde está el precio frente a un ancla histórica — así que meterlas en una media con las dos de momento les daría el 75% del voto solo por ser más numerosas. Separadas, cuando discrepan lo ves; una nota única lo escondería.</p>
+    </div>
+
+    <div class="context-heading">
+      <h3>Otro contexto de Bitcoin</h3>
+      <span class="tag">— no entra en ninguna de las dos notas</span>
+    </div>
+    <div class="context-grid">
+      <div class="context-card solo">
+        <div class="ctx-head">
+          <span class="ctx-title">Liquidez global (M2)</span>
+        </div>
+        <span class="liq-pill">Muy por debajo de su "valor justo" por M2</span>
+        <p>Comparado con la oferta monetaria (M2) global, BTC cotiza cerca de sus mínimos históricos frente a esa relación — un desajuste que antes casi siempre se corrigió al alza.</p>
+        <p class="caveat">Ojo: varios analistas creen que esta correlación se rompió durante 2026 ("desacople"), así que es una lectura macro de fondo, no una señal fiable por sí sola.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title"><h2>Las Magníficas 7</h2><span class="group-meta">ordenadas por valoración</span></div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Nvidia</div><div class="tk">NVDA · $209.66</div></div>
+          <span class="status-pill good">▼▼ Muy barata</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">88</span></div>
+            <div class="mini-bar"><i class="good" style="width:88%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">48</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:48%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">Los mejores fundamentales del grupo con diferencia: PEG de 0.43, EV/EBITDA un 39% bajo su mediana de 10 años y ROIC del 103%. El momento ni ayuda ni estorba.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Meta</div><div class="tk">META · $576.14</div></div>
+          <span class="status-pill good">▼ Barata</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">70</span></div>
+            <div class="mini-bar"><i class="good" style="width:70%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">63</span></div>
+            <div class="mini-bar"><i class="good" style="width:63%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">La única donde las dos lecturas coinciden en barata: múltiplos por debajo de su historia y, además, la única del grupo cotizando bajo su SMA200.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Amazon</div><div class="tk">AMZN · $260.28</div></div>
+          <span class="status-pill good">▼ Barata</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--good)">60</span></div>
+            <div class="mini-bar"><i class="good" style="width:60%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">46</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:46%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">Barata por múltiplos (EV/EBITDA un 58% bajo su mediana), pero su flujo de caja libre es <b>negativo</b> por el capex en IA y el ROIC del 12% es de los más bajos.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Microsoft</div><div class="tk">MSFT · $496.37</div></div>
+          <span class="status-pill neutral">● Justa</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">54</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:54%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--serious)">32</span></div>
+            <div class="mini-bar"><i class="serious" style="width:32%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">Valoración razonable, pero cero descuento técnico: cotiza un 15% sobre su SMA200 y con el RSI más alto del grupo (66). El fondo dice justa, el corto dice cara.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Alphabet</div><div class="tk">GOOGL · $342.00</div></div>
+          <span class="status-pill neutral">● Justa</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--neutral)">50</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:50%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">55</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:55%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">Ni fría ni caliente en ninguna de las dos lecturas. EV/EBITDA un 29% bajo su mediana, pero PEG cerca de 2 y forward P/E por encima de su media histórica.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Apple</div><div class="tk">AAPL · $313.45</div></div>
+          <span class="status-pill serious">▲ Cara</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--serious)">36</span></div>
+            <div class="mini-bar"><i class="serious" style="width:36%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--neutral)">44</span></div>
+            <div class="mini-bar"><i class="neutral" style="width:44%"></i></div>
+          </div>
+        </div>
+        <p class="card-note">Negocio magnífico a precio exigente: ROIC del 102%, pero PEG de 3.21, EV/EBITDA un 31% sobre su mediana y apenas +4% de recorrido según el consenso.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><div class="co">Tesla</div><div class="tk">TSLA · $345.82</div></div>
+          <span class="status-pill critical">▲▲ Muy cara</span>
+        </div>
+        <div class="mini-scores">
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Valoración</span><span class="mini-num" style="color:var(--critical)">13</span></div>
+            <div class="mini-bar"><i class="critical" style="width:13%"></i></div>
+          </div>
+          <div class="mini">
+            <div class="mini-top"><span class="mini-label">Momento</span><span class="mini-num" style="color:var(--good)">70</span></div>
+            <div class="mini-bar"><i class="good" style="width:70%"></i></div>
+          </div>
+        </div>
+        <div class="conflict-flag">⚠ Las dos lecturas se contradicen</div>
+        <p class="card-note">El caso más claro de contradicción: la más cara del grupo por fundamentales (PEG 6.71, ROIC 5%), pero un 14% por debajo de su SMA200 — barata solo en sentido técnico.</p>
+      </div>
+
+    </div>
+
+    <div class="context-heading"><h3>Las 8 métricas, una a una</h3><span class="tag">— el valor real en cada celda; el color es su puntuación 0–100</span></div>
+    <p class="scroll-hint">Desliza la tabla horizontalmente para ver todas las empresas →</p>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th class="metric">Métrica</th>
+            <th>NVDA</th><th>META</th><th>AMZN</th><th>MSFT</th><th>GOOGL</th><th>AAPL</th><th>TSLA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><th class="metric">Valoración</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr>
+            <th class="metric">PEG Ratio<br><span style="color:var(--muted);font-size:11px">&lt; 1.0 = descuento vs. su crecimiento</span></th>
+            <td class="c-vgood">0.43</td><td class="c-vgood">0.93</td><td class="c-good">1.35</td><td class="c-mid">1.56</td><td class="c-mid">1.98</td><td class="c-vbad">3.21</td><td class="c-vbad">6.71</td>
+          </tr>
+          <tr>
+            <th class="metric">Forward P/E vs. su media 5a<br><span style="color:var(--muted);font-size:11px">negativo = cotiza por debajo de su media</span></th>
+            <td class="c-vgood">−69%</td><td class="c-good">−23%</td><td class="c-vgood">−55%</td><td class="c-good">−20%</td><td class="c-bad">+15%</td><td class="c-bad">+12%</td><td class="c-bad">+24%</td>
+          </tr>
+          <tr>
+            <th class="metric">FCF Yield<br><span style="color:var(--muted);font-size:11px">&gt; 4–5% = genera mucha caja vs. su precio</span></th>
+            <td class="c-mid">2.50%</td><td class="c-mid">2.79%</td><td class="c-vbad">−0.41%</td><td class="c-bad">1.82%</td><td class="c-bad">1.27%</td><td class="c-mid">3.00%</td><td class="c-vbad">0.42%</td>
+          </tr>
+          <tr>
+            <th class="metric">EV/EBITDA vs. su mediana 10a<br><span style="color:var(--muted);font-size:11px">negativo = mínimos de su rango histórico</span></th>
+            <td class="c-vgood">−39%</td><td class="c-good">−25%</td><td class="c-vgood">−58%</td><td class="c-good">−12%</td><td class="c-good">−29%</td><td class="c-vbad">+31%</td><td class="c-vbad">+50%</td>
+          </tr>
+          <tr>
+            <th class="metric">Consenso de analistas<br><span style="color:var(--muted);font-size:11px">potencial hasta el precio objetivo medio</span></th>
+            <td class="c-vgood">+46%</td><td class="c-good">+31%</td><td class="c-good">+26%</td><td class="c-bad">+15%</td><td class="c-good">+25%</td><td class="c-vbad">+4%</td><td class="c-bad">+13%</td>
+          </tr>
+          <tr>
+            <th class="metric">ROIC<br><span style="color:var(--muted);font-size:11px">&gt; 15–20% confirma ventaja competitiva</span></th>
+            <td class="c-vgood">103%</td><td class="c-good">25%</td><td class="c-bad">12%</td><td class="c-good">26%</td><td class="c-good">25%</td><td class="c-vgood">102%</td><td class="c-vbad">5%</td>
+          </tr>
+          <tr class="grp"><th class="metric">Momento</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr>
+            <th class="metric">Precio vs. SMA 200 días<br><span style="color:var(--muted);font-size:11px">negativo = zona de soporte estructural</span></th>
+            <td class="c-mid">+7%</td><td class="c-good">−8%</td><td class="c-mid">+9%</td><td class="c-bad">+15%</td><td class="c-mid">+2%</td><td class="c-bad">+11%</td><td class="c-vgood">−14%</td>
+          </tr>
+          <tr>
+            <th class="metric">RSI (14 días)<br><span style="color:var(--muted);font-size:11px">&lt; 40 indica agotamiento vendedor</span></th>
+            <td class="c-mid">49</td><td class="c-mid">49</td><td class="c-mid">51</td><td class="c-bad">66</td><td class="c-mid">45</td><td class="c-mid">51</td><td class="c-mid">51</td>
+          </tr>
+          <tr class="total">
+            <th class="metric">Valoración</th>
+            <td class="c-vgood" style="color:var(--good)">88</td><td class="c-good" style="color:var(--good)">70</td><td class="c-good" style="color:var(--good)">60</td><td class="c-mid" style="color:var(--neutral)">54</td><td class="c-mid" style="color:var(--neutral)">50</td><td class="c-bad" style="color:var(--serious)">36</td><td class="c-vbad" style="color:var(--critical)">13</td>
+          </tr>
+          <tr class="total">
+            <th class="metric">Momento</th>
+            <td class="c-mid" style="color:var(--neutral)">48</td><td class="c-good" style="color:var(--good)">63</td><td class="c-mid" style="color:var(--neutral)">46</td><td class="c-bad" style="color:var(--serious)">32</td><td class="c-mid" style="color:var(--neutral)">55</td><td class="c-mid" style="color:var(--neutral)">44</td><td class="c-good" style="color:var(--good)">70</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="matrix-legend">
+      <span><span class="swatch c-vgood"></span> Muy barata (80–100)</span>
+      <span><span class="swatch c-good"></span> Barata (60–80)</span>
+      <span><span class="swatch c-mid"></span> Justa (40–60)</span>
+      <span><span class="swatch c-bad"></span> Cara (20–40)</span>
+      <span><span class="swatch c-vbad"></span> Muy cara (0–20)</span>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="method">
+      <div class="cols">
+        <div>
+          <h3>Cómo se mide Bitcoin</h3>
+          <b>Dos notas, no una.</b> <i>Valoración</i> promedia 6 métricas de fondo (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple y bandas de regresión); <i>Momento</i> promedia 2 de corto plazo (RSI y Fear &amp; Greed). Cada métrica se normaliza de 0 (muy cara) a 100 (muy barata) según sus umbrales históricos. No se promedian entre sí: las seis de valoración miden variantes de lo mismo, así que en una media única se llevarían el 75% del voto solo por ser más numerosas — y cuando las dos lecturas discrepan, esa discrepancia <i>es</i> la información.
+        </div>
+        <div>
+          <h3>Cómo se miden las acciones</h3>
+          <b>Dos notas, igual que Bitcoin.</b> <i>Valoración</i> promedia 6 métricas de fondo (PEG, forward P/E vs. su media 5a, FCF Yield, EV/EBITDA vs. su mediana 10a, consenso de analistas y ROIC); <i>Momento</i> promedia 2 técnicas (precio vs. SMA200 y RSI). El ranking va por valoración, que es la que responde a "¿está barata?". Cuatro de las ocho comparan cada empresa <b>contra su propia historia</b>, no contra las demás, porque negocios distintos tienen múltiplos "normales" distintos.
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="dot good"></span> Barata / muy barata: 60–100</span>
+        <span><span class="dot neutral"></span> Justa: 40–60</span>
+        <span><span class="dot serious"></span> Cara: 20–40</span>
+        <span><span class="dot critical"></span> Muy cara: 0–20</span>
+      </div>
+      <p style="margin:14px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.5;">
+        <b style="color:var(--ink-2)">Dos sustituciones honestas.</b> Las <i>revisiones de beneficios</i> por empresa no se publican en fuentes gratuitas, así que en su lugar se usa el <i>consenso de analistas</i> (potencial hasta el precio objetivo medio), que captura la misma idea: si los analistas ven recorrido, la valoración está por detrás de las expectativas. Y el RSI es el de <i>14 días</i> en vez del semanal, por el mismo motivo de disponibilidad — es la misma señal, algo más ruidosa. El benchmark del forward P/E es la media de 5 años del P/E <i>trailing</i>, ya que no existe histórico gratuito del forward P/E; en empresas con beneficios muy volátiles (Amazon, Nvidia, Tesla) esa media está inflada y exagera el descuento, razón de más para no fiarse de una sola métrica.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <b>Acciones:</b> StockAnalysis (PEG, forward P/E, FCF Yield, ROIC, SMA200, consenso de analistas), GuruFocus (EV/EBITDA y su mediana de 10 años), FullRatio (media 5a del P/E) y Barchart (RSI 14d). <b>Bitcoin:</b> Newhedge (MVRV Z-Score, Puell Multiple, precio realizado, RHODL Ratio, Mayer Multiple, liquidez global M2), Alternative.me (Fear &amp; Greed Index), Investtech (RSI semanal), Finbold (bandas de regresión logarítmica) y TradingView/Cointelegraph (Bitcoin vs M2). Cotizaciones del 26–27 de agosto de 2026. Algunas métricas (RSI semanal de BTC, banda de regresión) se toman de la lectura pública más reciente disponible más que de una API exacta. Esta página es informativa, no es una recomendación de inversión.
+  </footer>
+
+<script>
+/* Modo denso: esconde toda la prosa y deja solo las cifras.
+   La eleccion se recuerda en este navegador; si el almacenamiento
+   esta bloqueado (ventana privada, ajustes del navegador) el boton
+   sigue funcionando, solo que sin memoria entre visitas. */
+(function () {
+  'use strict';
+  var KEY = 'barato-o-caro:dense';
+  var btn = document.getElementById('dense-toggle');
+  if (!btn) return;
+  var label = btn.querySelector('.dense-label');
+
+  function apply(on) {
+    document.body.setAttribute('data-dense', on ? 'on' : 'off');
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (label) label.textContent = on ? 'Ver explicaciones' : 'Solo puntuaciones';
+  }
+
+  var saved = false;
+  try { saved = localStorage.getItem(KEY) === 'on'; } catch (e) {}
+  apply(saved);
+
+  btn.addEventListener('click', function () {
+    var on = btn.getAttribute('aria-pressed') !== 'true';
+    apply(on);
+    try { localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+  });
+})();
+</script>
+
+<script>
+/* ------------------------------------------------------------------
+   Bitcoin en vivo via el conector Crypto.com.
+   La pagina se renderiza entera con los valores ancla del HTML antes
+   de que esto corra: si no hay conector, no hay permiso, o falla,
+   lo que ya esta en pantalla sigue siendo correcto (datos diarios).
+
+   Dos notas separadas a proposito: las 6 metricas de VALORACION miden
+   variantes de lo mismo, asi que promediarlas con las 2 de MOMENTO les
+   daria el 75% del voto solo por ser mas numerosas.
+   ------------------------------------------------------------------ */
+(function () {
+  'use strict';
+
+  // Anclas refrescadas cada noche por la tarea programada.
+  var ANCHOR = {
+    price:         78943,
+    sma200:        69140,
+    realizedPrice: 52970,
+    puell:         0.96,
+    puellAtPrice:  78943,
+    rsiFallback:   81.5
+  };
+
+  // Puntuaciones de las metricas que no tienen version intradia.
+  var DAILY = { mvrv: 87.4, rhodl: 73.8, fg: 35.0 };
+
+  // Umbrales del rainbow chart, de mas barata a mas cara.
+  var BANDS = [
+    ['Fire Sale',                59136],
+    ['"BUY!"',                   79604],
+    ['"Accumulate"',            102629],
+    ['"Still cheap"',           132355],
+    ['"HODL!"',                 173036],
+    ['"Is this a bubble?"',     220071],
+    ['"FOMO intensifies"',      281541],
+    ['"Sell. Seriously, SELL!"',365907],
+    ['"Maximum Bubble"',        491369]
+  ];
+  var BAND_SCORES = [100, 87.5, 75, 62.5, 50, 37.5, 25, 12.5, 0];
+
+  var SERVER = 'Crypto.com';
+  var PAIR   = { instrument_name: 'BTC_USDT' };
+  var CANDLE = { instrument_name: 'BTC_USDT', timeframe: '1D' };
+
+  function clamp(v) { return Math.max(0, Math.min(100, v)); }
+
+  // Mismas formulas que usa la tarea nocturna. No tocar una sin la otra.
+  function scoreMayer(m)    { return clamp(100 * (1 - (m - 0.8) / 1.6)); }
+  function scoreRealized(r) { return clamp(100 * (1 - (r - 1) / 2)); }
+  function scorePuell(p)    { return clamp(100 * (1 - (p - 0.5) / 3.5)); }
+  function scoreRsi(r)      { return clamp(100 - r); }
+
+  function bandIndex(price) {
+    for (var i = 0; i < BANDS.length; i++) if (price < BANDS[i][1]) return i;
+    return BANDS.length - 1;
+  }
+
+  function classify(s) {
+    if (s >= 80) return { label: 'Muy barata', icon: '▼▼', cls: 'good' };
+    if (s >= 60) return { label: 'Barata',     icon: '▼',  cls: 'good' };
+    if (s >= 40) return { label: 'Justa',      icon: '●',  cls: 'neutral' };
+    if (s >= 20) return { label: 'Cara',       icon: '▲',  cls: 'serious' };
+    return            { label: 'Muy cara',   icon: '▲▲', cls: 'critical' };
+  }
+
+  // RSI de Wilder. closesDesc viene mas-reciente-primero (como el conector).
+  function rsiWilder(closesDesc, period, liveLast) {
+    if (!closesDesc || closesDesc.length < period + 1) return null;
+    var c = closesDesc.slice();
+    if (typeof liveLast === 'number' && isFinite(liveLast)) c[0] = liveLast;
+    c.reverse();
+    var gains = [], losses = [], i, d;
+    for (i = 1; i < c.length; i++) {
+      d = c[i] - c[i - 1];
+      gains.push(d > 0 ? d : 0);
+      losses.push(d < 0 ? -d : 0);
+    }
+    var ag = 0, al = 0;
+    for (i = 0; i < period; i++) { ag += gains[i]; al += losses[i]; }
+    ag /= period; al /= period;
+    for (i = period; i < gains.length; i++) {
+      ag = (ag * (period - 1) + gains[i]) / period;
+      al = (al * (period - 1) + losses[i]) / period;
+    }
+    if (al === 0) return 100;
+    return 100 - 100 / (1 + ag / al);
+  }
+
+  function fmtUsd(n) {
+    try { return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+    catch (e) { return '$' + Math.round(n); }
+  }
+
+  function $(sel) { return document.querySelector(sel); }
+  function row(k) { return document.querySelector('.ind-row[data-k="' + k + '"]'); }
+
+  function paintRow(k, valueText, score) {
+    var el = row(k); if (!el) return;
+    var c = classify(score);
+    var v = el.querySelector('.ind-val');
+    var t = el.querySelector('.ind-tag');
+    var b = el.querySelector('.ind-bar i');
+    if (v) v.textContent = valueText;
+    if (t) { t.textContent = c.label; t.className = 'ind-tag ' + c.cls; }
+    if (b) { b.className = c.cls; b.style.width = score.toFixed(0) + '%'; }
+  }
+
+  function cssVar(cls) { return 'var(--' + cls + ')'; }
+
+  function paintScore(prefix, score) {
+    var c = classify(score);
+    var n = $('#' + prefix + '-score');
+    var bar = $('#' + prefix + '-bar');
+    var pill = $('#' + prefix + '-pill');
+    var avg = $('#' + prefix + '-avg');
+    var rounded = Math.round(score);
+    if (n) { n.textContent = String(rounded); n.style.color = cssVar(c.cls); }
+    if (bar) { bar.className = c.cls; bar.style.width = clamp(score).toFixed(1) + '%'; }
+    if (pill) { pill.textContent = c.icon + ' ' + c.label; pill.className = 'status-pill ' + c.cls; }
+    if (avg) avg.textContent = String(rounded);
+  }
+
+  // Una diferencia grande no es lo mismo que una contradiccion: 93 contra 54
+  // es "muy barata y momento neutral", no un desacuerdo. Manda la categoria.
+  function bucket(s) { return s >= 60 ? 'cheap' : (s < 40 ? 'rich' : 'mid'); }
+
+  function paintVerdict(val, mom) {
+    var box = $('#verdict'), t = $('#verdict-title'), b = $('#verdict-body');
+    if (!box || !t || !b) return;
+    var bv = bucket(val), bm = bucket(mom), kind, title, body;
+
+    if (bv === 'cheap' && bm === 'rich') {
+      kind  = 'split';
+      title = 'Las dos lecturas se contradicen';
+      body  = 'Barata por fundamentales, recalentada a corto plazo. Históricamente eso no ha sido una señal de venta, pero sí un mal momento para entrar de golpe.';
+    } else if (bv === 'rich' && bm === 'cheap') {
+      kind  = 'split';
+      title = 'Las dos lecturas se contradicen';
+      body  = 'Cara por fundamentales, pero con el sentimiento hundido. Puede haber rebote a corto sin que el fondo esté barato.';
+    } else if (bv === 'cheap' && bm === 'cheap') {
+      kind  = 'agree-cheap';
+      title = 'Las dos lecturas coinciden: barata';
+      body  = 'Fundamentales y momento apuntan en la misma dirección. Es la combinación que históricamente ha marcado los suelos de ciclo.';
+    } else if (bv === 'rich' && bm === 'rich') {
+      kind  = 'agree-rich';
+      title = 'Las dos lecturas coinciden: cara';
+      body  = 'Ni el fondo ni el corto plazo apoyan comprar aquí. Es la combinación que ha precedido a las correcciones fuertes.';
+    } else {
+      kind = 'neutral';
+      var side = { cheap: 'barata', rich: 'cara', mid: 'en zona neutral' };
+      if (bv === 'mid' && bm === 'mid') {
+        title = 'Sin señal fuerte';
+        body  = 'Ninguna de las dos lecturas está en un extremo. La mayor parte del tiempo el mercado está justo aquí.';
+      } else if (bm === 'mid') {
+        title = 'Solo manda el fondo';
+        body  = 'La valoración dice ' + side[bv] + ' y el momento no dice nada en particular. La señal, si la hay, viene de los fundamentales.';
+      } else {
+        title = 'Solo manda el corto plazo';
+        body  = 'La valoración está en zona neutral y el momento dice ' + side[bm] + '. Es una señal táctica, no de fondo.';
+      }
+    }
+    box.setAttribute('data-kind', kind);
+    t.textContent = title;
+    b.textContent = body;
+  }
+
+  var state = { price: null, closes: null, storedAt: null };
+
+  function render() {
+    var price = state.price;
+    if (typeof price !== 'number' || !isFinite(price) || price <= 0) return;
+
+    var mayer    = price / ANCHOR.sma200;
+    var realized = price / ANCHOR.realizedPrice;
+    var puell    = ANCHOR.puell * (price / ANCHOR.puellAtPrice);
+    var bi       = bandIndex(price);
+    var rsi      = rsiWilder(state.closes, 14, price);
+    if (rsi === null) rsi = ANCHOR.rsiFallback;
+
+    var sMayer    = scoreMayer(mayer);
+    var sRealized = scoreRealized(realized);
+    var sPuell    = scorePuell(puell);
+    var sBand     = BAND_SCORES[bi];
+    var sRsi      = scoreRsi(rsi);
+
+    paintRow('mayer',    mayer.toFixed(2) + '×',    sMayer);
+    paintRow('realized', realized.toFixed(2) + '×', sRealized);
+    paintRow('puell',    puell.toFixed(2) + '×',    sPuell);
+    paintRow('rainbow',  BANDS[bi][0],              sBand);
+    paintRow('rsi',      rsi.toFixed(1),            sRsi);
+
+    var priceEl = $('#btc-price');
+    if (priceEl) priceEl.textContent = fmtUsd(price);
+
+    var valoracion = (DAILY.mvrv + sPuell + sRealized + DAILY.rhodl + sMayer + sBand) / 6;
+    var momento    = (sRsi + DAILY.fg) / 2;
+
+    paintScore('val', valoracion);
+    paintScore('mom', momento);
+    paintVerdict(valoracion, momento);
+    moveQuadPoint(valoracion, momento);
+  }
+
+  // El punto de BTC en el mapa de cuadrantes viaja con el precio.
+  // Mismas coordenadas que usa el generador del SVG.
+  function moveQuadPoint(val, mom) {
+    var dot = $('#q-btc'), lab = $('#q-btc-label');
+    if (!dot) return;
+    var X0 = 62, X1 = 534, Y0 = 28, Y1 = 356;
+    var x = X0 + clamp(val) / 100 * (X1 - X0);
+    var y = Y1 - clamp(mom) / 100 * (Y1 - Y0);
+    dot.setAttribute('cx', x.toFixed(1));
+    dot.setAttribute('cy', y.toFixed(1));
+    if (lab) {
+      // la etiqueta salta al otro lado si el punto se acerca al borde derecho
+      var right = x > X1 - 62;
+      lab.setAttribute('x', (x + (right ? -13 : 13)).toFixed(1));
+      lab.setAttribute('y', (y + 4).toFixed(1));
+      lab.setAttribute('text-anchor', right ? 'end' : 'start');
+    }
+  }
+
+  function setStrip(mode, text) {
+    var strip = $('#live-strip'), t = $('#live-text');
+    if (strip) strip.setAttribute('data-mode', mode);
+    if (t) t.textContent = text;
+  }
+
+  function stamp() {
+    var when = state.storedAt ? new Date(state.storedAt) : null;
+    if (!when) return 'En vivo · Crypto.com';
+    var hh = String(when.getHours()).padStart(2, '0');
+    var mm = String(when.getMinutes()).padStart(2, '0');
+    return 'En vivo · Crypto.com · ' + hh + ':' + mm;
+  }
+
+  // Cada codigo tiene un arreglo distinto; un unico "algo fallo" esconderia
+  // justo la accion que arreglaria la pagina.
+  function explain(err) {
+    var code = (err && err.code) || 'upstream_error';
+    switch (code) {
+      case 'needs_reauth':
+        return ['warn', 'Reconecta Crypto.com en claude.ai → Ajustes → Conectores. Mostrando los datos diarios.'];
+      case 'server_not_connected':
+        return ['warn', 'Añade el conector Crypto.com en claude.ai → Ajustes → Conectores para ver Bitcoin en vivo.'];
+      case 'selection_required':
+        return ['warn', 'Tienes más de un conector llamado Crypto.com: elige cuál usar cuando claude.ai te lo pregunte.'];
+      case 'blocked_by_policy':
+      case 'approval_required':
+        return ['warn', 'Tu organización no permite este conector aquí. Mostrando los datos diarios.'];
+      case 'server_unavailable':
+        return ['wait', 'Crypto.com no responde ahora mismo. Se reintenta solo; mientras, estos son los últimos datos buenos.'];
+      case 'rate_limited':
+        return ['wait', 'Demasiadas peticiones seguidas. Se reanuda en unos segundos.'];
+      case 'not_granted':
+      case 'capability_disabled':
+      case 'capability_removed':
+        return ['static', 'Esta vista no tiene acceso a conectores. Datos del refresco diario.'];
+      case 'not_in_manifest':
+        return ['static', 'Esta página no tiene permiso para esa llamada. Datos del refresco diario.'];
+      case 'tool_error':
+        return ['warn', 'Crypto.com rechazó la petición' +
+          (err && err.message ? ': ' + err.message : '.') + ' Mostrando los datos diarios.'];
+      default:
+        return ['warn', 'No se pudo actualizar en vivo. Estos son los datos del refresco diario.'];
+    }
+  }
+
+  function parseCandles(payload) {
+    var d = payload && payload.data;
+    if (!Array.isArray(d) || !d.length) return null;
+    var out = [];
+    for (var i = 0; i < d.length; i++) {
+      var v = parseFloat(d[i] && d[i].close);
+      if (isFinite(v)) out.push(v);
+    }
+    return out.length ? out : null;
+  }
+
+  setStrip('static', 'Datos del refresco diario');
+
+  /* ==================================================================
+     FUENTE B — APIs publicas de Coinbase.
+     Solo se usa FUERA de claude.ai (Netlify, GitHub Pages, archivo
+     local). Dentro del artifact la CSP bloquea cualquier host externo,
+     asi que alli manda el conector.
+     Ventaja de esta via: 365 velas diarias, suficientes para calcular
+     la media de 200 dias de verdad en vez de usar la anclada.
+     ================================================================== */
+  // Dos fuentes: si una no responde o su CORS falla, se prueba la siguiente.
+  var PRICE_SOURCES = [
+    {
+      name: 'Coinbase',
+      url:  'https://api.coinbase.com/v2/prices/BTC-USD/spot',
+      read: function (j) { return parseFloat(j && j.data && j.data.amount); }
+    },
+    {
+      name: 'Kraken',
+      url:  'https://api.kraken.com/0/public/Ticker?pair=XBTUSD',
+      read: function (j) {
+        var r = j && j.result; if (!r) return NaN;
+        var k = Object.keys(r)[0];
+        return parseFloat(r[k] && r[k].c && r[k].c[0]);
+      }
+    }
+  ];
+  var PUB_CANDLES = 'https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400';
+  var pubTimers = [];
+
+  function hhmm(d) {
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  async function pubPrice() {
+    for (var i = 0; i < PRICE_SOURCES.length; i++) {
+      var src = PRICE_SOURCES[i];
+      try {
+        var r = await fetch(src.url, { cache: 'no-store' });
+        if (!r.ok) continue;
+        var j = await r.json();
+        var p = src.read(j);
+        if (!isFinite(p) || p <= 0) continue;
+        state.price = p;
+        state.storedAt = Date.now();
+        render();
+        setStrip('live', 'En vivo · ' + src.name + ' · ' + hhmm(new Date()));
+        return;
+      } catch (e) { /* probamos la siguiente fuente */ }
+    }
+    if (state.price) setStrip('wait', 'Las fuentes de precio no responden; se mantienen los últimos datos buenos.');
+    else setStrip('warn', 'No se pudo contactar con ninguna fuente de precio. Mostrando los datos del refresco diario.');
+  }
+
+  async function pubCandles() {
+    try {
+      var r = await fetch(PUB_CANDLES, { cache: 'no-store' });
+      if (!r.ok) return;
+      var a = await r.json();
+      if (!Array.isArray(a) || a.length < 60) return;
+      // formato [tiempo, low, high, open, close, volumen], mas reciente primero
+      var closes = [];
+      for (var i = 0; i < a.length; i++) {
+        var c = parseFloat(a[i] && a[i][4]);
+        if (isFinite(c)) closes.push(c);
+      }
+      if (closes.length < 60) return;
+      state.closes = closes;
+      if (closes.length >= 200) {
+        var s = 0;
+        for (var k = 0; k < 200; k++) s += closes[k];
+        ANCHOR.sma200 = s / 200;   // media real de 200 dias, ya no la anclada
+      }
+      render();
+    } catch (e) { /* el RSI se queda con lo que hubiera */ }
+  }
+
+  function startPublic() {
+    // Abierta como archivo (file://, content://…) el navegador da origen
+    // nulo y rechaza toda peticion a otro dominio antes de enviarla.
+    // No tiene arreglo desde el codigo: hay que servirla desde una web.
+    var scheme = 'https:';
+    try { scheme = location.protocol; } catch (e) {}
+    if (scheme !== 'http:' && scheme !== 'https:') {
+      setStrip('warn', 'Datos del refresco diario · para el precio en vivo abre la página desde su dirección web, no como archivo descargado.');
+      return;
+    }
+    setStrip('wait', 'Conectando con Coinbase…');
+    pubCandles();
+    pubPrice();
+    pubTimers.push(setInterval(function () { if (!document.hidden) pubPrice(); }, 45000));
+    pubTimers.push(setInterval(function () { if (!document.hidden) pubCandles(); }, 600000));
+    // al volver a la pestaña, refresco inmediato en vez de esperar al tick
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) pubPrice();
+    });
+  }
+
+  (async function () {
+    // Dos causas muy distintas que antes daban el mismo mensaje:
+    //  a) no hay window.claude  -> la pagina vive fuera de claude.ai
+    //  b) hay window.claude pero use('mcp') devuelve null -> el visor
+    //     no habilita conectores en esta vista (p. ej. movil)
+    var hasBridge = false;
+    try { hasBridge = !!(window.claude && typeof window.claude.use === 'function'); }
+    catch (e) { hasBridge = false; }
+
+    if (!hasBridge) {
+      startPublic();   // Netlify, GitHub Pages o archivo local
+      return;
+    }
+
+    var mcp = null;
+    try { mcp = await window.claude.use('mcp'); } catch (e) { mcp = null; }
+
+    if (!mcp) {
+      setStrip('warn', 'Datos del refresco diario · esta vista no habilita conectores. Prueba a abrir la página en el ordenador.');
+      return;
+    }
+
+    setStrip('wait', 'Conectando con Crypto.com…');
+
+    // Aviso temprano si el conector no esta en la cuenta de quien mira.
+    try {
+      var lt = await mcp.listTools();
+      var found = ((lt && lt.servers) || []).some(function (s) { return s.server === SERVER; });
+      if (!found) {
+        setStrip('warn', 'Añade el conector Crypto.com en claude.ai → Ajustes → Conectores para ver Bitcoin en vivo.');
+      }
+    } catch (e) { /* los watchTool reportan su propio error igualmente */ }
+
+    var gotPrice = false;
+
+    // Velas: alimentan el RSI. Cambian despacio, basta cada 5 minutos.
+    try {
+      mcp.watchTool(SERVER, 'get_candlestick', CANDLE, function (ev) {
+        if (ev.type === 'data') {
+          var c = parseCandles(ev.result && ev.result.payload);
+          if (c) { state.closes = c; render(); }
+        }
+        // Un fallo aqui solo degrada el RSI al valor diario: el resto sigue vivo.
+      }, { refetchInterval: 300000 });
+    } catch (e) { /* el RSI se queda con su ancla */ }
+
+    // Precio: el corazon de todo. 30s es el suelo que permite la plataforma.
+    try {
+      mcp.watchTool(SERVER, 'get_ticker', PAIR, function (ev) {
+        if (ev.type === 'data') {
+          var p = ev.result && ev.result.payload;
+          var last = parseFloat(p && p.last);
+          if (isFinite(last) && last > 0) {
+            state.price = last;
+            state.storedAt = (ev.result.cache && ev.result.cache.storedAt) || null;
+            gotPrice = true;
+            render();
+            setStrip('live', stamp());
+          }
+          return;
+        }
+        var info = explain(ev.error);
+        // Un fallo transitorio no borra un precio ya pintado.
+        if (gotPrice && info[0] === 'wait') { setStrip('wait', info[1]); return; }
+        setStrip(info[0], info[1]);
+      }, { refetchInterval: 30000 });
+    } catch (e) {
+      setStrip('static', 'Datos del refresco diario');
+    }
+  })();
+})();
+</script>
+
+</div>
