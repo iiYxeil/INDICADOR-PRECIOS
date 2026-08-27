@@ -1,20 +1,21 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>¿Lleno o espero?</title>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Diésel">
-<meta name="application-name" content="Diésel">
-<meta name="theme-color" content="#e8eae3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0a0c08" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c08'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle'%3E%E2%9B%BD%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Diésel" name="apple-mobile-web-app-title"/>
+<meta content="Diésel" name="application-name"/>
+<meta content="#e8eae3" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#0a0c08" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c08'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle'%3E%E2%9B%BD%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
     color-scheme: light;
@@ -175,67 +176,55 @@
 </head>
 <body>
 <div class="wrap">
-
-  <header>
-    <div class="eyebrow"><span>Gasóleo A · Tudela</span><span class="rule"></span></div>
-    <div class="meta">
-      <span>Datos del: <b id="fecha">—</b></span>
-      <span>Estaciones: <b id="n-est">—</b></span>
-      <span>Brent: <b id="brent">—</b> <i id="brent-fecha"></i></span>
-      <span>Euro: <b id="fx">—</b></span>
-    </div>
-  </header>
-
-  <section class="hero" id="prevision" data-tono="neutro">
-    <span class="et">Recorrido pendiente · 1–2 semanas</span>
-    <div class="veredicto" id="prevision-titulo">Acumulando</div>
-    <b class="cifra" id="prevision-valor">—</b>
-    <p id="prevision-texto">Necesita unas dos semanas de histórico para poder estimar.</p>
-  </section>
-
-  <div class="precios">
-    <div class="precio"><b id="precio-min">—</b><span>más barata hoy</span></div>
-    <div class="precio sec"><b id="precio-med">—</b><span>mediana Tudela</span></div>
-    <div class="precio sec"><b id="precio-prov">—</b><span>mediana Navarra</span></div>
-  </div>
-
-  <div class="chips">
-    <div class="chip" id="tendencia" data-tono="neutro">
-      <span class="et">Ya ocurrido · 7 días</span>
-      <b id="tendencia-valor">—</b>
-      <span id="tendencia-texto">acumulando</span>
-    </div>
-  </div>
-
-  <div id="grafico-caja">
-    <h2>Evolución de la más barata</h2>
-    <svg id="grafico" viewBox="0 0 300 110" aria-hidden="true"></svg>
-    <div class="g-pie"><span id="g-desde"></span><span id="g-rango"></span><span id="g-hasta"></span></div>
-  </div>
-
-  <h2>Las más baratas de Tudela</h2>
-  <div id="lista-estaciones">
-    <div class="est"><b class="p">—</b><span class="txt"><span class="n">Sin datos todavía</span><span class="d">Se rellena en la próxima actualización</span></span></div>
-  </div>
-  <p class="pista">Toca una gasolinera para abrirla en el mapa.</p>
-
-  <details>
-    <summary>Cómo se calcula</summary>
-    <div class="metodo">
-      <p><b>El precio es un hecho.</b> Sale de la API oficial del Ministerio, que publica a diario lo que cobra cada gasolinera de España. No es una estimación ni una media de portal: es el precio declarado.</p>
-      <p><b>El recorrido pendiente es una estimación.</b> El surtidor español sigue al crudo con una o dos semanas de retraso, y de forma asimétrica — sube rápido y baja despacio. Se compara cuánto se ha movido el crudo en euros con cuánto ha llegado ya al surtidor, y la diferencia es lo que debería llegar:</p>
-      <p><code>pendiente = (Δcrudo €/l × 1,21 IVA × 0,80) − Δsurtidor</code></p>
-      <p>El 0,80 es porque históricamente al surtidor llega en torno al 80% del movimiento del crudo, no todo. Crudo: Brent diario (FRED), que se publica con algunos días de retraso — por eso su fecha aparece arriba. Cambio euro-dólar: Banco Central Europeo.</p>
-      <p><b>Y sus límites.</b> Es una tendencia estadística, no una ley. Una huelga en una refinería, un cambio de impuestos o un salto brusco del euro la rompen. Navarra además tiene régimen fiscal propio, así que su precio no sigue exactamente al del resto de España.</p>
-    </div>
-  </details>
-
-  <footer>
+<header>
+<div class="eyebrow"><span>Gasóleo A · Tudela</span><span class="rule"></span></div>
+<div class="meta">
+<span>Datos del: <b id="fecha">27/08/2026</b></span>
+<span>Estaciones: <b id="n-est">18 en Tudela · 235 en Navarra</b></span>
+<span>Brent: <b id="brent">—</b> <i id="brent-fecha"></i></span>
+<span>Euro: <b id="fx">1.1645 $/€</b></span>
+</div>
+</header>
+<section class="hero" data-tono="neutro" id="prevision">
+<span class="et">Recorrido pendiente · 1–2 semanas</span>
+<div class="veredicto" id="prevision-titulo">Acumulando</div>
+<b class="cifra" id="prevision-valor">—</b>
+<p id="prevision-texto">Necesita unas dos semanas de histórico para poder estimar. (faltan datos de hoy)</p>
+</section>
+<div class="precios">
+<div class="precio"><b id="precio-min">1.667 €</b><span>más barata hoy</span></div>
+<div class="precio sec"><b id="precio-med">1.722 €</b><span>mediana Tudela</span></div>
+<div class="precio sec"><b id="precio-prov">1.789 €</b><span>mediana Navarra</span></div>
+</div>
+<div class="chips">
+<div class="chip" data-tono="neutro" id="tendencia">
+<span class="et">Ya ocurrido · 7 días</span>
+<b id="tendencia-valor">—</b>
+<span id="tendencia-texto">acumulando histórico</span>
+</div>
+</div>
+<div id="grafico-caja">
+<h2>Evolución de la más barata</h2>
+<svg aria-hidden="true" id="grafico" viewbox="0 0 300 110"></svg>
+<div class="g-pie"><span id="g-desde"></span><span id="g-rango"></span><span id="g-hasta"></span></div>
+</div>
+<h2>Las más baratas de Tudela</h2>
+<div id="lista-estaciones"><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=E.S.+BARDENAS%2C+POLIGONO+LA+SERNA+-+CALLE+B+-+A68%28N232%29+SALIDA+91%2C+S%2FN%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.667 €</b><span class="txt"><span class="n">E.S. BARDENAS</span><span class="d">POLIGONO LA SERNA - CALLE B - A68(N232) SALIDA 91, S/N</span></span><span class="go">›</span></a><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=GM+OIL%2C+CARRER+CANAL+DE+LODOSA%2C+S%2FN%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.669 €</b><span class="txt"><span class="n">GM OIL</span><span class="d">CARRER CANAL DE LODOSA, S/N</span></span><span class="go">›</span></a><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=TUDEFRIGO+LOGISTICA%2C+VIAL+RIOJA%2C+3%2C1%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.685 €</b><span class="txt"><span class="n">TUDEFRIGO LOGISTICA</span><span class="d">VIAL RIOJA, 3,1</span></span><span class="go">›</span></a><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=PLENERGY%2C+AVENIDA+ZARAGOZA%2C+S%2FN%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.689 €</b><span class="txt"><span class="n">PLENERGY</span><span class="d">AVENIDA ZARAGOZA, S/N</span></span><span class="go">›</span></a><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=PETROPRIX%2C+CALLE+CANAL+DE+TAUSTE%2C+290%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.689 €</b><span class="txt"><span class="n">PETROPRIX</span><span class="d">CALLE CANAL DE TAUSTE, 290</span></span><span class="go">›</span></a><a class="est" href="https://www.google.com/maps/search/?api=1&amp;query=BONAREA%2C+CALLE+CANAL+DE+MA%C3%91ERU%2C+332%2C+Tudela" rel="noopener" target="_blank"><b class="p">1.693 €</b><span class="txt"><span class="n">BONAREA</span><span class="d">CALLE CANAL DE MAÑERU, 332</span></span><span class="go">›</span></a></div>
+<p class="pista">Toca una gasolinera para abrirla en el mapa.</p>
+<details>
+<summary>Cómo se calcula</summary>
+<div class="metodo">
+<p><b>El precio es un hecho.</b> Sale de la API oficial del Ministerio, que publica a diario lo que cobra cada gasolinera de España. No es una estimación ni una media de portal: es el precio declarado.</p>
+<p><b>El recorrido pendiente es una estimación.</b> El surtidor español sigue al crudo con una o dos semanas de retraso, y de forma asimétrica — sube rápido y baja despacio. Se compara cuánto se ha movido el crudo en euros con cuánto ha llegado ya al surtidor, y la diferencia es lo que debería llegar:</p>
+<p><code>pendiente = (Δcrudo €/l × 1,21 IVA × 0,80) − Δsurtidor</code></p>
+<p>El 0,80 es porque históricamente al surtidor llega en torno al 80% del movimiento del crudo, no todo. Crudo: Brent diario (FRED), que se publica con algunos días de retraso — por eso su fecha aparece arriba. Cambio euro-dólar: Banco Central Europeo.</p>
+<p><b>Y sus límites.</b> Es una tendencia estadística, no una ley. Una huelga en una refinería, un cambio de impuestos o un salto brusco del euro la rompen. Navarra además tiene régimen fiscal propio, así que su precio no sigue exactamente al del resto de España.</p>
+</div>
+</details>
+<footer>
     Fuentes: <a href="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/">Ministerio para la Transición Ecológica</a> (precios), <a href="https://fred.stlouisfed.org/series/DCOILBRENTEU">FRED</a> (Brent), <a href="https://frankfurter.dev">Frankfurter</a> / BCE (euro-dólar). Se actualiza solo cada noche. Página informativa, no es asesoramiento.
   </footer>
-
 </div>
-
 <script>
 /* Grafico de la evolucion del precio. Lee el historico que deja el robot cada
    noche. Si no existe todavia, o hay menos de tres dias, la caja no aparece:
