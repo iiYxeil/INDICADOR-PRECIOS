@@ -19,12 +19,11 @@ _STATS = """<table>
 # Con los tres "... Change" presentes: si la busqueda no es exacta,
 # "Target Low Change" puede ganarle a "Target Change".
 _FORECAST = """<table>
-<tr><th>Target Price</th><td>${obj}</td></tr>
-<tr><th>Target Change</th><td>{chg}%</td></tr>
-<tr><th>Target Low</th><td>${low}</td></tr>
-<tr><th>Target Low Change</th><td>-21.67%</td></tr>
-<tr><th>Target High</th><td>${high}</td></tr>
-<tr><th>Target High Change</th><td>+124.11%</td></tr>
+<tr><th>Target</th><th>Change</th></tr>
+<tr><td>Price</td><td>${obj}</td><td>{chg}%</td></tr>
+<tr><td>Low</td><td>${low}</td><td>-21.67%</td></tr>
+<tr><td>High</td><td>${high}</td><td>+124.11%</td></tr>
+<tr><td>Median</td><td>${obj}</td><td>{chg}%</td></tr>
 </table>"""
 
 # ticker -> (precio, peg, fwd, fcf, roic, sma200, ev, rsi, objetivo)

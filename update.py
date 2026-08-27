@@ -148,30 +148,31 @@ def _tabla_stockanalysis(html):
         celdas = tr.find_all(["td", "th"])
         if len(celdas) >= 2:
             k = _norm(celdas[0].get_text(" ", strip=True))
-            v = celdas[1].get_text(" ", strip=True)
+            vs = [c.get_text(" ", strip=True) for c in celdas[1:]]
             if k and k not in out:
-                out[k] = v
+                out[k] = vs      # TODAS las celdas restantes
     return out
 
 
 _VETADAS = ("target", "/", "sales", "book", "earnings ratio", "52-week", "52 week")
 
 
-def _exacto(tabla, etiqueta):
+def _exacto(tabla, etiqueta, idx=0):
     """Coincidencia exacta de etiqueta. Imprescindible cuando conviven
     'Target Change', 'Target Low Change' y 'Target High Change': con
     busqueda por 'contiene' cualquiera de las tres puede ganar."""
-    return tabla.get(_norm(etiqueta))
+    vs = tabla.get(_norm(etiqueta))
+    return vs[idx] if vs and idx < len(vs) else None
 
 
-def _busca(tabla, *claves):
+def _busca(tabla, *claves, idx=0):
     """Primera fila cuya etiqueta contenga la clave, ignorando parecidos
     peligrosos: 'Price Target' o 'Price/Sales' no son 'Current Price'."""
     for c in claves:
         cn = _norm(c)
         for k, v in tabla.items():
             if cn in k and not any(_norm(x) in k for x in _VETADAS if _norm(x) not in cn):
-                return v
+                return v[idx] if idx < len(v) else None
     return None
 
 
@@ -195,8 +196,15 @@ def recoge_accion(ticker, get):
     try:
         t2 = _tabla_stockanalysis(f"https://stockanalysis.com/stocks/{ticker}/forecast/"
                                   if False else get(f"https://stockanalysis.com/stocks/{ticker}/forecast/"))
-        obj = _num(_exacto(t2, "target price"), 0.5, 100000)
-        chg = _num(_exacto(t2, "target change"), -95, 500)
+        # Matriz:  (vacio) | Target | Change
+        #          Price    | $317   | +37.98%
+        # La etiqueta de la fila es solo "Price"; el objetivo esta en la
+        # primera celda y el potencial en la segunda.
+        obj = _num(_exacto(t2, "price", 0), 0.5, 100000)
+        chg = _num(_exacto(t2, "price", 1), -95, 500)
+        if obj is None or chg is None:      # por si vuelven al formato plano
+            obj = obj if obj is not None else _num(_exacto(t2, "target price"), 0.5, 100000)
+            chg = chg if chg is not None else _num(_exacto(t2, "target change"), -95, 500)
         if obj is not None and chg is not None:
             d["objetivo"] = obj
             d["consenso"] = chg                    # el potencial, ya en %
@@ -204,9 +212,8 @@ def recoge_accion(ticker, get):
         else:
             # Diagnostico en vez de adivinanzas: si la web cambia de
             # formato, el registro dice que etiquetas encontro de verdad.
-            vistas = [k for k in t2 if "target" in k or "price" in k][:10]
-            aviso(f"{ticker}: falta 'target price' o 'target change'. "
-                  f"Etiquetas con target/price vistas: {vistas or list(t2)[:10]}")
+            vistas = {k: v[:3] for k, v in list(t2.items())[:8]}
+            aviso(f"{ticker}: no se pudo leer objetivo/potencial. Tabla vista: {vistas}")
     except Exception as e:
         aviso(f"{ticker}: prevision no leida ({e})")
 
