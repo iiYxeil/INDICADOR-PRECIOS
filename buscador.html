@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="2026-09-19-d">
+<meta name="app-version" content="2026-09-19-f">
 <title>Buscador · ¿Barato o Caro?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,6 +78,7 @@
     padding:5px 11px; border-radius:999px; cursor:pointer;
     color:var(--ink-2); background:var(--raised); border:1px solid var(--line);
   }
+  a.chip{ text-decoration:none; display:inline-block; }
   .chip:hover{ color:var(--ink); border-color:var(--line-strong); }
 
   #msg{ margin:0; font-size:14px; line-height:1.45; color:var(--ink-2); }
@@ -158,9 +159,9 @@
   <header class="top">
     <div class="eyebrow"><span>Buscador</span><span class="rule"></span><a href="index.html">← Panel</a></div>
     <h1>Cualquier acción, <em>¿barata o cara?</em></h1>
-    <form class="search" id="f" autocomplete="off">
+    <form class="search" id="f" method="get" autocomplete="off">
       <label class="sr" for="tk">Ticker</label>
-      <input id="tk" name="tk" type="text" inputmode="text" enterkeyhint="search" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" placeholder="META, NVDA, BRK.B…" required>
+      <input id="tk" name="t" type="text" inputmode="text" enterkeyhint="search" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" placeholder="META, NVDA, BRK.B…" required>
       <button class="go" id="go" type="submit">Analizar</button>
     </form>
     <p id="msg" role="status" aria-live="polite"></p>
@@ -563,13 +564,19 @@
 
   function pinta(msg, err) { var m = $('msg'); m.textContent = msg || ''; m.className = err ? 'err' : ''; }
 
+  var ESPERA_MS = 25000;   // si el Worker no responde en 25 s, se da por fallida la lectura
+
   function pide(base, tk, p) {
-    return fetch(base + '/?tk=' + encodeURIComponent(tk) + '&p=' + p).then(function (r) {
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctl ? setTimeout(function () { ctl.abort(); }, ESPERA_MS) : null;
+    function fin() { if (timer) clearTimeout(timer); }
+    return fetch(base + '/?tk=' + encodeURIComponent(tk) + '&p=' + p, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
+      fin();
       if (r.status === 404) { var e = new Error('404'); e.noTicker = true; throw e; }
       if (r.status === 403) { var e2 = new Error('403'); e2.origen = true; throw e2; }
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text();
-    });
+    }, function (err) { fin(); throw err; });
   }
 
   function recientes() { try { return JSON.parse(lsGet(LS_RECENT) || '[]').filter(function (x) { return TICKER_RE.test(x); }).slice(0, 8); } catch (e) { return []; } }
@@ -585,24 +592,27 @@
     if (!l.length) return;
     box.appendChild(h('span', { class: 'lab' }, 'Recientes'));
     l.forEach(function (tk) {
-      var b = h('button', { class: 'chip', type: 'button' }, tk);
-      b.addEventListener('click', function () { $('tk').value = tk; busca(tk); });
-      box.appendChild(b);
+      box.appendChild(h('a', { class: 'chip', href: '?t=' + encodeURIComponent(tk) }, tk));
     });
   }
 
-  var ultimo = '';   // ultimo ticker buscado
+  var ultimo = '';   // ticker de la pagina que se esta viendo
 
-  function busca(entrada) {
+  function limpia(entrada) {
     var tk = String(entrada || '').replace(/[\s$]/g, '').toUpperCase();
     // En el movil, tocar el campo suele dejar el ticker anterior dentro y lo que
     // escribes se pega detras ("METAAMZN"). Si el texto no es un ticker valido pero
-    // empieza por el anterior, se busca lo que se ha escrito despues.
+    // empieza por el anterior, se toma lo que se ha escrito despues.
     if (!TICKER_RE.test(tk) && ultimo && tk.length > ultimo.length && tk.indexOf(ultimo) === 0 &&
         TICKER_RE.test(tk.slice(ultimo.length))) {
       tk = tk.slice(ultimo.length);
-      $('tk').value = tk;
     }
+    return tk;
+  }
+
+  function busca(entrada) {
+    var tk = limpia(entrada);
+    $('tk').value = tk;
     $('out').hidden = true;
     if (!TICKER_RE.test(tk)) { pinta('Escribe el ticker exacto, por ejemplo META o BRK.B.', true); return; }
     var base = workerBase();
@@ -623,21 +633,26 @@
         var e = rs[0].e;
         pinta(e && e.origen
           ? 'Tu Worker rechaza esta web. Añade su dirección a ORIGENES_PERMITIDOS en worker.js.'
-          : 'No he podido contactar con tu Worker. Comprueba que la URL es correcta y que el Worker está publicado.', true);
+          : (e && e.name === 'AbortError'
+              ? 'El Worker tarda demasiado en responder. Vuelve a intentarlo en un momento.'
+              : 'No he podido contactar con tu Worker. Comprueba que la URL es correcta y que el Worker está publicado.'), true);
         return;
       }
       var pag = {};
       nombres.forEach(function (p, i) { pag[p] = rs[i].ok ? rs[i].t : null; });
       var r = analiza(pag, tk);
-      pinta('');
       dibuja(r);
+      pinta('Listo: ' + tk + ' · ' + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
       ultimo = tk;
       recuerda(tk);
       // En el movil la cabecera ocupa mucho: baja hasta el resultado.
       if (window.matchMedia('(max-width: 640px)').matches) {
         try { $('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e3) {}
       }
-      try { history.replaceState(null, '', '?t=' + encodeURIComponent(tk)); } catch (e2) {}
+    }).catch(function (err) {
+      if (mio !== seq) return;
+      $('go').disabled = false;
+      pinta('Algo ha fallado al buscar ' + tk + ': ' + (err && err.message ? err.message : 'error desconocido'), true);
     });
   }
 
@@ -650,6 +665,20 @@
     b.addEventListener('click', function () { lsDel(LS_WORKER); $('setup').hidden = false; pintaPie(); });
     p.appendChild(b);
   }
+
+  // Cualquier fallo de la pagina se muestra en pantalla en vez de quedarse callado.
+  function avisaError(txt) {
+    var m = document.getElementById('msg');
+    if (m) { m.textContent = 'Error en la página: ' + txt; m.className = 'err'; }
+    var g = document.getElementById('go');
+    if (g) g.disabled = false;
+  }
+  window.addEventListener('error', function (ev) { avisaError(ev && ev.message ? ev.message : 'desconocido'); });
+  window.addEventListener('unhandledrejection', function (ev) {
+    avisaError(ev && ev.reason && ev.reason.message ? ev.reason.message : 'desconocido');
+  });
+
+  window.addEventListener('pageshow', function (ev) { if (ev.persisted) location.reload(); });
 
   window.BC = { analiza: analiza, clasifica: clasifica, S: S, tabla: tabla, num: num };
 
@@ -676,7 +705,13 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     compruebaVersion();
-    $('f').addEventListener('submit', function (e) { e.preventDefault(); busca($('tk').value); });
+    // Cada busqueda es una navegacion normal a ?t=TICKER (el formulario es GET): asi la
+    // pagina arranca limpia cada vez y funciona igual en cualquier navegador.
+    $('f').addEventListener('submit', function (e) {
+      var tk = limpia($('tk').value);
+      if (!TICKER_RE.test(tk)) { e.preventDefault(); pinta('Escribe el ticker exacto, por ejemplo META o BRK.B.', true); return; }
+      $('tk').value = tk;
+    });
     // Al tocar el campo se selecciona lo que hubiera, para que escribir lo sustituya.
     $('tk').addEventListener('focus', function () {
       var el = this;
@@ -696,8 +731,14 @@
     $('setup').hidden = !!workerBase() ? true : false;
     pintaPie();
     pintaRecientes();
-    var q = new URLSearchParams(location.search).get('t');
-    if (q) { $('tk').value = q.toUpperCase(); busca(q); }
+    var sp = new URLSearchParams(location.search);
+    var q = sp.get('t') || sp.get('tk');
+    if (q) {
+      var q0 = String(q).replace(/[\s$]/g, '').toUpperCase();
+      ultimo = q0;
+      $('tk').value = q0;
+      busca(q0);
+    }
   });
 })();
 </script>
