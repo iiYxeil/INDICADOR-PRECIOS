@@ -79,9 +79,12 @@
   }
   .chip:hover{ color:var(--ink); border-color:var(--line-strong); }
 
-  #msg{ margin:0 0 18px; font-size:14px; color:var(--ink-2); min-height:0; }
+  #msg{ margin:0; font-size:14px; line-height:1.45; color:var(--ink-2); }
   #msg:empty{ display:none; }
   #msg.err{ color:var(--critical); font-weight:600; }
+  details.how summary{ cursor:pointer; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  details.how summary:hover{ color:var(--ink-2); }
+  details.how .lede{ margin-top:8px; }
   .panel{ background:var(--raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:18px; margin-bottom:18px; }
   .panel h2{ margin:0 0 6px; font-family:var(--font-display); font-weight:400; font-size:24px; }
   .panel p{ margin:0 0 12px; color:var(--ink-2); font-size:14px; line-height:1.5; }
@@ -135,7 +138,13 @@
   footer{ margin-top:34px; padding-top:18px; border-top:1px solid var(--line-strong); font-size:12.5px; line-height:1.6; color:var(--muted); max-width:78ch; }
   footer p{ margin:0 0 8px; }
   footer button.lnk{ background:none; border:0; padding:0; font:inherit; color:var(--gold); cursor:pointer; text-decoration:underline; }
+  table.matrix th.metric span.refm{ display:none; }
   @media (max-width:640px){
+    table.matrix{ min-width:0; }
+    table.matrix th.metric{ min-width:0; }
+    table.matrix th.refh, table.matrix td.ref{ display:none; }
+    table.matrix th.metric span.refm{ display:block; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-2); margin-top:4px; line-height:1.4; }
+    table.matrix td.val{ min-width:78px; }
     .wrap{ padding:26px 15px 48px; }
     .mini-scores{ gap:12px; } .mini-num{ font-size:32px; }
     .card-head .co{ font-size:24px; }
@@ -148,13 +157,17 @@
   <header class="top">
     <div class="eyebrow"><span>Buscador</span><span class="rule"></span><a href="index.html">← Panel</a></div>
     <h1>Cualquier acción, <em>¿barata o cara?</em></h1>
-    <p class="lede">Escribe el ticker exacto y te calculo lo mismo que a las Magníficas 7: ocho métricas repartidas en dos notas de 0 a 100 (100 es muy barato). Una mide el fondo (valoración); la otra, el corto plazo (momento). No se promedian: cuando discrepan, esa discrepancia es la señal.</p>
     <form class="search" id="f" autocomplete="off">
       <label class="sr" for="tk">Ticker</label>
-      <input id="tk" name="tk" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="10" placeholder="META, NVDA, BRK.B…" required>
+      <input id="tk" name="tk" type="text" inputmode="text" enterkeyhint="search" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" placeholder="META, NVDA, BRK.B…" required>
       <button class="go" id="go" type="submit">Analizar</button>
     </form>
+    <p id="msg" role="status" aria-live="polite"></p>
     <div class="recent" id="recent"></div>
+    <details class="how" id="how">
+      <summary>Cómo funciona</summary>
+      <p class="lede">Escribe el ticker exacto y te calculo lo mismo que a las Magníficas 7: ocho métricas repartidas en dos notas de 0 a 100 (100 es muy barato). Una mide el fondo (valoración); la otra, el corto plazo (momento). No se promedian: cuando discrepan, esa discrepancia es la señal.</p>
+    </details>
   </header>
 
   <section class="panel" id="setup" hidden>
@@ -167,7 +180,6 @@
     </form>
   </section>
 
-  <p id="msg" role="status" aria-live="polite"></p>
   <section id="out" hidden></section>
 
   <footer>
@@ -204,6 +216,20 @@
     roic: function (p) { return clamp(100 * (p / 40)); },
     sma:  function (d) { return clamp(100 * (1 - (d + 0.20) / 0.50)); },
     rsi:  function (v) { return clamp(100 - v); }
+  };
+  // Referencias historicas del panel (index.html), copiadas de config.py, para que
+  // las 7 Magnificas salgan aqui exactamente igual que alli: media de P/E a 5 anos
+  // (fullratio.com) y mediana de EV/EBITDA a 10 anos (gurufocus.com). Si algun dia
+  // las revisas en config.py, cambialas tambien aqui. El resto de tickers usan los
+  // cierres anuales de stockanalysis.com.
+  var REF_PANEL = {
+    NVDA:  { pe: 61.79,  ev: 42.73 },
+    META:  { pe: 23.20,  ev: 17.72 },
+    AMZN:  { pe: 62.97,  ev: 27.23 },
+    MSFT:  { pe: 31.26,  ev: 19.56 },
+    GOOGL: { pe: 22.61,  ev: 17.37 },
+    AAPL:  { pe: 30.11,  ev: 20.82 },
+    TSLA:  { pe: 146.62, ev: 74.36 }
   };
   var VAL_KEYS = ['peg', 'fwd', 'fcf', 'ev', 'cons', 'roic'];
   var MOM_KEYS = ['sma', 'rsi'];
@@ -293,6 +319,9 @@
         if (evs.length >= 3) { ref.ev = mediana(evs); ref.evN = evs.length; }
       }
     }
+
+    var panel = REF_PANEL[ticker];
+    if (panel) { ref.pe = panel.pe; ref.ev = panel.ev; ref.panel = true; }
 
     // ---- analistas y precio ----
     if (paginas.forecast) {
@@ -402,9 +431,9 @@
     var d = r.d, ref = r.ref;
     switch (k) {
       case 'peg':  return { v: d.peg.toFixed(2), r: '' };
-      case 'fwd':  return { v: sgn(dev(d.fwd, ref.pe), 0) + '%', r: 'P/E fwd ' + d.fwd.toFixed(1) + ' · media ' + ref.pe.toFixed(1) + ' (' + ref.peN + ' cierres anuales)' };
+      case 'fwd':  return { v: sgn(dev(d.fwd, ref.pe), 0) + '%', r: 'P/E fwd ' + d.fwd.toFixed(1) + ' · media ' + ref.pe.toFixed(1) + (ref.panel ? ' (5 años, como en el panel)' : ' (' + ref.peN + ' cierres anuales)') };
       case 'fcf':  return { v: d.fcf.toFixed(2).replace('-', '−') + '%', r: '' };
-      case 'ev':   return { v: sgn(dev(d.ev, ref.ev), 0) + '%', r: 'EV/EBITDA ' + d.ev.toFixed(1) + ' · mediana ' + ref.ev.toFixed(1) + ' (' + ref.evN + ' cierres anuales)' };
+      case 'ev':   return { v: sgn(dev(d.ev, ref.ev), 0) + '%', r: 'EV/EBITDA ' + d.ev.toFixed(1) + ' · mediana ' + ref.ev.toFixed(1) + (ref.panel ? ' (10 años, como en el panel)' : ' (' + ref.evN + ' cierres anuales)') };
       case 'cons': return { v: sgn(d.cons, 0) + '%', r: 'objetivo medio ' + usd(d.obj) };
       case 'roic': return { v: d.roic.toFixed(0).replace('-', '−') + '%', r: '' };
       case 'sma':  return { v: sgn(dev(r.precio, d.sma), 0) + '%', r: 'precio ' + usd(r.precio) + (ref.precioAprox ? ' (cierre previo)' : '') + ' · SMA 200 ' + usd(d.sma) };
@@ -481,16 +510,20 @@
     var tb = h('tbody');
     FILAS.forEach(function (f) {
       if (f.grupo) { tb.appendChild(h('tr', { class: 'grp' }, h('th', { colspan: '3' }, f.grupo))); return; }
-      var th = h('th', { class: 'metric', scope: 'row' }, f.et, h('span', null, f.ayuda));
-      var td, ref;
+      var td, ref, refTxt;
       if (r.sc[f.k] != null) {
         var t = texto(r, f.k);
         td = h('td', { class: 'val ' + clasifica(r.sc[f.k]).cel }, t.v);
-        ref = h('td', { class: 'ref' }, t.r);
+        refTxt = t.r;
       } else {
         td = h('td', { class: 'val na' }, '—');
-        ref = h('td', { class: 'ref' }, r.why[f.k] || 'no disponible');
+        refTxt = r.why[f.k] || 'no disponible';
       }
+      ref = h('td', { class: 'ref' }, refTxt);
+      // En el movil no hay sitio para la tercera columna: la referencia pasa
+      // a una linea bajo el nombre de la metrica.
+      var th = h('th', { class: 'metric', scope: 'row' }, f.et, h('span', null, f.ayuda),
+        refTxt ? h('span', { class: 'refm' }, refTxt) : null);
       tb.appendChild(h('tr', null, th, td, ref));
     });
     [['Valoración', r.val], ['Momento', r.mom]].forEach(function (p) {
@@ -500,7 +533,7 @@
         h('td', { class: 'ref' }, cc ? cc.et : '')));
     });
     var table = h('table', { class: 'matrix' },
-      h('thead', null, h('tr', null, h('th', null, 'Métrica'), h('th', { style: 'text-align:center' }, 'Dato'), h('th', null, 'Referencia'))), tb);
+      h('thead', null, h('tr', null, h('th', null, 'Métrica'), h('th', { style: 'text-align:center' }, 'Dato'), h('th', { class: 'refh' }, 'Referencia'))), tb);
 
     var legend = h('div', { class: 'legend' },
       h('span', null, h('i', { class: 'swatch c-vgood', style: 'background:rgba(12,163,12,0.22)' }), 'muy barato'),
@@ -556,8 +589,18 @@
     });
   }
 
+  var ultimo = '';   // ultimo ticker buscado
+
   function busca(entrada) {
-    var tk = String(entrada || '').trim().toUpperCase();
+    var tk = String(entrada || '').replace(/[\s$]/g, '').toUpperCase();
+    // En el movil, tocar el campo suele dejar el ticker anterior dentro y lo que
+    // escribes se pega detras ("METAAMZN"). Si el texto no es un ticker valido pero
+    // empieza por el anterior, se busca lo que se ha escrito despues.
+    if (!TICKER_RE.test(tk) && ultimo && tk.length > ultimo.length && tk.indexOf(ultimo) === 0 &&
+        TICKER_RE.test(tk.slice(ultimo.length))) {
+      tk = tk.slice(ultimo.length);
+      $('tk').value = tk;
+    }
     $('out').hidden = true;
     if (!TICKER_RE.test(tk)) { pinta('Escribe el ticker exacto, por ejemplo META o BRK.B.', true); return; }
     var base = workerBase();
@@ -586,7 +629,12 @@
       var r = analiza(pag, tk);
       pinta('');
       dibuja(r);
+      ultimo = tk;
       recuerda(tk);
+      // En el movil la cabecera ocupa mucho: baja hasta el resultado.
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        try { $('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e3) {}
+      }
       try { history.replaceState(null, '', '?t=' + encodeURIComponent(tk)); } catch (e2) {}
     });
   }
@@ -605,6 +653,13 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     $('f').addEventListener('submit', function (e) { e.preventDefault(); busca($('tk').value); });
+    // Al tocar el campo se selecciona lo que hubiera, para que escribir lo sustituya.
+    $('tk').addEventListener('focus', function () {
+      var el = this;
+      setTimeout(function () { try { el.select(); } catch (e) {} }, 0);
+    });
+    // La explicacion va abierta en pantallas grandes y plegada en el movil.
+    $('how').open = window.matchMedia('(min-width: 641px)').matches;
     $('fs').addEventListener('submit', function (e) {
       e.preventDefault();
       var v = $('wurl').value.trim();
