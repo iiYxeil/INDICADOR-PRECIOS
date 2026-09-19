@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="2026-09-19-d">
+<title>Buscador · ¿Barato o Caro?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light dark;
+    --paper:#e8eae3; --surface:#f6f7f3; --raised:#fdfdfb;
+    --ink:#171a15; --ink-2:#4e534a; --muted:#7a7f75;
+    --line:rgba(23,26,21,0.13); --line-strong:rgba(23,26,21,0.26); --grid:rgba(23,26,21,0.045);
+    --gold:#8a6a22; --gold-soft:rgba(138,106,34,0.13);
+    --shadow:0 1px 2px rgba(23,26,21,0.05), 0 6px 18px -10px rgba(23,26,21,0.20);
+    --good:#0a8a0a; --good-soft:rgba(12,163,12,0.12);
+    --serious:#d9663a; --serious-soft:rgba(236,131,90,0.14);
+    --critical:#c22f2f; --critical-soft:rgba(208,59,59,0.13);
+    --neutral:#6b6e66; --neutral-soft:rgba(107,110,102,0.12);
+    --font-sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --font-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0a0c08; --surface:#141711; --raised:#1b1f18;
+      --ink:#f1f3ea; --ink-2:#b9bdaf; --muted:#8d9287;
+      --line:rgba(255,255,255,0.11); --line-strong:rgba(255,255,255,0.24); --grid:rgba(255,255,255,0.032);
+      --gold:#d4a94a; --gold-soft:rgba(212,169,74,0.15);
+      --shadow:0 1px 2px rgba(0,0,0,0.5), 0 8px 22px -12px rgba(0,0,0,0.75);
+      --good:#2cc02c; --good-soft:rgba(12,163,12,0.18);
+      --serious:#ec835a; --serious-soft:rgba(236,131,90,0.18);
+      --critical:#e66767; --critical-soft:rgba(230,103,103,0.18);
+      --neutral:#a3a59c; --neutral-soft:rgba(163,165,156,0.16);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; color:var(--ink); font-family:var(--font-sans); -webkit-font-smoothing:antialiased;
+    background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:34px 34px; background-position:center top;
+  }
+  .wrap{ max-width:920px; margin:0 auto; padding:44px 20px 68px; }
+  header.top{ display:flex; flex-direction:column; gap:14px; margin-bottom:26px; padding-bottom:24px; border-bottom:1px solid var(--line-strong); }
+  .eyebrow{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); font-weight:600; }
+  .eyebrow .rule{ flex:1 1 auto; height:1px; min-width:12px; background:linear-gradient(to right, var(--gold-soft), transparent); }
+  .eyebrow a{ color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold-soft); }
+  .eyebrow a:hover{ border-bottom-color:var(--gold); }
+  h1{ margin:0; font-family:var(--font-display); font-size:clamp(38px,7vw,60px); line-height:0.98; letter-spacing:-0.015em; text-wrap:balance; font-weight:400; }
+  h1 em{ font-style:italic; color:var(--gold); }
+  .lede{ margin:0; max-width:64ch; color:var(--ink-2); font-size:15px; line-height:1.55; }
+
+  form.search{ display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  form.search input{
+    flex:1 1 220px; min-width:0; max-width:340px;
+    font-family:var(--font-mono); font-size:20px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    padding:12px 14px; color:var(--ink); background:var(--raised);
+    border:1px solid var(--line-strong); border-radius:10px; box-shadow:var(--shadow);
+  }
+  form.search input::placeholder{ color:var(--muted); font-weight:500; letter-spacing:0.04em; }
+  form.search input:focus-visible, button:focus-visible, .chip:focus-visible, a:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  button.go{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700;
+    padding:0 22px; min-height:48px; border-radius:10px; cursor:pointer;
+    color:var(--paper); background:var(--ink); border:1px solid var(--ink);
+  }
+  button.go:disabled{ opacity:0.55; cursor:progress; }
+  .recent{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:0; }
+  .recent:empty{ display:none; }
+  .recent .lab{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .chip{
+    font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:0.05em;
+    padding:5px 11px; border-radius:999px; cursor:pointer;
+    color:var(--ink-2); background:var(--raised); border:1px solid var(--line);
+  }
+  .chip:hover{ color:var(--ink); border-color:var(--line-strong); }
+
+  #msg{ margin:0; font-size:14px; line-height:1.45; color:var(--ink-2); }
+  #msg:empty{ display:none; }
+  #msg.err{ color:var(--critical); font-weight:600; }
+  details.how summary{ cursor:pointer; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  details.how summary:hover{ color:var(--ink-2); }
+  details.how .lede{ margin-top:8px; }
+  .panel{ background:var(--raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:18px; margin-bottom:18px; }
+  .panel h2{ margin:0 0 6px; font-family:var(--font-display); font-weight:400; font-size:24px; }
+  .panel p{ margin:0 0 12px; color:var(--ink-2); font-size:14px; line-height:1.5; }
+  .panel form{ display:flex; gap:10px; flex-wrap:wrap; }
+  .panel input{ flex:1 1 280px; min-width:0; padding:10px 12px; font-family:var(--font-mono); font-size:13px; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:8px; }
+
+  .card{ background:var(--raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:20px 20px 18px; display:flex; flex-direction:column; gap:14px; }
+  .card-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .card-head .co{ font-family:var(--font-display); font-size:28px; font-weight:400; line-height:1.1; letter-spacing:-0.01em; }
+  .card-head .tk{ font-family:var(--font-mono); font-size:12px; color:var(--muted); margin-top:3px; }
+  .status-pill{ display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:12.5px; font-weight:600; white-space:nowrap; }
+  .status-pill.good{ background:var(--good-soft); color:var(--good); }
+  .status-pill.neutral{ background:var(--neutral-soft); color:var(--neutral); }
+  .status-pill.serious{ background:var(--serious-soft); color:var(--serious); }
+  .status-pill.critical{ background:var(--critical-soft); color:var(--critical); }
+  .mini-scores{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .mini{ display:flex; flex-direction:column; gap:6px; }
+  .mini-top{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .mini-label{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .mini-num{ font-family:var(--font-display); font-size:38px; font-weight:400; line-height:0.85; letter-spacing:-0.01em; }
+  .mini-bar{ position:relative; height:6px; border-radius:999px; background:var(--line); }
+  .mini-bar i{ position:absolute; top:0; bottom:0; left:0; border-radius:999px; }
+  .mini-bar i.good{ background:var(--good); } .mini-bar i.neutral{ background:var(--neutral); }
+  .mini-bar i.serious{ background:var(--serious); } .mini-bar i.critical{ background:var(--critical); }
+  .mini-sub{ font-family:var(--font-mono); font-size:10.5px; color:var(--muted); }
+  .flag{ font-size:12px; font-weight:600; color:var(--gold); background:var(--gold-soft); border-radius:6px; padding:7px 10px; line-height:1.4; }
+  .flag.warn{ color:var(--serious); background:var(--serious-soft); }
+  .card-note{ margin:0; font-size:13.5px; line-height:1.55; color:var(--ink-2); }
+
+  .tablewrap{ margin-top:18px; background:var(--raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); overflow-x:auto; }
+  table.matrix{ border-collapse:collapse; width:100%; min-width:640px; font-family:var(--font-mono); font-size:12px; font-variant-numeric:tabular-nums; }
+  table.matrix th, table.matrix td{ padding:10px 12px; text-align:left; }
+  table.matrix thead th{ font-size:10.5px; font-weight:700; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; border-bottom:1px solid var(--line-strong); }
+  table.matrix th.metric{ font-family:var(--font-sans); font-size:12.5px; font-weight:500; color:var(--ink); line-height:1.35; min-width:210px; }
+  table.matrix th.metric span{ display:block; font-size:11px; font-weight:400; color:var(--muted); margin-top:2px; }
+  table.matrix tbody tr + tr th, table.matrix tbody tr + tr td{ border-top:1px solid var(--line); }
+  table.matrix tr.grp th{ padding-top:16px; padding-bottom:6px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); font-weight:700; border-top:1px solid var(--line-strong); }
+  table.matrix tr.grp:first-child th{ border-top:0; }
+  table.matrix td.val{ text-align:center; font-weight:600; color:var(--ink); min-width:90px; }
+  table.matrix td.ref{ color:var(--muted); font-size:11.5px; }
+  td.c-vgood{ background:rgba(12,163,12,0.22); } td.c-good{ background:rgba(12,163,12,0.11); }
+  td.c-mid{ background:var(--neutral-soft); }
+  td.c-bad{ background:rgba(236,131,90,0.18); } td.c-vbad{ background:rgba(208,59,59,0.17); }
+  td.na{ color:var(--muted); font-weight:400; }
+  table.matrix tr.total th, table.matrix tr.total td{ border-top:1px solid var(--line-strong); font-weight:700; }
+  table.matrix tr.total th{ font-family:var(--font-sans); font-size:13px; }
+  table.matrix tr.total td.val{ font-family:var(--font-display); font-size:24px; font-weight:400; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:6px 14px; margin:12px 2px 0; font-family:var(--font-mono); font-size:10.5px; color:var(--muted); align-items:center; }
+  .swatch{ display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-2px; border:1px solid var(--line); }
+  footer{ margin-top:34px; padding-top:18px; border-top:1px solid var(--line-strong); font-size:12.5px; line-height:1.6; color:var(--muted); max-width:78ch; }
+  footer p{ margin:0 0 8px; }
+  footer button.lnk{ background:none; border:0; padding:0; font:inherit; color:var(--gold); cursor:pointer; text-decoration:underline; }
+  table.matrix th.metric span.refm{ display:none; }
+  @media (max-width:640px){
+    table.matrix{ min-width:0; }
+    table.matrix th.metric{ min-width:0; }
+    table.matrix th.refh, table.matrix td.ref{ display:none; }
+    table.matrix th.metric span.refm{ display:block; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-2); margin-top:4px; line-height:1.4; }
+    table.matrix td.val{ min-width:78px; }
+    .wrap{ padding:26px 15px 48px; }
+    .mini-scores{ gap:12px; } .mini-num{ font-size:32px; }
+    .card-head .co{ font-size:24px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow"><span>Buscador</span><span class="rule"></span><a href="index.html">← Panel</a></div>
+    <h1>Cualquier acción, <em>¿barata o cara?</em></h1>
+    <form class="search" id="f" autocomplete="off">
+      <label class="sr" for="tk">Ticker</label>
+      <input id="tk" name="tk" type="text" inputmode="text" enterkeyhint="search" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" placeholder="META, NVDA, BRK.B…" required>
+      <button class="go" id="go" type="submit">Analizar</button>
+    </form>
+    <p id="msg" role="status" aria-live="polite"></p>
+    <div class="recent" id="recent"></div>
+    <details class="how" id="how">
+      <summary>Cómo funciona</summary>
+      <p class="lede">Escribe el ticker exacto y te calculo lo mismo que a las Magníficas 7: ocho métricas repartidas en dos notas de 0 a 100 (100 es muy barato). Una mide el fondo (valoración); la otra, el corto plazo (momento). No se promedian: cuando discrepan, esa discrepancia es la señal.</p>
+    </details>
+  </header>
+
+  <section class="panel" id="setup" hidden>
+    <h2>Un último paso</h2>
+    <p>Pega aquí la dirección de tu Worker de Cloudflare (termina en <b>.workers.dev</b>). Solo hay que hacerlo una vez en este navegador.</p>
+    <form id="fs">
+      <label class="sr" for="wurl">URL del Worker</label>
+      <input id="wurl" type="url" placeholder="https://barato-caro.tu-usuario.workers.dev" required>
+      <button class="go" type="submit">Guardar</button>
+    </form>
+  </section>
+
+  <section id="out" hidden></section>
+
+  <footer>
+    <p>Solo acciones cotizadas en EE. UU. (las que tienen ficha en stockanalysis.com). Los datos pueden ir con retraso y si un dato no se puede leer se marca como «no disponible» en lugar de inventarlo. La nota se calcula con las métricas que sí se han leído; con menos de cuatro de valoración, se avisa.</p>
+    <p>Ojo con bancos, aseguradoras y REITs: FCF y EV/EBITDA no significan lo mismo para ellos y pueden distorsionar la nota. Y una nota baja no es una orden de vender ni una nota alta una de comprar: es información general, no asesoramiento financiero.</p>
+    <p id="wfoot"></p>
+    <p id="ver" style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.08em"></p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Si prefieres no pegarla en la página, escribe aquí la URL de tu Worker.
+  var WORKER_URL = '';
+
+  var LS_WORKER = 'bc_worker', LS_RECENT = 'bc_recent';
+  var TICKER_RE = /^[A-Za-z]{1,6}([.\-][A-Za-z]{1,2})?$/;
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  // ------------------------------------------------------------------
+  // Puntuaciones: las mismas que usa update.py para las Magníficas 7.
+  // ------------------------------------------------------------------
+  function clamp(v) { return Math.max(0, Math.min(100, v)); }
+  var S = {
+    peg:  function (v) { return clamp(100 * (1 - (v - 0.5) / 2.5)); },
+    fwd:  function (r) { return clamp(100 * (1 - (r - 0.5) / 1.0)); },
+    fcf:  function (p) { return clamp(100 * (p / 6)); },
+    ev:   function (r) { return clamp(100 * (1 - (r - 0.5) / 1.0)); },
+    cons: function (p) { return clamp(100 * (p / 40)); },
+    roic: function (p) { return clamp(100 * (p / 40)); },
+    sma:  function (d) { return clamp(100 * (1 - (d + 0.20) / 0.50)); },
+    rsi:  function (v) { return clamp(100 - v); }
+  };
+  // Referencias historicas del panel (index.html), copiadas de config.py, para que
+  // las 7 Magnificas salgan aqui exactamente igual que alli: media de P/E a 5 anos
+  // (fullratio.com) y mediana de EV/EBITDA a 10 anos (gurufocus.com). Si algun dia
+  // las revisas en config.py, cambialas tambien aqui. El resto de tickers usan los
+  // cierres anuales de stockanalysis.com.
+  var REF_PANEL = {
+    NVDA:  { pe: 61.79,  ev: 42.73 },
+    META:  { pe: 23.20,  ev: 17.72 },
+    AMZN:  { pe: 62.97,  ev: 27.23 },
+    MSFT:  { pe: 31.26,  ev: 19.56 },
+    GOOGL: { pe: 22.61,  ev: 17.37 },
+    AAPL:  { pe: 30.11,  ev: 20.82 },
+    TSLA:  { pe: 146.62, ev: 74.36 }
+  };
+  var VAL_KEYS = ['peg', 'fwd', 'fcf', 'ev', 'cons', 'roic'];
+  var MOM_KEYS = ['sma', 'rsi'];
+
+  function clasifica(s) {
+    if (s >= 80) return { et: 'Muy barata', ico: '▼▼', cls: 'good', cel: 'c-vgood' };
+    if (s >= 60) return { et: 'Barata', ico: '▼', cls: 'good', cel: 'c-good' };
+    if (s >= 40) return { et: 'Justa', ico: '●', cls: 'neutral', cel: 'c-mid' };
+    if (s >= 20) return { et: 'Cara', ico: '▲', cls: 'serious', cel: 'c-bad' };
+    return { et: 'Muy cara', ico: '▲▲', cls: 'critical', cel: 'c-vbad' };
+  }
+  function cubo(s) { return s >= 60 ? 'cheap' : (s < 40 ? 'rich' : 'mid'); }
+
+  // ------------------------------------------------------------------
+  // Lectura de stockanalysis.com (misma idea que recoge_accion en update.py)
+  // ------------------------------------------------------------------
+  function norm(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+
+  function num(txt, lo, hi) {
+    if (txt == null) return null;
+    var m = String(txt).replace(/−/g, '-').match(/-?[\d,]+\.?\d*/);
+    if (!m) return null;
+    var v = parseFloat(m[0].replace(/,/g, ''));
+    if (!isFinite(v)) return null;
+    if (lo != null && v < lo) return null;
+    if (hi != null && v > hi) return null;
+    return v;
+  }
+
+  // {etiqueta_normalizada: [celdas restantes]}; la primera aparicion gana.
+  function tabla(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var out = new Map();
+    doc.querySelectorAll('tr').forEach(function (tr) {
+      var c = Array.prototype.filter.call(tr.children, function (e) { return e.tagName === 'TD' || e.tagName === 'TH'; });
+      if (c.length >= 2) {
+        var k = norm(c[0].textContent);
+        if (k && !out.has(k)) out.set(k, c.slice(1).map(function (e) { return e.textContent.replace(/\s+/g, ' ').trim(); }));
+      }
+    });
+    return { t: out, titulo: doc.title || '' };
+  }
+  function exacta(t, etiqueta) { return t.get(norm(etiqueta)) || null; }
+  function empieza(t, etiqueta) {
+    var nk = norm(etiqueta), hit = null;
+    t.forEach(function (v, lab) { if (!hit && (lab === nk || lab.indexOf(nk + ' ') === 0)) hit = v; });
+    return hit;
+  }
+  function primera(celdas) { return celdas && celdas.length ? celdas[0] : null; }
+  function media(a) { return a.reduce(function (x, y) { return x + y; }, 0) / a.length; }
+  function mediana(a) {
+    var s = a.slice().sort(function (x, y) { return x - y; }), n = s.length;
+    return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+  }
+
+  // paginas = {stats, forecast, ratios, overview}: HTML o null si no se pudo leer.
+  function analiza(paginas, ticker) {
+    var d = {}, ref = {}, sc = {}, why = {}, nombre = ticker, precio = null;
+
+    // ---- estadisticas ----
+    if (paginas.stats) {
+      var T = tabla(paginas.stats), t = T.t;
+      var mt = T.titulo.match(/^(.+?)\s*\(/);
+      if (mt && mt[1].trim()) nombre = mt[1].trim();
+      d.peg  = num(primera(empieza(t, 'PEG Ratio')), -50, 50);
+      d.fwd  = num(primera(empieza(t, 'Forward PE')), 0, 2000);
+      d.fcf  = num(primera(empieza(t, 'FCF Yield')), -60, 60);
+      d.roic = num(primera(empieza(t, 'Return on Invested Capital')), -300, 600);
+      d.sma  = num(primera(empieza(t, '200-Day Moving Average')), 0.5, 100000);
+      d.ev   = num(primera(empieza(t, 'EV / EBITDA')), -200, 2000);
+      d.rsi  = num(primera(empieza(t, 'Relative Strength Index')), 0, 100);
+    } else {
+      why.all = 'No se pudo leer la página de estadísticas.';
+    }
+
+    // ---- referencias historicas: cierres anuales de la pagina de ratios ----
+    if (paginas.ratios) {
+      var R = tabla(paginas.ratios).t;
+      var pe = exacta(R, 'PE Ratio') || empieza(R, 'PE Ratio');
+      var eve = empieza(R, 'EV / EBITDA');
+      if (pe) {
+        var pes = pe.slice(1, 6).map(function (x) { return num(x, 0.01, 1000); }).filter(function (x) { return x != null; });
+        if (pes.length >= 3) { ref.pe = media(pes); ref.peN = pes.length; }
+      }
+      if (eve) {
+        var evs = eve.slice(1, 11).map(function (x) { return num(x, 0.01, 2000); }).filter(function (x) { return x != null; });
+        if (evs.length >= 3) { ref.ev = mediana(evs); ref.evN = evs.length; }
+      }
+    }
+
+    var panel = REF_PANEL[ticker];
+    if (panel) { ref.pe = panel.pe; ref.ev = panel.ev; ref.panel = true; }
+
+    // ---- analistas y precio ----
+    if (paginas.forecast) {
+      var F = tabla(paginas.forecast).t;
+      var cols = F.get('target') || [], idx = -1, i;
+      ['average', 'median'].some(function (pref) {
+        for (i = 0; i < cols.length; i++) if (norm(cols[i]) === pref) { idx = i; return true; }
+        return false;
+      });
+      if (idx < 0) idx = cols.length > 1 ? 1 : 0;
+      var pr = F.get('price'), ch = F.get('change');
+      var obj = pr ? num(pr[idx], 0.5, 100000) : null;
+      var chg = ch ? num(ch[idx], -95, 500) : null;
+      if (obj != null && chg != null) {
+        d.obj = obj; d.cons = chg; precio = obj / (1 + chg / 100);
+      }
+    }
+    if (precio == null && paginas.overview) {
+      var O = tabla(paginas.overview).t;
+      var pc = num(primera(exacta(O, 'Previous Close')), 0.01, 1000000);
+      if (pc != null) { precio = pc; ref.precioAprox = true; }
+    }
+
+    // Coherencia: una accion grande no cotiza un 60% lejos de su media de 200 dias.
+    if (precio != null && d.sma != null) {
+      var desv = precio / d.sma - 1;
+      if (!(desv >= -0.6 && desv <= 1.5)) { why.sma = 'precio y SMA 200 incoherentes, descartado'; d.sma = null; }
+    }
+
+    // ---- notas por metrica ----
+    // Diferencia respecto a update.py: PEG, P/E forward y EV/EBITDA <= 0 no
+    // significan "muy barata", significan beneficios negativos o en caida.
+    // En las Magníficas 7 no ocurre; en una accion cualquiera si.
+    var sinStats = paginas.stats ? null : 'no se pudo leer la página de estadísticas';
+
+    if (sinStats) why.peg = sinStats;
+    else if (d.peg == null) why.peg = 'no disponible';
+    else if (d.peg <= 0) why.peg = 'crecimiento esperado negativo: no aplica';
+    else sc.peg = S.peg(d.peg);
+
+    if (sinStats) why.fwd = sinStats;
+    else if (d.fwd == null || d.fwd <= 0) why.fwd = 'sin beneficios esperados positivos';
+    else if (ref.pe == null) why.fwd = 'sin histórico de P/E para comparar';
+    else sc.fwd = S.fwd(d.fwd / ref.pe);
+
+    if (sinStats) why.fcf = sinStats;
+    else if (d.fcf == null) why.fcf = 'no disponible';
+    else sc.fcf = S.fcf(d.fcf);
+
+    if (sinStats) why.ev = sinStats;
+    else if (d.ev == null || d.ev <= 0) why.ev = 'EBITDA negativo o no disponible';
+    else if (ref.ev == null) why.ev = 'sin histórico de EV/EBITDA para comparar';
+    else sc.ev = S.ev(d.ev / ref.ev);
+
+    if (d.cons == null) why.cons = 'sin datos de analistas';
+    else sc.cons = S.cons(d.cons);
+
+    if (sinStats) why.roic = sinStats;
+    else if (d.roic == null) why.roic = 'no disponible';
+    else sc.roic = S.roic(d.roic);
+
+    if (sinStats) why.sma = sinStats;
+    else if (d.sma == null) why.sma = why.sma || 'no disponible';
+    else if (precio == null) why.sma = 'sin precio actual';
+    else sc.sma = S.sma(precio / d.sma - 1);
+
+    if (sinStats) why.rsi = sinStats;
+    else if (d.rsi == null) why.rsi = 'no disponible';
+    else sc.rsi = S.rsi(d.rsi);
+
+    var vk = VAL_KEYS.filter(function (k) { return sc[k] != null; });
+    var mk = MOM_KEYS.filter(function (k) { return sc[k] != null; });
+    return {
+      ticker: ticker, nombre: nombre, precio: precio, d: d, ref: ref, sc: sc, why: why,
+      nVal: vk.length, nMom: mk.length,
+      val: vk.length ? media(vk.map(function (k) { return sc[k]; })) : null,
+      mom: mk.length ? media(mk.map(function (k) { return sc[k]; })) : null
+    };
+  }
+
+  // ------------------------------------------------------------------
+  // Textos de cada metrica
+  // ------------------------------------------------------------------
+  function sgn(v, dec) { return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(dec); }
+  function dev(a, b) { return (a / b - 1) * 100; }
+  function usd(v) { return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  var FILAS = [
+    { grupo: 'Valoración' },
+    { k: 'peg',  et: 'PEG Ratio', ayuda: '< 1.0 = descuento vs. su crecimiento' },
+    { k: 'fwd',  et: 'Forward P/E vs. su media', ayuda: 'negativo = cotiza por debajo de su media' },
+    { k: 'fcf',  et: 'FCF Yield', ayuda: '> 4–5% = genera mucha caja vs. su precio' },
+    { k: 'ev',   et: 'EV/EBITDA vs. su mediana', ayuda: 'negativo = mínimos de su rango histórico' },
+    { k: 'cons', et: 'Consenso de analistas', ayuda: 'potencial hasta el precio objetivo medio' },
+    { k: 'roic', et: 'ROIC', ayuda: '> 15–20% confirma ventaja competitiva' },
+    { grupo: 'Momento' },
+    { k: 'sma',  et: 'Precio vs. SMA 200 días', ayuda: 'negativo = zona de soporte estructural' },
+    { k: 'rsi',  et: 'RSI (14 días)', ayuda: '< 40 indica agotamiento vendedor' }
+  ];
+  var CORTO = {
+    peg: 'el PEG', fwd: 'el P/E forward frente a su media', fcf: 'el FCF yield',
+    ev: 'el EV/EBITDA frente a su mediana', cons: 'el potencial hasta el objetivo de analistas',
+    roic: 'el ROIC', sma: 'el precio frente a su media de 200 días', rsi: 'el RSI'
+  };
+
+  function texto(r, k) {
+    var d = r.d, ref = r.ref;
+    switch (k) {
+      case 'peg':  return { v: d.peg.toFixed(2), r: '' };
+      case 'fwd':  return { v: sgn(dev(d.fwd, ref.pe), 0) + '%', r: 'P/E fwd ' + d.fwd.toFixed(1) + ' · media ' + ref.pe.toFixed(1) + (ref.panel ? ' (5 años, como en el panel)' : ' (' + ref.peN + ' cierres anuales)') };
+      case 'fcf':  return { v: d.fcf.toFixed(2).replace('-', '−') + '%', r: '' };
+      case 'ev':   return { v: sgn(dev(d.ev, ref.ev), 0) + '%', r: 'EV/EBITDA ' + d.ev.toFixed(1) + ' · mediana ' + ref.ev.toFixed(1) + (ref.panel ? ' (10 años, como en el panel)' : ' (' + ref.evN + ' cierres anuales)') };
+      case 'cons': return { v: sgn(d.cons, 0) + '%', r: 'objetivo medio ' + usd(d.obj) };
+      case 'roic': return { v: d.roic.toFixed(0).replace('-', '−') + '%', r: '' };
+      case 'sma':  return { v: sgn(dev(r.precio, d.sma), 0) + '%', r: 'precio ' + usd(r.precio) + (ref.precioAprox ? ' (cierre previo)' : '') + ' · SMA 200 ' + usd(d.sma) };
+      case 'rsi':  return { v: d.rsi.toFixed(0), r: '' };
+    }
+    return { v: '', r: '' };
+  }
+
+  // ------------------------------------------------------------------
+  // Dibujo (todo con textContent: el texto viene de una web ajena)
+  // ------------------------------------------------------------------
+  function h(tag, attrs) {
+    var el = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === 'class') el.className = attrs[k];
+      else if (k === 'style') el.setAttribute('style', attrs[k]);
+      else el.setAttribute(k, attrs[k]);
+    }
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i];
+      if (c == null) continue;
+      el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }
+    return el;
+  }
+
+  function mini(label, score, n, total) {
+    var c = score == null ? null : clasifica(score);
+    var top = h('div', { class: 'mini-top' },
+      h('span', { class: 'mini-label' }, label),
+      h('span', { class: 'mini-num', style: c ? 'color:var(--' + c.cls + ')' : 'color:var(--muted)' }, score == null ? '—' : String(Math.round(score))));
+    var bar = h('div', { class: 'mini-bar' }, c ? h('i', { class: c.cls, style: 'width:' + score.toFixed(0) + '%' }) : null);
+    return h('div', { class: 'mini' }, top, bar, h('span', { class: 'mini-sub' }, n + ' de ' + total + ' métricas leídas'));
+  }
+
+  function notaAuto(r) {
+    var todas = VAL_KEYS.concat(MOM_KEYS).filter(function (k) { return r.sc[k] != null; });
+    if (todas.length < 3) return null;
+    todas.sort(function (a, b) { return r.sc[b] - r.sc[a]; });
+    var mejor = todas[0], peor = todas[todas.length - 1];
+    function frase(k) { return CORTO[k] + ' (' + texto(r, k).v + ')'; }
+    return 'Lo que más suma: ' + frase(mejor) + '. Lo que más resta: ' + frase(peor) + '.';
+  }
+
+  function dibuja(r) {
+    var out = document.getElementById('out');
+    out.textContent = '';
+    // Con menos de 3 metricas de valoracion no se da veredicto: seria ruido.
+    var c = (r.val == null || r.nVal < 3) ? null : clasifica(r.val);
+
+    var head = h('div', { class: 'card-head' },
+      h('div', null,
+        h('div', { class: 'co' }, r.nombre),
+        h('div', { class: 'tk' }, r.ticker + (r.precio ? ' · ' + usd(r.precio) : ''))),
+      c ? h('span', { class: 'status-pill ' + c.cls }, c.ico + ' ' + c.et)
+        : h('span', { class: 'status-pill neutral' }, 'Datos insuficientes'));
+
+    var card = h('div', { class: 'card' }, head,
+      h('div', { class: 'mini-scores' }, mini('Valoración', r.val, r.nVal, 6), mini('Momento', r.mom, r.nMom, 2)));
+
+    if (c && r.mom != null) {
+      var a = cubo(r.val), b = cubo(r.mom);
+      if ((a === 'cheap' && b === 'rich') || (a === 'rich' && b === 'cheap')) {
+        card.appendChild(h('div', { class: 'flag' }, '⚠ Las dos lecturas se contradicen'));
+      }
+    }
+    if (r.nVal === 0) card.appendChild(h('div', { class: 'flag warn' }, 'No se ha podido calcular ninguna métrica de valoración para este ticker.'));
+    else if (r.nVal < 4) card.appendChild(h('div', { class: 'flag warn' }, 'Solo se han podido leer ' + r.nVal + ' de 6 métricas de valoración: la nota es poco fiable.'));
+    if (r.nMom === 1) card.appendChild(h('div', { class: 'flag warn' }, 'Solo se ha podido leer 1 de las 2 métricas de momento.'));
+    var nota = notaAuto(r);
+    if (nota) card.appendChild(h('p', { class: 'card-note' }, nota));
+
+    // tabla
+    var tb = h('tbody');
+    FILAS.forEach(function (f) {
+      if (f.grupo) { tb.appendChild(h('tr', { class: 'grp' }, h('th', { colspan: '3' }, f.grupo))); return; }
+      var td, ref, refTxt;
+      if (r.sc[f.k] != null) {
+        var t = texto(r, f.k);
+        td = h('td', { class: 'val ' + clasifica(r.sc[f.k]).cel }, t.v);
+        refTxt = t.r;
+      } else {
+        td = h('td', { class: 'val na' }, '—');
+        refTxt = r.why[f.k] || 'no disponible';
+      }
+      ref = h('td', { class: 'ref' }, refTxt);
+      // En el movil no hay sitio para la tercera columna: la referencia pasa
+      // a una linea bajo el nombre de la metrica.
+      var th = h('th', { class: 'metric', scope: 'row' }, f.et, h('span', null, f.ayuda),
+        refTxt ? h('span', { class: 'refm' }, refTxt) : null);
+      tb.appendChild(h('tr', null, th, td, ref));
+    });
+    [['Valoración', r.val], ['Momento', r.mom]].forEach(function (p) {
+      var cc = p[1] == null ? null : clasifica(p[1]);
+      tb.appendChild(h('tr', { class: 'total' }, h('th', { scope: 'row' }, 'Nota de ' + p[0].toLowerCase()),
+        h('td', { class: 'val ' + (cc ? cc.cel : 'na'), style: cc ? 'color:var(--' + cc.cls + ')' : '' }, p[1] == null ? '—' : String(Math.round(p[1]))),
+        h('td', { class: 'ref' }, cc ? cc.et : '')));
+    });
+    var table = h('table', { class: 'matrix' },
+      h('thead', null, h('tr', null, h('th', null, 'Métrica'), h('th', { style: 'text-align:center' }, 'Dato'), h('th', { class: 'refh' }, 'Referencia'))), tb);
+
+    var legend = h('div', { class: 'legend' },
+      h('span', null, h('i', { class: 'swatch c-vgood', style: 'background:rgba(12,163,12,0.22)' }), 'muy barato'),
+      h('span', null, h('i', { class: 'swatch', style: 'background:rgba(12,163,12,0.11)' }), 'barato'),
+      h('span', null, h('i', { class: 'swatch', style: 'background:var(--neutral-soft)' }), 'justo'),
+      h('span', null, h('i', { class: 'swatch', style: 'background:rgba(236,131,90,0.18)' }), 'caro'),
+      h('span', null, h('i', { class: 'swatch', style: 'background:rgba(208,59,59,0.17)' }), 'muy caro'));
+
+    out.appendChild(card);
+    out.appendChild(h('div', { class: 'tablewrap' }, table));
+    out.appendChild(legend);
+    out.hidden = false;
+  }
+
+  // ------------------------------------------------------------------
+  // Red, historial y arranque
+  // ------------------------------------------------------------------
+  var $ = function (id) { return document.getElementById(id); };
+  var seq = 0;
+
+  function workerBase() {
+    var w = (WORKER_URL || lsGet(LS_WORKER) || '').trim().replace(/\/+$/, '');
+    return /^https:\/\//.test(w) ? w : '';
+  }
+
+  function pinta(msg, err) { var m = $('msg'); m.textContent = msg || ''; m.className = err ? 'err' : ''; }
+
+  function pide(base, tk, p) {
+    return fetch(base + '/?tk=' + encodeURIComponent(tk) + '&p=' + p).then(function (r) {
+      if (r.status === 404) { var e = new Error('404'); e.noTicker = true; throw e; }
+      if (r.status === 403) { var e2 = new Error('403'); e2.origen = true; throw e2; }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    });
+  }
+
+  function recientes() { try { return JSON.parse(lsGet(LS_RECENT) || '[]').filter(function (x) { return TICKER_RE.test(x); }).slice(0, 8); } catch (e) { return []; } }
+  function recuerda(tk) {
+    var l = recientes().filter(function (x) { return x !== tk; });
+    l.unshift(tk);
+    lsSet(LS_RECENT, JSON.stringify(l.slice(0, 8)));
+    pintaRecientes();
+  }
+  function pintaRecientes() {
+    var box = $('recent'); box.textContent = '';
+    var l = recientes();
+    if (!l.length) return;
+    box.appendChild(h('span', { class: 'lab' }, 'Recientes'));
+    l.forEach(function (tk) {
+      var b = h('button', { class: 'chip', type: 'button' }, tk);
+      b.addEventListener('click', function () { $('tk').value = tk; busca(tk); });
+      box.appendChild(b);
+    });
+  }
+
+  var ultimo = '';   // ultimo ticker buscado
+
+  function busca(entrada) {
+    var tk = String(entrada || '').replace(/[\s$]/g, '').toUpperCase();
+    // En el movil, tocar el campo suele dejar el ticker anterior dentro y lo que
+    // escribes se pega detras ("METAAMZN"). Si el texto no es un ticker valido pero
+    // empieza por el anterior, se busca lo que se ha escrito despues.
+    if (!TICKER_RE.test(tk) && ultimo && tk.length > ultimo.length && tk.indexOf(ultimo) === 0 &&
+        TICKER_RE.test(tk.slice(ultimo.length))) {
+      tk = tk.slice(ultimo.length);
+      $('tk').value = tk;
+    }
+    $('out').hidden = true;
+    if (!TICKER_RE.test(tk)) { pinta('Escribe el ticker exacto, por ejemplo META o BRK.B.', true); return; }
+    var base = workerBase();
+    if (!base) { $('setup').hidden = false; pinta('Falta conectar el buscador con tu Worker (paso de abajo).', true); return; }
+
+    var mio = ++seq;
+    $('go').disabled = true;
+    pinta('Leyendo datos de ' + tk + '…');
+    var nombres = ['stats', 'forecast', 'ratios', 'overview'];
+    Promise.all(nombres.map(function (p) {
+      return pide(base, tk, p).then(function (t) { return { ok: true, t: t }; }, function (e) { return { ok: false, e: e }; });
+    })).then(function (rs) {
+      if (mio !== seq) return;
+      $('go').disabled = false;
+      var st = rs[0];
+      if (!st.ok && st.e && st.e.noTicker) { pinta('No encuentro «' + tk + '» en stockanalysis.com. Usa el ticker exacto de una acción de EE. UU. (para clases de acciones, por ejemplo BRK.B).', true); return; }
+      if (rs.every(function (x) { return !x.ok; })) {
+        var e = rs[0].e;
+        pinta(e && e.origen
+          ? 'Tu Worker rechaza esta web. Añade su dirección a ORIGENES_PERMITIDOS en worker.js.'
+          : 'No he podido contactar con tu Worker. Comprueba que la URL es correcta y que el Worker está publicado.', true);
+        return;
+      }
+      var pag = {};
+      nombres.forEach(function (p, i) { pag[p] = rs[i].ok ? rs[i].t : null; });
+      var r = analiza(pag, tk);
+      pinta('');
+      dibuja(r);
+      ultimo = tk;
+      recuerda(tk);
+      // En el movil la cabecera ocupa mucho: baja hasta el resultado.
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        try { $('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e3) {}
+      }
+      try { history.replaceState(null, '', '?t=' + encodeURIComponent(tk)); } catch (e2) {}
+    });
+  }
+
+  function pintaPie() {
+    var p = $('wfoot'); p.textContent = '';
+    var base = workerBase();
+    if (!base || WORKER_URL) return;
+    p.appendChild(document.createTextNode('Conectado a tu Worker. '));
+    var b = h('button', { class: 'lnk', type: 'button' }, 'Cambiar dirección');
+    b.addEventListener('click', function () { lsDel(LS_WORKER); $('setup').hidden = false; pintaPie(); });
+    p.appendChild(b);
+  }
+
+  window.BC = { analiza: analiza, clasifica: clasifica, S: S, tabla: tabla, num: num };
+
+  // Si el navegador (sobre todo en el movil) guarda una copia vieja de esta pagina,
+  // se compara con la del servidor y, si difiere, se recarga con una direccion nueva.
+  function compruebaVersion() {
+    var meta = document.querySelector('meta[name="app-version"]');
+    var actual = meta ? meta.getAttribute('content') : '';
+    var ver = document.getElementById('ver');
+    if (ver) ver.textContent = 'Versión ' + actual;
+    if (!window.fetch || !actual) return;
+    var u = new URL(location.href);   // se guarda ahora: la busqueda reescribe la direccion despues
+    fetch(location.pathname + '?cb=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) {
+        var m = t.match(/name="app-version" content="([^"]+)"/);
+        if (!m || m[1] === actual) return;
+        if (u.searchParams.get('v') === m[1]) return;   // ya se intento: no entrar en bucle
+        u.searchParams.set('v', m[1]);
+        location.replace(u.toString());
+      })
+      .catch(function () {});
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    compruebaVersion();
+    $('f').addEventListener('submit', function (e) { e.preventDefault(); busca($('tk').value); });
+    // Al tocar el campo se selecciona lo que hubiera, para que escribir lo sustituya.
+    $('tk').addEventListener('focus', function () {
+      var el = this;
+      setTimeout(function () { try { el.select(); } catch (e) {} }, 0);
+    });
+    // La explicacion va abierta en pantallas grandes y plegada en el movil.
+    $('how').open = window.matchMedia('(min-width: 641px)').matches;
+    $('fs').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = $('wurl').value.trim();
+      if (!/^https:\/\//.test(v)) { pinta('La dirección debe empezar por https://', true); return; }
+      lsSet(LS_WORKER, v);
+      if (!workerBase()) { pinta('No he podido guardar la dirección en este navegador. Escríbela en WORKER_URL dentro de buscar.html.', true); return; }
+      $('setup').hidden = true; pinta(''); pintaPie();
+      if ($('tk').value) busca($('tk').value);
+    });
+    $('setup').hidden = !!workerBase() ? true : false;
+    pintaPie();
+    pintaRecientes();
+    var q = new URLSearchParams(location.search).get('t');
+    if (q) { $('tk').value = q.toUpperCase(); busca(q); }
+  });
+})();
+</script>
+</body>
+</html>
