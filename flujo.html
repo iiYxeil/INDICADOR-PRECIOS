@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flujo en Directo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Terminal de una sola pantalla: cabecera de precio, gráfico con perfil de volumen, rejilla 3×2 de lecturas de flujo */
+:root{
+  color-scheme: dark;
+  --bg:#0a0e13;
+  --panel:#0f141b;
+  --line:#1c2430;
+  --muted:#6f7c8e;
+  --fg:#dfe5ee;
+  --buy:#3f6fd8;      /* compras agresivas */
+  --sell:#b8895a;     /* ventas agresivas */
+  --vwap:#e6cf73;
+  --up:#d6dce6;
+  --down:#5a6576;
+  --pos:#57c08f;
+  --neg:#e5675a;
+  --live:#e0453f;
+  --amber:#e8a24a;
+  --f-display:"Oswald","Arial Narrow",Impact,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-data:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{
+  font:14px/1.4 var(--f-body);
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:calc(14px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-bottom,0px));
+}
+.wrap{max-width:1100px;margin:0 auto;display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.id{display:flex;align-items:center;gap:12px;min-width:0}
+.live{font:700 12px/1 var(--f-data);letter-spacing:.12em;text-transform:uppercase;background:var(--live);color:#fff;padding:7px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.live i{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite}
+.live.off{background:var(--line);color:var(--muted)}
+.live.off i{background:var(--muted);animation:none}
+@keyframes pulse{50%{opacity:.25}}
+h1{font:600 30px/1 var(--f-display);letter-spacing:.02em;margin:0;text-transform:uppercase}
+.sub{font:12px var(--f-data);color:var(--muted);margin-top:4px}
+.px{text-align:right;font-variant-numeric:tabular-nums}
+.px b{font:500 32px/1 var(--f-data);display:block}
+.px span{font:500 13px var(--f-data)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.tabs button{font:500 12px var(--f-data);background:transparent;color:var(--muted);border:0;padding:6px 12px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--line);color:var(--fg)}
+.tabs button:focus-visible{outline:2px solid var(--vwap);outline-offset:-2px}
+.legend{font:11px var(--f-data);color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;position:relative;height:clamp(300px,58vh,540px);overflow:hidden}
+#chart{width:100%;height:100%;display:block}
+.msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted);font:13px var(--f-data)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:380px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:2px;min-width:0}
+.card h3{margin:0;font:600 13px var(--f-body);display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.card h3 small{font:400 11px var(--f-body);color:var(--muted)}
+.val{font:700 clamp(18px,4.6vw,26px)/1.15 var(--f-data);font-variant-numeric:tabular-nums}
+.cap{font:12px var(--f-body);color:var(--muted);min-height:1.4em}
+.card canvas{width:100%;height:30px;display:block;margin-top:4px}
+footer{font:11px var(--f-data);color:var(--muted);line-height:1.6}
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="id">
+      <span class="live off" id="live"><i></i><span id="liveTxt">Conectando</span></span>
+      <div>
+        <h1 id="name">Oro</h1>
+        <div class="sub" id="sub">Perpetuo XAUUSDT · Binance</div>
+      </div>
+    </div>
+    <div class="px"><b id="price">—</b><span id="chg">—</span></div>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="group" aria-label="Activo">
+      <button id="as-oro" data-as="oro" aria-pressed="true">Oro</button>
+      <button id="as-btc" data-as="btc" aria-pressed="false">Bitcoin</button>
+    </div>
+    <div class="tabs" role="group" aria-label="Temporalidad">
+      <button id="iv-1m" data-iv="1m" aria-pressed="false">1m</button>
+      <button id="iv-5m" data-iv="5m" aria-pressed="true">5m</button>
+      <button id="iv-15m" data-iv="15m" aria-pressed="false">15m</button>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--buy)"></i>compras agresivas</span>
+      <span><i style="background:var(--sell)"></i>ventas agresivas</span>
+      <span><i style="background:var(--vwap)"></i>VWAP desde 00:00 UTC</span>
+    </div>
+  </div>
+
+  <div class="chartbox">
+    <canvas id="chart" aria-label="Gráfico de velas con perfil de volumen y VWAP"></canvas>
+    <div class="msg" id="msg">Cargando datos de Binance…</div>
+  </div>
+
+  <section class="grid">
+    <div class="card"><h3>Delta <small>últimos 15 min</small></h3><div class="val" id="vDelta">—</div><div class="cap" id="cDelta"></div><canvas id="sDelta"></canvas></div>
+    <div class="card"><h3>Libro <small>cerca del precio</small></h3><div class="val" id="vBook">—</div><div class="cap" id="cBook"></div><canvas id="sBook"></canvas></div>
+    <div class="card"><h3>Grandes <small id="wBig">15 min</small></h3><div class="val" id="vBig">—</div><div class="cap" id="cBig"></div><canvas id="sBig"></canvas></div>
+    <div class="card"><h3>Volumen <small>última hora</small></h3><div class="val" id="vVol">—</div><div class="cap" id="cVol"></div><canvas id="sVol"></canvas></div>
+    <div class="card"><h3>Barridos <small id="wSw">última hora</small></h3><div class="val" id="vSw">—</div><div class="cap" id="cSw"></div><canvas id="sSw"></canvas></div>
+    <div class="card"><h3>Cascadas <small id="wCa">última hora</small></h3><div class="val" id="vCa">—</div><div class="cap" id="cCa"></div><canvas id="sCa"></canvas></div>
+  </section>
+
+  <footer>
+    Panel informativo y educativo, no es una recomendación de inversión. Datos públicos de futuros de Binance en tiempo real.
+    Delta y volumen salen de las velas de 1 minuto (volumen comprador agresor frente a vendedor).
+    <span id="rules"></span>
+    Grandes, barridos y cascadas se cuentan desde que abres la página.
+  </footer>
+</div>
+
+<script>
+(() => {
+  const REST = 'https://fapi.binance.com';
+  const ASSETS = {
+    oro: { sym: 'XAUUSDT', name: 'Oro', unit: 'oz', units: 'onzas negociadas', dec: 2,
+           bigUsd: 40000, sweepUsd: 300000, sweepMove: 0.0002, cascUsd: 50000 },
+    btc: { sym: 'BTCUSDT', name: 'Bitcoin', unit: 'BTC', units: 'bitcoins negociados', dec: 1,
+           bigUsd: 75000, sweepUsd: 1200000, sweepMove: 0.00025, cascUsd: 250000 },
+  };
+  const IVMS = { '1m': 60e3, '5m': 300e3, '15m': 900e3 };
+  const MIN = 60e3, HOUR = 3600e3;
+
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C = {};
+  ['bg','panel','line','muted','fg','buy','sell','vwap','up','down','pos','neg','amber'].forEach(k => C[k] = css('--' + k));
+
+  const nf = (d) => new Intl.NumberFormat('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const f0 = nf(0), f1 = nf(1), f2 = nf(2);
+  const signed = v => (v > 0 ? '+' : v < 0 ? '−' : '') + f1.format(Math.abs(v));
+
+  const store = { get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  const fromHash = location.hash.replace('#', '');
+  let A, S, gen = 0, ws = null, backoff = 1000, retryT = null;
+  let iv = IVMS[store.get('flujo-iv', '5m')] ? store.get('flujo-iv', '5m') : '5m';
+  let assetKey = ASSETS[fromHash] ? fromHash : (ASSETS[store.get('flujo-as', 'oro')] ? store.get('flujo-as', 'oro') : 'oro');
+
+  function freshState() {
+    return { k: { '1m': [], '5m': [], '15m': [] }, price: null, chg: null,
+      big: [], sweeps: [], cascades: [], cluster: null, sec: null,
+      bookHist: [], ask: 0, bid: 0, lastBookSample: 0, opened: Date.now(), loaded: false };
+  }
+
+  const midnightUTC = () => { const d = new Date(); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); };
+  function upsert(arr, c) {
+    const last = arr[arr.length - 1];
+    if (last && last.t === c.t) arr[arr.length - 1] = c;
+    else if (!last || c.t > last.t) { arr.push(c); if (arr.length > 1600) arr.shift(); }
+  }
+
+  /* ---------- cambio de activo ---------- */
+  function selectAsset(key) {
+    assetKey = key; A = ASSETS[key]; S = freshState(); gen++;
+    store.set('flujo-as', key);
+    if (location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
+    $('name').textContent = A.name;
+    $('sub').textContent = `Perpetuo ${A.sym} · Binance`;
+    $('cVol').textContent = A.units;
+    $('rules').textContent = `Grandes: operaciones de ${f0.format(A.bigUsd)} $ o más. Barrido: un segundo con ${f0.format(A.sweepUsd)} $ o más casi todo en un sentido que mueve el precio un ${f2.format(A.sweepMove * 100)} % o más. Cascada: racha de liquidaciones (3 o más seguidas, o ${f0.format(A.cascUsd)} $ o más).`;
+    ['price', 'chg', 'vDelta', 'vBook', 'vBig', 'vVol', 'vSw', 'vCa'].forEach(id => { $(id).textContent = '—'; $(id).style.color = ''; });
+    ['cDelta', 'cBook', 'cBig', 'cSw', 'cCa'].forEach(id => $(id).textContent = '');
+    ['sDelta', 'sBook', 'sBig', 'sVol', 'sSw', 'sCa'].forEach(id => prep($(id)));
+    prep($('chart'));
+    $('msg').hidden = false; $('msg').textContent = 'Cargando datos de Binance…';
+    document.querySelectorAll('[data-as]').forEach(b => b.setAttribute('aria-pressed', b.dataset.as === key));
+    clearTimeout(retryT);
+    loadAll(gen);
+    connect();
+  }
+
+  /* ---------- carga inicial ---------- */
+  async function fetchKlines(sym, i) {
+    const ms = IVMS[i], start = Math.min(midnightUTC(), Date.now() - 180 * ms);
+    const r = await fetch(`${REST}/fapi/v1/klines?symbol=${sym}&interval=${i}&startTime=${start}&limit=1500`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return (await r.json()).map(a => ({ t: +a[0], o: +a[1], h: +a[2], l: +a[3], c: +a[4], v: +a[5], tb: +a[9] }));
+  }
+  async function loadAll(g) {
+    try {
+      const sym = A.sym;
+      const [k1, k5, k15, t] = await Promise.all([
+        fetchKlines(sym, '1m'), fetchKlines(sym, '5m'), fetchKlines(sym, '15m'),
+        fetch(`${REST}/fapi/v1/ticker/24hr?symbol=${sym}`).then(r => r.json())]);
+      if (g !== gen) return;
+      S.k['1m'] = k1; S.k['5m'] = k5; S.k['15m'] = k15;
+      if (!k1.length) throw new Error('sin datos para ' + sym);
+      S.price = +t.lastPrice; S.chg = +t.priceChangePercent; S.loaded = true;
+      $('msg').hidden = true;
+      paintHeader(); dirty(); tick();
+    } catch (e) {
+      if (g !== gen) return;
+      const blocked = e instanceof TypeError;
+      $('msg').textContent = blocked
+        ? 'No llega la conexión con Binance. Si estás viendo esto dentro de la vista previa de la app de Claude, es normal: allí se bloquean las conexiones. Ábrelo desde tu GitHub Pages o en Safari/Chrome. Reintentando en 10 s…'
+        : 'Binance respondió con un error (' + e.message + '). Reintentando en 10 s…';
+      retryT = setTimeout(() => loadAll(g), 10000);
+    }
+  }
+
+  /* ---------- tiempo real ---------- */
+  function connect() {
+    if (ws) { ws.onclose = null; ws.onerror = null; try { ws.close(); } catch (e) {} }
+    const s = A.sym.toLowerCase(), g = gen;
+    const url = 'wss://fstream.binance.com/stream?streams=' +
+      [`${s}@aggTrade`, `${s}@kline_1m`, `${s}@kline_5m`, `${s}@kline_15m`, `${s}@depth20@500ms`, `${s}@forceOrder`, `${s}@ticker`].join('/');
+    let sock;
+    try { sock = new WebSocket(url); } catch (e) { setLive(false); return; }
+    ws = sock;
+    sock.onopen = () => { backoff = 1000; setLive(true); };
+    sock.onclose = () => { setLive(false); if (g === gen) setTimeout(() => { if (g === gen) connect(); }, backoff); backoff = Math.min(backoff * 2, 30000); };
+    sock.onerror = () => { try { sock.close(); } catch (e) {} };
+    sock.onmessage = ev => {
+      if (g !== gen) return;
+      const d = JSON.parse(ev.data).data; if (!d) return;
+      switch (d.e) {
+        case 'aggTrade': onTrade(d); break;
+        case 'kline': {
+          const k = d.k;
+          if (S.k[k.i]) { upsert(S.k[k.i], { t: k.t, o: +k.o, h: +k.h, l: +k.l, c: +k.c, v: +k.v, tb: +k.V }); if (k.i === iv) dirty(); }
+          break;
+        }
+        case 'depthUpdate': onBook(d); break;
+        case 'forceOrder': onLiq(d.o); break;
+        case '24hrTicker': S.chg = +d.P; S.price = +d.c; paintHeader(); break;
+      }
+    };
+  }
+  function setLive(on) {
+    $('live').classList.toggle('off', !on);
+    $('liveTxt').textContent = on ? 'En directo' : 'Reconectando';
+  }
+
+  function onTrade(d) {
+    const p = +d.p, q = +d.q, T = d.T, buy = !d.m, usd = p * q;
+    S.price = p; paintHeader();
+    if (usd >= A.bigUsd) S.big.push({ t: T, d: buy ? q : -q });
+    const k = Math.floor(T / 1000);
+    if (!S.sec || S.sec.k !== k) { closeSec(); S.sec = { k, b: 0, s: 0, hi: p, lo: p }; }
+    const b = S.sec;
+    if (buy) b.b += usd; else b.s += usd;
+    if (p > b.hi) b.hi = p; if (p < b.lo) b.lo = p;
+    const arr = S.k[iv], last = arr[arr.length - 1];
+    if (last && T >= last.t && T < last.t + IVMS[iv]) {
+      last.c = p; if (p > last.h) last.h = p; if (p < last.l) last.l = p; dirty();
+    }
+  }
+  function closeSec() {
+    const b = S.sec; if (!b) return; S.sec = null;
+    const tot = b.b + b.s, dom = Math.max(b.b, b.s);
+    if (dom >= A.sweepUsd && dom / tot >= 0.8 && (b.hi - b.lo) / b.lo >= A.sweepMove) S.sweeps.push({ t: b.k * 1000, side: b.b > b.s ? 'compra' : 'venta' });
+  }
+  function onBook(d) {
+    let bid = 0, ask = 0;
+    for (const [, q] of d.b) bid += +q;
+    for (const [, q] of d.a) ask += +q;
+    S.bid = bid; S.ask = ask;
+    const now = Date.now();
+    if (now - S.lastBookSample >= 2000 && ask + bid > 0) {
+      S.lastBookSample = now; S.bookHist.push(ask / (ask + bid) * 100);
+      if (S.bookHist.length > 150) S.bookHist.shift();
+    }
+  }
+  function onLiq(o) {
+    const t = o.T, usd = (+o.q) * (+(o.ap || o.p)), c = S.cluster;
+    if (c && t - c.last <= 20000) { c.last = t; c.n++; c.usd += usd; }
+    else { finalizeCluster(); S.cluster = { start: t, last: t, n: 1, usd }; }
+  }
+  function finalizeCluster() {
+    const c = S.cluster; if (!c) return;
+    if (c.n >= 3 || c.usd >= A.cascUsd) S.cascades.push(c);
+    S.cluster = null;
+  }
+
+  /* ---------- cabecera ---------- */
+  function paintHeader() {
+    if (S.price != null) $('price').textContent = nf(A.dec).format(S.price);
+    if (S.chg != null) {
+      const el = $('chg');
+      el.textContent = (S.chg >= 0 ? '+' : '−') + f2.format(Math.abs(S.chg)) + ' % 24 h';
+      el.style.color = S.chg >= 0 ? C.pos : C.neg;
+    }
+    document.title = S.price ? `${A.name} ${nf(A.dec).format(S.price)} · Flujo en Directo` : 'Flujo en Directo';
+  }
+
+  /* ---------- canvas ---------- */
+  function prep(cv) {
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    return { ctx, W, H };
+  }
+  function niceStep(range, target) {
+    const raw = range / target, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    for (const m of [1, 2, 2.5, 5, 10]) if (m * mag >= raw) return m * mag;
+    return 10 * mag;
+  }
+  function tag(ctx, x, y, w, text, bg, fg, font) {
+    ctx.font = font; ctx.fillStyle = bg; ctx.fillRect(x, y - 10, w, 20);
+    ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText(text, x + 6, y + 1);
+  }
+
+  function drawChart() {
+    const arr = S.k[iv]; if (!arr.length) return;
+    const { ctx, W, H } = prep($('chart'));
+    const narrow = W < 520;
+    const axisW = narrow ? 66 : 80, axisH = 24, pw = W - axisW, ph = H - axisH;
+    const slot = narrow ? 7 : 9;
+    const n = Math.max(1, Math.min(arr.length, Math.floor((pw - 10) / slot)));
+    const vis = arr.slice(-n), off = arr.length - n, ivms = IVMS[iv];
+
+    const mid = midnightUTC(); let pv = 0, vv = 0; const vw = new Array(arr.length).fill(null);
+    arr.forEach((c, i) => { if (c.t < mid) return; pv += (c.h + c.l + c.c) / 3 * c.v; vv += c.v; vw[i] = pv / vv; });
+    const vwapNow = vv ? pv / vv : null;
+
+    let hi = -Infinity, lo = Infinity;
+    vis.forEach(c => { if (c.h > hi) hi = c.h; if (c.l < lo) lo = c.l; });
+    if (vwapNow && Math.abs(vwapNow - vis[vis.length - 1].c) / vwapNow < 0.03) { hi = Math.max(hi, vwapNow); lo = Math.min(lo, vwapNow); }
+    const pad = (hi - lo) * 0.07 || hi * 0.001; hi += pad; lo -= pad;
+    const y = p => ph * (hi - p) / (hi - lo);
+    const x = i => 4 + (pw - 10) - (n - i - 0.5) * slot;
+
+    const step = niceStep(hi - lo, ph / 60);
+    const axDec = step >= 1 ? 0 : step >= 0.1 ? 1 : 2, fAx = nf(axDec);
+    const fTag = nf(Math.max(axDec, A.dec >= 2 && step < 5 ? 2 : axDec));
+    ctx.font = `${narrow ? 11 : 12}px ${css('--f-data')}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    for (let p = Math.ceil(lo / step) * step; p <= hi; p += step) {
+      const yy = Math.round(y(p)) + 0.5;
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(pw, yy); ctx.stroke();
+      ctx.fillStyle = C.muted; ctx.fillText(fAx.format(p), pw + 8, yy);
+    }
+    const cands = [15, 30, 60, 120, 180, 240, 360, 720, 1440].map(m => m * MIN);
+    const tstep = cands.find(s => s / ivms * slot >= 80) || cands[cands.length - 1];
+    ctx.textAlign = 'center';
+    vis.forEach((c, i) => {
+      if (c.t % tstep !== 0) return;
+      const xx = Math.round(x(i)) + 0.5;
+      ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(xx, 0); ctx.lineTo(xx, ph); ctx.stroke();
+      ctx.fillStyle = C.muted;
+      ctx.fillText(new Date(c.t).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), xx, ph + axisH / 2);
+    });
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(pw + 0.5, 0); ctx.lineTo(pw + 0.5, ph); ctx.stroke();
+
+    const rows = Math.max(30, Math.floor(ph / 6)), binH = (hi - lo) / rows;
+    const buy = new Float64Array(rows), sell = new Float64Array(rows);
+    const clampI = v => Math.max(0, Math.min(rows - 1, v));
+    vis.forEach(c => {
+      const a = clampI(Math.floor((c.l - lo) / binH)), b = clampI(Math.floor((c.h - lo) / binH)), k = b - a + 1;
+      for (let i = a; i <= b; i++) { buy[i] += c.tb / k; sell[i] += (c.v - c.tb) / k; }
+    });
+    let maxV = 0, poc = 0;
+    for (let i = 0; i < rows; i++) { const t = buy[i] + sell[i]; if (t > maxV) { maxV = t; poc = i; } }
+    const maxW = pw * (narrow ? 0.26 : 0.2), rowPx = ph / rows;
+    ctx.globalAlpha = 0.6;
+    for (let i = 0; i < rows && maxV; i++) {
+      const top = y(lo + (i + 1) * binH), h = Math.max(1, rowPx - 1);
+      const wb = buy[i] / maxV * maxW, wsl = sell[i] / maxV * maxW;
+      ctx.fillStyle = C.buy; ctx.fillRect(0, top, wb, h);
+      ctx.fillStyle = C.sell; ctx.fillRect(wb, top, wsl, h);
+    }
+    ctx.globalAlpha = 1;
+    if (maxV) {
+      const yp = y(lo + (poc + 0.5) * binH);
+      ctx.strokeStyle = C.vwap; ctx.globalAlpha = 0.35; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(0, yp); ctx.lineTo(maxW * 1.15, yp); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.lineWidth = 1;
+      ctx.fillStyle = C.vwap; ctx.font = `10px ${css('--f-data')}`; ctx.textAlign = 'left';
+      ctx.fillText('POC', maxW * 1.15 + 4, yp);
+    }
+
+    const bw = Math.max(1, Math.floor(slot * 0.62));
+    vis.forEach((c, i) => {
+      const xx = Math.round(x(i)), col = c.c >= c.o ? C.up : C.down;
+      ctx.strokeStyle = col; ctx.beginPath(); ctx.moveTo(xx + 0.5, y(c.h)); ctx.lineTo(xx + 0.5, y(c.l)); ctx.stroke();
+      const y1 = y(Math.max(c.o, c.c)), y2 = y(Math.min(c.o, c.c));
+      ctx.fillStyle = col; ctx.fillRect(xx - Math.floor(bw / 2), y1, bw + (bw % 2 ? 0 : 1), Math.max(1, y2 - y1));
+    });
+
+    ctx.strokeStyle = C.vwap; ctx.lineWidth = 1.6; ctx.beginPath(); let started = false;
+    vis.forEach((c, i) => { const v = vw[off + i]; if (v == null) return; const xx = x(i), yy = y(v); started ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); started = true; });
+    ctx.stroke(); ctx.lineWidth = 1;
+
+    const last = vis[vis.length - 1].c, yl = y(last);
+    ctx.setLineDash([2, 3]); ctx.strokeStyle = C.muted;
+    ctx.beginPath(); ctx.moveTo(0, yl); ctx.lineTo(pw, yl); ctx.stroke(); ctx.setLineDash([]);
+
+    const font = `500 ${narrow ? 11 : 12}px ${css('--f-data')}`;
+    if (vwapNow) {
+      let yv = y(vwapNow);
+      if (Math.abs(yv - yl) < 22) yv = yv < yl ? yl - 22 : yl + 22;
+      yv = Math.max(10, Math.min(ph - 10, yv));
+      tag(ctx, pw - 50, yv, 50, 'VWAP', C.vwap, C.bg, font);
+      tag(ctx, pw + 1, yv, axisW - 1, fTag.format(vwapNow), C.vwap, C.bg, font);
+    }
+    tag(ctx, pw + 1, Math.max(10, Math.min(ph - 10, yl)), axisW - 1, fTag.format(last), C.fg, C.bg, font);
+  }
+
+  function spark(id, vals, kind, c1, c2) {
+    const { ctx, W, H } = prep($(id));
+    ctx.fillStyle = C.line; ctx.fillRect(0, kind === 'bi' ? H / 2 : H - 1, W, 1);
+    if (!vals.length) return;
+    const n = vals.length;
+    if (kind === 'line') {
+      const mn = Math.min(40, ...vals), mx = Math.max(60, ...vals);
+      const yy = v => H - 2 - (v - mn) / (mx - mn) * (H - 4), xx = i => n === 1 ? W : i / (n - 1) * W;
+      ctx.setLineDash([2, 3]); ctx.strokeStyle = C.muted; ctx.beginPath(); ctx.moveTo(0, yy(50)); ctx.lineTo(W, yy(50)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); vals.forEach((v, i) => i ? ctx.lineTo(xx(i), yy(v)) : ctx.moveTo(xx(i), yy(v)));
+      ctx.strokeStyle = c1; ctx.lineWidth = 1.5; ctx.stroke(); ctx.lineWidth = 1;
+      ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.globalAlpha = 0.15; ctx.fillStyle = c1; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.fillStyle = c1; ctx.beginPath(); ctx.arc(W - 2, yy(vals[n - 1]), 2.5, 0, 7); ctx.fill();
+      return;
+    }
+    const gap = n > 30 ? 1 : 2, bw = Math.max(1, (W - (n - 1) * gap) / n);
+    const m = Math.max(1e-9, ...vals.map(Math.abs));
+    vals.forEach((v, i) => {
+      const x = i * (bw + gap);
+      if (kind === 'bi') {
+        const h = Math.abs(v) / m * (H / 2 - 1); ctx.fillStyle = v >= 0 ? c1 : c2;
+        ctx.fillRect(x, v >= 0 ? H / 2 - h : H / 2, bw, Math.max(v ? 1 : 0, h));
+      } else {
+        const h = v / m * (H - 1); ctx.fillStyle = c1; ctx.fillRect(x, H - h, bw, v > 0 ? Math.max(1, h) : 0);
+      }
+    });
+  }
+
+  const agoMin = t => Math.max(0, Math.round((Date.now() - t) / MIN));
+  function buckets(events, count, size, getT) {
+    const out = new Array(count).fill(0), now = Date.now();
+    events.forEach(e => { const k = Math.floor((now - getT(e)) / size); if (k >= 0 && k < count) out[count - 1 - k]++; });
+    return out;
+  }
+
+  function tick() {
+    if (!S.loaded) return;
+    const now = Date.now();
+    if (S.sec && S.sec.k < Math.floor(now / 1000) - 1) closeSec();
+    if (S.cluster && now - S.cluster.last > 20000) finalizeCluster();
+    S.big = S.big.filter(e => now - e.t < 15 * MIN);
+    S.sweeps = S.sweeps.filter(e => now - e.t < HOUR);
+    S.cascades = S.cascades.filter(e => now - e.start < HOUR);
+    const age = Math.floor((now - S.opened) / MIN);
+
+    const m1 = S.k['1m'].slice(-60), dl = m1.map(c => 2 * c.tb - c.v);
+    if (m1.length) {
+      const d15 = dl.slice(-15).reduce((a, b) => a + b, 0);
+      const el = $('vDelta'); el.textContent = signed(d15); el.style.color = d15 >= 0 ? C.pos : C.neg;
+      $('cDelta').textContent = (d15 >= 0 ? 'mandan los compradores' : 'mandan los vendedores') + ` · ${A.unit}`;
+      spark('sDelta', dl, 'bi', C.pos, C.neg);
+      $('vVol').textContent = f1.format(m1.reduce((a, c) => a + c.v, 0));
+      spark('sVol', m1.map(c => c.v), 'bars', C.muted);
+    }
+
+    if (S.ask + S.bid > 0) {
+      const ap = S.ask / (S.ask + S.bid) * 100, sellSide = ap >= 50;
+      const el = $('vBook'); el.textContent = f0.format(sellSide ? ap : 100 - ap) + ' %';
+      el.style.color = sellSide ? C.sell : C.buy;
+      $('cBook').textContent = sellSide ? 'esperando para vender' : 'esperando para comprar';
+      spark('sBook', S.bookHist, 'line', sellSide ? C.sell : C.buy);
+    }
+
+    const bd = S.big.reduce((a, e) => a + e.d, 0);
+    const be = $('vBig'); be.textContent = signed(bd); be.style.color = bd > 0 ? C.pos : bd < 0 ? C.neg : C.fg;
+    $('cBig').textContent = bd > 0 ? 'los grandes compran' : bd < 0 ? 'los grandes venden' : 'sin órdenes grandes';
+    $('wBig').textContent = age < 15 ? `desde hace ${age} min` : '15 min';
+    const bb = new Array(15).fill(0);
+    S.big.forEach(e => { const k = Math.floor((now - e.t) / MIN); if (k < 15) bb[14 - k] += e.d; });
+    spark('sBig', bb, 'bi', C.pos, C.neg);
+
+    const wnd = age < 60 ? `desde hace ${age} min` : 'última hora';
+    $('wSw').textContent = wnd; $('wCa').textContent = wnd;
+    $('vSw').textContent = S.sweeps.length; $('vSw').style.color = C.buy;
+    const ls = S.sweeps[S.sweeps.length - 1];
+    $('cSw').textContent = ls ? `el último hace ${agoMin(ls.t)} min, de ${ls.side}` : 'ninguno todavía';
+    spark('sSw', buckets(S.sweeps, 12, 5 * MIN, e => e.t), 'bars', C.buy);
+
+    const live = S.cluster && (S.cluster.n >= 3 || S.cluster.usd >= A.cascUsd);
+    const all = live ? S.cascades.concat([S.cluster]) : S.cascades;
+    $('vCa').textContent = all.length; $('vCa').style.color = C.amber;
+    const lc = all[all.length - 1];
+    $('cCa').textContent = live ? 'hay una en marcha ahora' : lc ? `la última hace ${agoMin(lc.start)} min` : 'ninguna todavía';
+    spark('sCa', buckets(all, 12, 5 * MIN, e => e.start), 'bars', C.amber);
+  }
+
+  let pending = false;
+  function dirty() { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; if (S.loaded) drawChart(); }); }
+
+  document.querySelectorAll('[data-iv]').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.iv === iv);
+    b.addEventListener('click', () => {
+      iv = b.dataset.iv; store.set('flujo-iv', iv);
+      document.querySelectorAll('[data-iv]').forEach(x => x.setAttribute('aria-pressed', x === b));
+      dirty();
+    });
+  });
+  document.querySelectorAll('[data-as]').forEach(b => b.addEventListener('click', () => { if (b.dataset.as !== assetKey) selectAsset(b.dataset.as); }));
+  window.addEventListener('hashchange', () => { const h = location.hash.replace('#', ''); if (ASSETS[h] && h !== assetKey) selectAsset(h); });
+  new ResizeObserver(() => { dirty(); tick(); }).observe(document.body);
+  setInterval(tick, 1000);
+  setInterval(() => {
+    const g = gen, sym = A.sym;
+    Promise.all(['1m', '5m', '15m'].map(i => fetchKlines(sym, i))).then(([a, b, c]) => {
+      if (g !== gen) return; S.k['1m'] = a; S.k['5m'] = b; S.k['15m'] = c; dirty();
+    }).catch(() => {});
+  }, 10 * MIN);
+
+  selectAsset(assetKey);
+})();
+</script>
+</body>
+</html>
