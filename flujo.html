@@ -30,6 +30,7 @@
   --f-data:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0;background:var(--bg);color:var(--fg)}
 body{
   font:14px/1.4 var(--f-body);
@@ -147,7 +148,7 @@ footer{font:11px var(--f-data);color:var(--muted);line-height:1.6}
 
   const store = { get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const fromHash = location.hash.replace('#', '');
-  let A, S, gen = 0, ws = null, backoff = 1000, retryT = null;
+  let A, S, gen = 0, retryT = null;
   let iv = IVMS[store.get('flujo-iv', '5m')] ? store.get('flujo-iv', '5m') : '5m';
   let assetKey = ASSETS[fromHash] ? fromHash : (ASSETS[store.get('flujo-as', 'oro')] ? store.get('flujo-as', 'oro') : 'oro');
 
@@ -214,32 +215,51 @@ footer{font:11px var(--f-data);color:var(--muted);line-height:1.6}
   }
 
   /* ---------- tiempo real ---------- */
+  // Binance separa los flujos de futuros: /market (operaciones, velas, ticker, liquidaciones) y /public (libro).
+  // Si una ruta no envía nada en 12 s se prueba la otra (la antigua sin prefijo).
+  const socks = {};
   function connect() {
-    if (ws) { ws.onclose = null; ws.onerror = null; try { ws.close(); } catch (e) {} }
     const s = A.sym.toLowerCase(), g = gen;
-    const url = 'wss://fstream.binance.com/stream?streams=' +
-      [`${s}@aggTrade`, `${s}@kline_1m`, `${s}@kline_5m`, `${s}@kline_15m`, `${s}@depth20@500ms`, `${s}@forceOrder`, `${s}@ticker`].join('/');
+    Object.values(socks).forEach(x => { if (x.ws) { x.ws.onclose = null; try { x.ws.close(); } catch (e) {} } clearTimeout(x.dog); });
+    openSock('market', ['/market', ''], [`${s}@aggTrade`, `${s}@kline_1m`, `${s}@kline_5m`, `${s}@kline_15m`, `${s}@forceOrder`, `${s}@ticker`], g);
+    openSock('book', ['/public', ''], [`${s}@depth20@500ms`], g);
+  }
+  function openSock(name, paths, streams, g, pi = 0, delay = 1000) {
+    if (g !== gen) return;
+    const url = `wss://fstream.binance.com${paths[pi]}/stream?streams=${streams.join('/')}`;
+    const x = socks[name] = { live: false };
     let sock;
-    try { sock = new WebSocket(url); } catch (e) { setLive(false); return; }
-    ws = sock;
-    sock.onopen = () => { backoff = 1000; setLive(true); };
-    sock.onclose = () => { setLive(false); if (g === gen) setTimeout(() => { if (g === gen) connect(); }, backoff); backoff = Math.min(backoff * 2, 30000); };
+    try { sock = new WebSocket(url); } catch (e) { return retry(); }
+    x.ws = sock;
+    x.dog = setTimeout(() => { if (!x.got) { sock.onclose = null; try { sock.close(); } catch (e) {} retry(true); } }, 12000);
+    sock.onopen = () => { x.live = true; paintLive(); };
+    sock.onclose = () => retry();
     sock.onerror = () => { try { sock.close(); } catch (e) {} };
     sock.onmessage = ev => {
       if (g !== gen) return;
-      const d = JSON.parse(ev.data).data; if (!d) return;
-      switch (d.e) {
-        case 'aggTrade': onTrade(d); break;
-        case 'kline': {
-          const k = d.k;
-          if (S.k[k.i]) { upsert(S.k[k.i], { t: k.t, o: +k.o, h: +k.h, l: +k.l, c: +k.c, v: +k.v, tb: +k.V }); if (k.i === iv) dirty(); }
-          break;
-        }
-        case 'depthUpdate': onBook(d); break;
-        case 'forceOrder': onLiq(d.o); break;
-        case '24hrTicker': S.chg = +d.P; S.price = +d.c; paintHeader(); break;
-      }
+      if (!x.got) { x.got = true; delay = 1000; }
+      const d = JSON.parse(ev.data).data; if (d) handle(d);
     };
+    function retry(switchPath) {
+      clearTimeout(x.dog); x.live = false; paintLive();
+      if (g !== gen) return;
+      const npi = (switchPath || !x.got) ? (pi + 1) % paths.length : pi;
+      setTimeout(() => openSock(name, paths, streams, g, npi, Math.min(delay * 2, 30000)), delay);
+    }
+  }
+  function paintLive() { setLive(!!(socks.market && socks.market.live)); }
+  function handle(d) {
+    switch (d.e) {
+      case 'aggTrade': onTrade(d); break;
+      case 'kline': {
+        const k = d.k;
+        if (S.k[k.i]) { upsert(S.k[k.i], { t: k.t, o: +k.o, h: +k.h, l: +k.l, c: +k.c, v: +k.v, tb: +k.V }); if (k.i === iv) dirty(); }
+        break;
+      }
+      case 'depthUpdate': onBook(d); break;
+      case 'forceOrder': onLiq(d.o); break;
+      case '24hrTicker': S.chg = +d.P; S.price = +d.c; paintHeader(); break;
+    }
   }
   function setLive(on) {
     $('live').classList.toggle('off', !on);
