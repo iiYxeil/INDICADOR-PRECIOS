@@ -807,11 +807,16 @@ function spark(m) {
   const d = Array(dias).fill(0);
   for (const x of movsDe(m)) d[+x.fecha.slice(8) - 1] += x.tipo === 'ingreso' ? x.importe : -x.importe;
   for (let i = 1; i < dias; i++) d[i] += d[i - 1];
-  const vals = d.slice(0, vivos), lo = Math.min(0, ...vals), hi = Math.max(1, ...vals);
-  const W = 400, H = 92, P = 10;
-  const X = i => i / (dias - 1) * W, Y = v => P + (hi - v) / ((hi - lo) || 1) * (H - P * 2);
-  const pts = vals.map((v, i) => [X(i), Y(v)]);
-  if (pts.length === 1) pts.unshift([0, pts[0][1]]);
+  const vals = d.slice(0, vivos);
+  /* Una nomina aplastaria todo lo demas: la escala se ajusta a lo que pasa desde
+     la mayor entrada de dinero, para que cada gasto se note en la linea */
+  let pico = 0, salto = -Infinity;
+  vals.forEach((v, i) => { const s = v - (i ? vals[i - 1] : 0); if (s > salto) { salto = s; pico = i; } });
+  const tramo = vals.slice(pico), loT = Math.min(...tramo), hiT = Math.max(...tramo), rango = (hiT - loT) || Math.max(Math.abs(hiT), 100);
+  const hi = hiT + rango * .12, lo = loT - rango * .12;
+  const W = 400, H = 92, P = 8, M = 16;
+  const X = i => M + i / (dias - 1) * (W - M * 2), Y = v => Math.max(P, Math.min(H - 2, P + (hi - v) / (hi - lo) * (H - P * 2)));
+  const pts = [[0, Y(vals[0])]].concat(vals.map((v, i) => [X(i), Y(v)]));
   let linea = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx = (x0 + x1) / 2;
