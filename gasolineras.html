@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Gasolineras Tudela</title>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Gasolineras" name="apple-mobile-web-app-title"/>
+<meta content="Gasolineras" name="application-name"/>
+<meta content="#1b2a66" id="tema" name="theme-color"/>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23141a46'/%3E%3Crect x='14' y='9' width='36' height='46' rx='3' fill='%230c0e22'/%3E%3Crect x='14' y='9' width='36' height='13' rx='3' fill='%23ffb627'/%3E%3Crect x='20' y='29' width='24' height='4' fill='%23ffb627'/%3E%3Crect x='20' y='38' width='24' height='4' fill='%23ffb627' opacity='.5'/%3E%3C/svg%3E" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/big-shoulders-display@5.3.0/latin-800.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/big-shoulders-display@5.3.0/latin-900.css" rel="stylesheet"/>
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#eef0f7; --raise:#ffffff; --hundido:#e2e5f0;
+    --ink:#161a3e; --ink-2:#464b72; --muted:#646989;
+    --line:rgba(22,26,62,.14); --line-2:rgba(22,26,62,.28);
+    --barato:#0a5fa8; --caro:#bf4215; --rio:#a9cdea;
+    --r0:#0a5fa8; --r1:#5fa3d6; --r2:#a6a9b8; --r3:#efa176; --r4:#c8481a;
+    --led:#ffb627; --led-apagado:rgba(255,182,39,.085);
+    --plate:#0c0e22; --plate-ink:#c9cbe2; --plate-line:rgba(255,255,255,.12);
+    --sombra:0 1px 2px rgba(22,26,62,.06), 0 12px 30px -18px rgba(22,26,62,.32);
+    --disp:"Big Shoulders Display","Barlow Condensed","Arial Narrow",Impact,sans-serif;
+    --sans:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --bg:#11142b; --raise:#1a1e3e; --hundido:#0c0e22;
+      --ink:#f2f2f9; --ink-2:#c3c5dc; --muted:#9799b8;
+      --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.26);
+      --barato:#7cd0ff; --caro:#ff9a62; --rio:#2c3f78;
+      --r0:#7cd0ff; --r1:#3e86bf; --r2:#777a99; --r3:#b8683f; --r4:#ff9a62;
+      --sombra:0 1px 2px rgba(0,0,0,.4), 0 14px 32px -18px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#11142b; --raise:#1a1e3e; --hundido:#0c0e22;
+    --ink:#f2f2f9; --ink-2:#c3c5dc; --muted:#9799b8;
+    --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.26);
+    --barato:#7cd0ff; --caro:#ff9a62; --rio:#2c3f78;
+    --r0:#7cd0ff; --r1:#3e86bf; --r2:#777a99; --r3:#b8683f; --r4:#ff9a62;
+    --sombra:0 1px 2px rgba(0,0,0,.4), 0 14px 32px -18px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%;background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  button,input{font:inherit;color:inherit}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--led);outline-offset:2px}
+
+  /* ---------- el cielo cambia con la hora real de Tudela ---------- */
+  .escena{position:relative;overflow:hidden;color:var(--s-ink);
+          background:linear-gradient(180deg,var(--s1) 0%,var(--s2) 46%,var(--s3) 74%,var(--s4) 92%);
+          --halo:.0;--charco:0;--estrellas:0;--sol-o:0}
+  .escena[data-cielo="alba"]{--s1:#26336f;--s2:#7d5a9e;--s3:#f2a58f;--s4:#ffd9a0;
+    --lejos:#c79bb0;--far2:#7e6592;--arcen:#3d3162;--asfalto:#2c2748;--linea:rgba(255,255,255,.5);
+    --far:#8a6f9c;--mid:#5d4a7e;--veta:#74598f;--roca:#46375f;--sol:#ffe2a8;--sol-o:1;
+    --s-ink:#fff;--s-ink-2:rgba(255,255,255,.84);--halo:.16;--charco:.16;--estrellas:.35}
+  .escena[data-cielo="dia"]{--s1:#2f7fd6;--s2:#74b6ee;--s3:#c9e4f4;--s4:#f4ecd8;
+    --lejos:#e9dfc9;--far2:#cdb992;--arcen:#d6bf94;--asfalto:#4a4e68;--linea:rgba(255,255,255,.72);
+    --far:#d9c8a8;--mid:#c29b6c;--veta:#e0c79f;--roca:#a47a4c;--sol:#fff;--sol-o:0;
+    --s-ink:#0d1a4a;--s-ink-2:#14275e;--halo:0;--charco:0;--estrellas:0}
+  .escena[data-cielo="ocaso"]{--s1:#1b1f56;--s2:#7a2f7c;--s3:#ee6c4d;--s4:#ffc35e;
+    --lejos:#9c3f77;--far2:#4c2560;--arcen:#1c1440;--asfalto:#23203f;--linea:rgba(255,255,255,.45);
+    --far:#5a2c66;--mid:#2f2052;--veta:#452a68;--roca:#231743;--sol:#ffe08a;--sol-o:1;
+    --s-ink:#fff;--s-ink-2:rgba(255,255,255,.86);--halo:.28;--charco:.26;--estrellas:.5}
+  .escena[data-cielo="noche"]{--s1:#070a22;--s2:#121848;--s3:#25286a;--s4:#3f3a80;
+    --lejos:#262c70;--far2:#20265e;--arcen:#0c0f2c;--asfalto:#1b1e3e;--linea:rgba(255,255,255,.4);
+    --far:#1c2257;--mid:#141941;--veta:#1f2558;--roca:#0e1233;--sol:#fff;--sol-o:0;
+    --s-ink:#fff;--s-ink-2:rgba(255,255,255,.82);--halo:.42;--charco:.4;--estrellas:1}
+
+  .paisaje{position:absolute;left:50%;bottom:0;width:1600px;height:720px;margin-left:-800px;
+           pointer-events:none}
+  .portada{position:relative;z-index:1;max-width:520px;margin:0 auto;
+           padding:max(18px,env(safe-area-inset-top)) 16px 40px}
+  .cabeza{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .marca{font-family:var(--disp);font-weight:800;font-size:23px;line-height:1;letter-spacing:.01em}
+  .cabeza a{font-size:14px;font-weight:600;color:var(--s-ink-2);text-underline-offset:3px}
+
+  .cuerpo{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+  .ahorro{padding-top:14px;min-width:0}
+  .ahorro small{display:block;font-size:15px;font-weight:600;line-height:1.2;color:var(--s-ink-2)}
+  .ahorro b{display:block;font-family:var(--disp);font-weight:900;
+            font-size:clamp(50px,14.6vw,72px);line-height:.92;letter-spacing:-.005em;
+            margin:5px 0 6px;white-space:nowrap}
+  .ahorro b[data-largo="5"]{font-size:clamp(42px,12vw,60px)}
+  .ahorro b[data-largo="6"]{font-size:clamp(36px,10vw,50px)}
+  .ahorro p{margin:0;font-size:14px;font-weight:500;line-height:1.22;color:var(--s-ink-2)}
+
+  /* ---------- el tótem de precios ---------- */
+  .totem{width:clamp(222px,61vw,262px);position:relative}
+  .caja{background:linear-gradient(180deg,#191c3c,#0c0e22);border-radius:7px;overflow:hidden;
+        box-shadow:0 0 0 1px rgba(255,255,255,.14),
+                   0 26px 44px -22px rgba(4,6,30,.8),
+                   0 0 70px rgba(255,182,39,var(--halo))}
+  .rotulo{background:var(--led);color:#17112c;padding:12px 14px 13px;min-height:98px;
+          display:flex;flex-direction:column;justify-content:space-between;gap:7px}
+  .rotulo small{font-size:12.5px;font-weight:700;line-height:1.1}
+  .rotulo strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+                 font-family:var(--disp);font-weight:900;line-height:.98;letter-spacing:.005em;
+                 font-size:39px;overflow-wrap:anywhere}
+  .rotulo strong[data-largo="m"]{font-size:31px}
+  .rotulo strong[data-largo="l"]{font-size:25px}
+  .rotulo strong[data-largo="xl"]{font-size:21px}
+  .surtidor{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px 9px 11px;
+            background:none;border:0;border-top:1px solid var(--plate-line);cursor:pointer;
+            color:rgba(201,203,226,.72);text-align:left;position:relative}
+  .surtidor:first-of-type{border-top:0}
+  .surtidor .sello{flex:none;display:grid;place-items:center;width:23px;height:23px;
+       border:1.5px solid currentColor;font-size:10px;font-weight:700;line-height:1;letter-spacing:-.01em}
+  .surtidor .sello.ci{border-radius:50%}
+  .surtidor .sello.cu{border-radius:3px}
+  .surtidor .nom{flex:1;min-width:0;font-size:12.5px;font-weight:600;line-height:1.08}
+  .surtidor .led{flex:none;width:clamp(84px,24vw,104px);opacity:.66;transition:opacity .25s ease}
+  .surtidor[aria-pressed="true"]{color:#fff;background:rgba(255,182,39,.1)}
+  .surtidor[aria-pressed="true"]::before{content:"";position:absolute;left:0;top:7px;bottom:7px;
+       width:3px;border-radius:0 2px 2px 0;background:var(--led)}
+  .surtidor[aria-pressed="true"] .led{opacity:1;filter:drop-shadow(0 0 5px rgba(255,182,39,.6))}
+  .estado{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;
+          border-top:1px solid var(--plate-line);font-size:12.5px;font-weight:600;color:var(--plate-ink)}
+  .estado span:last-child{white-space:nowrap}
+  .patas{display:flex;justify-content:space-between;height:30px;padding:0 34px}
+  .patas i{display:block;width:11px;background:linear-gradient(90deg,#2b2f55,#0f1230)}
+  .led svg{display:block;width:100%;height:auto}
+  .led .fantasma{fill:var(--led-apagado)}
+  .led .luz{fill:var(--led)}
+
+  /* ---------- hoja ---------- */
+  .hoja{max-width:520px;margin:0 auto;padding:10px 16px 46px}
+  .ir{display:block;padding:15px 18px;border-radius:12px;background:var(--led);color:#17112c;
+      font-weight:700;font-size:17px;text-align:center;text-decoration:none}
+  .ir:active{transform:translateY(1px)}
+  #donde{margin:11px 2px 2px;font-size:15px;font-weight:500;color:var(--ink-2)}
+  #fuente{margin:0 2px;font-size:13px;color:var(--muted)}
+  #aviso{display:none;margin:0 0 14px;padding:13px 15px;border-radius:12px;font-size:14.5px;
+         line-height:1.45;font-weight:500;background:var(--raise);border:1.5px solid var(--caro)}
+  #aviso.on{display:block}
+  #aviso button{display:block;margin-top:10px;padding:9px 15px;border-radius:9px;
+                border:1px solid var(--line-2);background:none;font-weight:600;cursor:pointer}
+
+  .mandos{margin-top:26px}
+  .fila-mandos{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .seg{display:inline-flex;padding:3px;gap:2px;border-radius:12px;background:var(--hundido)}
+  .seg button{min-height:40px;padding:0 13px;border:0;border-radius:9px;background:none;cursor:pointer;
+              font-size:14.5px;font-weight:600;color:var(--ink-2);white-space:nowrap;
+              transition:background .15s ease,color .15s ease}
+  .seg button[aria-pressed="true"]{background:var(--raise);color:var(--ink);box-shadow:0 1px 3px rgba(10,12,40,.22)}
+  .interruptor{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;
+               color:var(--ink-2);cursor:pointer;white-space:nowrap}
+  .interruptor input{position:absolute;opacity:0;width:1px;height:1px}
+  .interruptor i{position:relative;width:44px;height:26px;border-radius:13px;background:var(--hundido);
+                 box-shadow:inset 0 0 0 1px var(--line);transition:background .15s ease}
+  .interruptor i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;
+                 background:var(--raise);box-shadow:0 1px 3px rgba(10,12,40,.35);transition:transform .15s ease}
+  .interruptor input:checked + i{background:var(--led)}
+  .interruptor input:checked + i::after{transform:translateX(18px);background:#fff}
+  .interruptor input:focus-visible + i{outline:2px solid var(--led);outline-offset:2px}
+  .frase{margin:14px 2px 0;font-size:15.5px;line-height:2.05;color:var(--ink-2)}
+  .frase input{width:3.3ch;height:1.45em;padding:0 2px;border:0;border-bottom:2px solid var(--line-2);
+               border-radius:0;background:none;text-align:center;font-weight:700;font-size:16px;color:var(--ink)}
+  .frase input#consumo{width:3.9ch}
+  .frase button{padding:0;border:0;background:none;font-weight:700;color:var(--ink);cursor:pointer;
+                text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:4px;
+                text-decoration-thickness:2px}
+
+  h2{margin:0;font-family:var(--disp);font-weight:800;font-size:33px;line-height:1.02;letter-spacing:.003em}
+  .sub{margin:6px 2px 0;font-size:15px;color:var(--ink-2)}
+  .figura{margin-top:40px}
+  .figura svg{display:block;width:100%;height:auto;touch-action:manipulation}
+  #franja{margin-top:16px;cursor:pointer}
+  #radar{margin:24px auto 0;max-width:430px;cursor:pointer}
+  .t{font-family:var(--sans);font-size:12px;font-weight:500;fill:var(--muted)}
+  .t.f{font-weight:600;fill:var(--ink-2);font-size:12.5px}
+  .t.halo{paint-order:stroke;stroke:var(--bg);stroke-width:3.5px;stroke-linejoin:round}
+  .c0{fill:var(--r0)} .c1{fill:var(--r1)} .c2{fill:var(--r2)} .c3{fill:var(--r3)} .c4{fill:var(--r4)}
+  .aro{stroke:var(--bg);stroke-width:2px}
+  .leyenda{display:flex;align-items:center;gap:9px;margin:14px auto 0;max-width:430px;
+           font-size:13px;color:var(--muted)}
+  .leyenda .esc{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;flex:1;height:8px}
+  .leyenda .esc i:first-child{border-radius:4px 0 0 4px}
+  .leyenda .esc i:last-child{border-radius:0 4px 4px 0}
+  .leyenda .b0{background:var(--r0)} .leyenda .b1{background:var(--r1)} .leyenda .b2{background:var(--r2)}
+  .leyenda .b3{background:var(--r3)} .leyenda .b4{background:var(--r4)}
+  .pie-fig{margin:7px auto 0;max-width:430px;font-size:13px;line-height:1.4;color:var(--muted)}
+
+  #sel{margin-top:16px;background:var(--raise);border-radius:14px;box-shadow:var(--sombra)}
+  .sel-in{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:13px 14px}
+  .sel-fin{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:10px 14px;border-top:1px solid var(--line);font-size:14.5px;font-weight:600}
+
+  .placa{display:block;background:var(--plate);border-radius:5px;padding:6px 7px;width:88px;flex:none}
+  .nombre{display:block;font-family:var(--disp);font-weight:800;font-size:20.5px;line-height:1.04;
+          letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dir{display:block;font-size:13.5px;line-height:1.25;color:var(--ink-2);margin-top:2px;
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dat{display:flex;flex-wrap:wrap;gap:0 9px;font-size:13px;line-height:1.3;color:var(--muted);margin-top:3px}
+  .baja{color:var(--barato)} .sube{color:var(--caro)}
+
+  .lista{margin-top:42px}
+  .lista-cabeza{display:flex;flex-direction:column;gap:12px;margin-bottom:13px}
+  #lista{background:var(--raise);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
+  .fila{border-top:1px solid var(--line)}
+  .fila:first-child{border-top:0}
+  .fila summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:11px;align-items:center;
+                padding:12px 13px;cursor:pointer;list-style:none}
+  .fila summary::-webkit-details-marker{display:none}
+  .fila[open] summary{background:var(--hundido)}
+  .neto{font-family:var(--disp);font-weight:800;font-size:21px;line-height:1;white-space:nowrap;text-align:right}
+  .neto small{display:block;font-family:var(--sans);font-weight:500;font-size:11.5px;
+              color:var(--muted);margin-top:3px}
+  .detalle{padding:13px 14px 15px;background:var(--hundido)}
+  .tabla{display:grid;grid-template-columns:repeat(2,1fr);gap:7px 16px;margin:0 0 12px;font-size:14.5px}
+  .tabla div{display:flex;justify-content:space-between;gap:8px}
+  .tabla dt{color:var(--ink-2)}
+  .tabla dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+  .detalle p{margin:0 0 12px;font-size:14px;color:var(--ink-2)}
+  .ir.chica{padding:11px 14px;font-size:15px;border-radius:10px}
+  .vacio{padding:26px 18px;text-align:center;font-size:15px;color:var(--ink-2)}
+  #mas{display:none;width:100%;min-height:50px;border:0;border-top:1px solid var(--line);
+       background:none;font-weight:700;font-size:15px;cursor:pointer}
+  #mas.on{display:block}
+  .nota{margin:12px 2px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+
+  .metodo{margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .metodo summary{cursor:pointer;padding:15px 2px;font-weight:700;font-size:15.5px;list-style:none;
+                  display:flex;justify-content:space-between}
+  .metodo summary::-webkit-details-marker{display:none}
+  .metodo summary::after{content:"+";font-size:19px;line-height:1;color:var(--muted)}
+  .metodo[open] summary::after{content:"−"}
+  .metodo div{padding:0 2px 16px;font-size:15px;line-height:1.55;color:var(--ink-2)}
+  .metodo p{margin:0 0 11px;max-width:62ch}
+  .metodo p:last-child{margin:0}
+  .metodo b{color:var(--ink)}
+  .metodo code{font-family:var(--sans);font-weight:600;font-size:14px;color:var(--ink);
+               background:var(--hundido);padding:3px 7px;border-radius:5px}
+  footer{margin-top:16px;font-size:13px;line-height:1.5;color:var(--muted)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="escena" data-cielo="ocaso" id="escena">
+<svg aria-hidden="true" class="paisaje" viewBox="0 0 1600 720">
+  <defs>
+    <clipPath id="clip-medio"><path d="M0 610Q80 566 150 604T300 592Q360 548 430 596T590 606Q640 584 700 610T860 600Q930 560 1000 602T1160 592Q1230 554 1300 600T1460 598Q1520 568 1600 606V720H0Z"/></clipPath>
+    <clipPath id="clip-roca"><path d="M586 672L612 654L626 640L634 622L648 606L652 588L660 574L664 556L666 540H684L688 556L694 572L700 590L712 606L722 626L736 642L756 656L786 672Z"/></clipPath>
+    <clipPath id="clip-mesa"><path d="M0 524L150 524L176 508L330 508L356 492L520 492L546 512L600 512L624 498L700 498L720 508L860 508L888 484L1040 484L1070 506L1240 506L1270 490L1430 490L1460 518L1600 518V720H0Z"/></clipPath>
+    <radialGradient id="resol"><stop offset="0" stop-color="var(--sol)" stop-opacity=".8"/><stop offset="1" stop-color="var(--sol)" stop-opacity="0"/></radialGradient>
+    <radialGradient id="luz-suelo"><stop offset="0" stop-color="#ffb627" stop-opacity=".9"/><stop offset="1" stop-color="#ffb627" stop-opacity="0"/></radialGradient>
+  </defs>
+  <g id="estrellas" style="opacity:var(--estrellas)"></g>
+  <path d="M0 500L90 500L120 470L300 470L320 456L470 456L500 478L640 478L672 462L900 462L930 448L1120 448L1150 474L1340 474L1370 458L1600 458V720H0Z" fill="var(--lejos)"/>
+  <g style="opacity:var(--sol-o)">
+    <circle cx="742" cy="498" fill="url(#resol)" r="190"/>
+    <circle cx="742" cy="498" fill="var(--sol)" r="33"/>
+  </g>
+  <path d="M0 524L150 524L176 508L330 508L356 492L520 492L546 512L600 512L624 498L700 498L720 508L860 508L888 484L1040 484L1070 506L1240 506L1270 490L1430 490L1460 518L1600 518V720H0Z" fill="var(--far)"/>
+  <g clip-path="url(#clip-mesa)" fill="none" stroke="var(--far2)">
+    <path d="M0 520H1600" stroke-width="3"/>
+    <path d="M0 533H1600" stroke-width="5"/>
+    <path d="M0 549H1600" stroke-width="3"/>
+    <path d="M0 562H1600" stroke-width="6"/>
+  </g>
+  <path d="M0 610Q80 566 150 604T300 592Q360 548 430 596T590 606Q640 584 700 610T860 600Q930 560 1000 602T1160 592Q1230 554 1300 600T1460 598Q1520 568 1600 606V720H0Z" fill="var(--mid)"/>
+  <g clip-path="url(#clip-medio)" fill="none" stroke="var(--veta)" stroke-linecap="round">
+    <path d="M0 596C300 582 520 612 800 596S1300 582 1600 600" stroke-width="4"/>
+    <path d="M0 614C300 602 500 630 800 616S1300 604 1600 620" stroke-width="6"/>
+    <path d="M0 634C260 622 540 650 800 634S1320 622 1600 638" stroke-width="3.5"/>
+    <path d="M0 652C300 642 520 664 800 654S1300 644 1600 656" stroke-width="7"/>
+  </g>
+  <path d="M586 672L612 654L626 640L634 622L648 606L652 588L660 574L664 556L666 540H684L688 556L694 572L700 590L712 606L722 626L736 642L756 656L786 672Z" fill="var(--roca)"/>
+  <g clip-path="url(#clip-roca)" fill="none" stroke="var(--veta)">
+    <path d="M580 660C640 650 700 666 790 654" stroke-width="5"/>
+    <path d="M604 636C650 628 690 642 750 632" stroke-width="4"/>
+    <path d="M630 612C660 606 684 616 722 608" stroke-width="3.5"/>
+    <path d="M644 586C664 581 682 588 704 582" stroke-width="3"/>
+    <path d="M656 562C668 559 680 563 694 559" stroke-width="2.5"/>
+  </g>
+  <path d="M664 544L667 528L665 516H683L681 530L686 544Z" fill="var(--roca)"/>
+  <path d="M646 516L650 506L662 503L676 500L692 502L704 507L708 515L698 519L676 521L656 520Z" fill="var(--roca)"/>
+  <path d="M0 664C300 652 560 676 800 666S1300 654 1600 666V720H0Z" fill="var(--arcen)"/>
+  <ellipse cx="862" cy="676" fill="url(#luz-suelo)" rx="190" ry="20" style="opacity:var(--charco)"/>
+  <rect fill="var(--asfalto)" height="31" width="1600" y="681"/>
+  <rect fill="var(--linea)" height="1.5" width="1600" y="684"/>
+  <rect fill="var(--linea)" height="1.5" width="1600" y="707"/>
+  <path d="M0 696H1600" stroke="var(--linea)" stroke-dasharray="26 20" stroke-width="2.5"/>
+  <rect fill="var(--bg)" height="8" width="1600" y="712"/>
+</svg>
+
+<div class="portada">
+  <div class="cabeza">
+    <span class="marca">Gasolineras de Tudela</span>
+    <a href="diesel.html">¿Lleno o espero?</a>
+  </div>
+  <div class="cuerpo">
+    <div class="ahorro" id="ahorro">
+      <small id="a-et">Leyendo precios</small>
+      <b id="a-cifra"></b>
+      <p id="a-texto"></p>
+    </div>
+    <div class="totem">
+      <div class="caja">
+        <div class="rotulo">
+          <small id="t-et">La que más compensa</small>
+          <strong id="t-nombre">—</strong>
+        </div>
+        <div id="surtidores"></div>
+        <div class="estado"><span id="t-estado">&nbsp;</span><span id="t-km"></span></div>
+      </div>
+      <div aria-hidden="true" class="patas"><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<main class="hoja">
+  <div id="aviso" role="status"></div>
+  <a class="ir" id="ir" rel="noopener" target="_blank">Cómo llegar</a>
+  <p id="donde"></p>
+  <p id="fuente">Leyendo precios</p>
+
+  <section class="mandos">
+    <div class="fila-mandos">
+      <div class="seg" data-grupo="zona" role="group" aria-label="Zona">
+        <button data-v="tudela" type="button">Tudela</button>
+        <button data-v="15" type="button">15 km</button>
+        <button data-v="30" type="button">30 km</button>
+      </div>
+      <label class="interruptor"><input id="abiertas" type="checkbox"/><i></i>Abiertas</label>
+    </div>
+    <p class="frase">Echo <input aria-label="Litros" id="litros" inputmode="numeric" type="text"/> litros, gasto <input aria-label="Consumo en litros cada 100 kilómetros" id="consumo" inputmode="decimal" type="text"/> l/100 km y salgo <button id="geo" type="button">del centro de Tudela</button>.</p>
+  </section>
+
+  <section class="figura">
+    <h2 id="f-titulo">Dónde están los precios</h2>
+    <p class="sub" id="f-sub"></p>
+    <svg aria-hidden="true" id="franja" viewBox="0 0 360 78"></svg>
+    <svg aria-hidden="true" id="radar" viewBox="0 0 360 360"></svg>
+    <div class="leyenda"><span>Más barata</span><div class="esc"><i class="b0"></i><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div><span>Más cara</span></div>
+    <p class="pie-fig">Color frente a la mediana de Tudela, en tramos de 2 y 6 céntimos. El centro está ampliado para distinguir las gasolineras de la ciudad.</p>
+    <div id="sel"></div>
+  </section>
+
+  <section class="lista">
+    <div class="lista-cabeza">
+      <h2 id="lista-titulo">Gasolineras</h2>
+      <div class="seg" data-grupo="orden" role="group" aria-label="Ordenar por">
+        <button data-v="neto" type="button">Lo que compensa</button>
+        <button data-v="precio" type="button">Precio</button>
+        <button data-v="cerca" type="button">Cercanía</button>
+      </div>
+    </div>
+    <div id="lista"></div>
+    <p class="nota">Toca una gasolinera para ver todos sus precios y su horario. Los descuentos de tarjetas y apps no están incluidos.</p>
+  </section>
+
+  <details class="metodo">
+    <summary>Cómo se calcula</summary>
+    <div>
+      <p><b>El precio es un hecho.</b> Es el que cada gasolinera declara al Ministerio. Las de venta restringida a socios no aparecen.</p>
+      <p><b>Lo que compensa es una estimación.</b> Suma lo que cuesta llenar y el combustible de ir y volver, y lo compara con llenar a la mediana de Tudela.</p>
+      <p><code>ahorro = mediana × litros − precio × (litros + litros del viaje)</code></p>
+      <p>Los kilómetros son la distancia en línea recta multiplicada por 1,3, una aproximación de la carretera. No se tiene en cuenta si la gasolinera te pilla de paso.</p>
+      <p><b>Sus límites.</b> Una gasolinera puede tardar en declarar un cambio, así que manda el surtidor. El historial de subidas y bajadas empieza a contar desde que se activa el robot.</p>
+    </div>
+  </details>
+
+  <footer>Precios del <a href="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/">Ministerio para la Transición Ecológica</a>. Tu ubicación solo se usa en este móvil para medir distancias: no se guarda ni se envía. Página informativa.</footer>
+</main>
+
+<script>
+(function(){
+  var COPIA = 'https://raw.githubusercontent.com/iiYxeil/INDICADOR-PRECIOS/datos/gasolineras.json';
+  var API = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/';
+  var PROVINCIAS = ['31', '26', '50'];        /* Navarra, La Rioja, Zaragoza */
+  var CENTRO = {lat: 42.0617, lon: -1.6045};
+  var RADIO = 30, FACTOR_RUTA = 1.3, VIEJA_HORAS = 36, TANDA = 12;
+  var CAMPOS = {gA: 'Precio Gasoleo A', gP: 'Precio Gasoleo Premium',
+                g95: 'Precio Gasolina 95 E5', g98: 'Precio Gasolina 98 E5'};
+  /* Etiqueta europea del surtidor: cuadrado para gasoleo, circulo para gasolina */
+  var COMB = [
+    {k: 'gA',  nom: 'Gasóleo A',       corta: 'Gasóleo A',   sello: 'B7', forma: 'cu'},
+    {k: 'gP',  nom: 'Gasóleo Premium', corta: 'Premium',     sello: 'B7', forma: 'cu'},
+    {k: 'g95', nom: 'Gasolina 95',     corta: 'Gasolina 95', sello: 'E5', forma: 'ci'},
+    {k: 'g98', nom: 'Gasolina 98',     corta: 'Gasolina 98', sello: 'E5', forma: 'ci'}
+  ];
+  var PUEBLOS = ['Castejón', 'Corella', 'Alfaro', 'Tarazona', 'Cascante', 'Buñuel', 'Arguedas',
+                 'Ablitas', 'Mallén', 'Valtierra', 'Fustiñana', 'Ribaforada', 'Fontellas', 'Murchante'];
+  /* Curso aproximado del Ebro, solo para orientarse en el radar */
+  var EBRO = [[42.24,-1.85],[42.20,-1.75],[42.165,-1.68],[42.13,-1.635],[42.075,-1.60],
+              [42.045,-1.565],[42.01,-1.50],[41.985,-1.43],[41.93,-1.385],[41.87,-1.315],[41.82,-1.24]];
+  /* Amanecer y anochecer aproximados en Tudela, por mes */
+  var LUZ = [[520,1070],[490,1110],[455,1145],[460,1240],[420,1275],[405,1300],
+             [420,1300],[450,1265],[480,1215],[510,1160],[490,1075],[520,1060]];
+  var CLAVE = 'gasolineras-prefs';
+
+  var prefs = {fuel: 'gA', zona: '15', orden: 'neto', abiertas: true, litros: 50, consumo: 6.5};
+  try {
+    var guardadas = JSON.parse(localStorage.getItem(CLAVE) || '{}');
+    Object.keys(prefs).forEach(function(k){
+      if (guardadas[k] !== undefined) prefs[k] = guardadas[k];
+    });
+  } catch (e) {}
+  function guarda(){
+    try { localStorage.setItem(CLAVE, JSON.stringify(prefs)); } catch (e) {}
+  }
+
+  var estaciones = [], fuente = null, posicion = null, mostrar = TANDA;
+  var elegida = null, ultimo = null, arrancado = false, puntosRadar = [], puntosFranja = [];
+  var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $(id){ return document.getElementById(id); }
+
+  /* ---- formato ---- */
+  function coma(n, d){ return n.toFixed(d).replace('.', ','); }
+  function euros(n){ return coma(n, 3) + ' €'; }
+  function firmado(n){ return (n >= 0 ? '+' : '−') + coma(Math.abs(n), 2) + ' €'; }
+  function esc(t){
+    return String(t).replace(/[&<>"]/g, function(c){
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function nombre(s){
+    return (!s.r || s.r === 'NINGUNO') ? 'Sin marca' : s.r.replace(/\s+/g, ' ');
+  }
+  /* "CALLE CANAL DE TAUSTE, 290" -> "Calle Canal de Tauste, 290" */
+  function bonito(t){
+    var chicas = {de: 1, del: 1, la: 1, las: 1, el: 1, los: 1, y: 1, en: 1, a: 1};
+    return String(t || '').replace(/\s+/g, ' ').trim().toLowerCase()
+      .replace(/[^\s,]+/g, function(p, i){
+        if (/\d|\//.test(p) && !/^km/.test(p)) return p.toUpperCase();
+        if (i && chicas[p]) return p;
+        return p.charAt(0).toUpperCase() + p.slice(1);
+      });
+  }
+  function fechaCorta(f){ var p = f.split('-'); return p[2] + '/' + p[1]; }
+  function dos(n){ return (n < 10 ? '0' : '') + n; }
+  function hhmm(m){ return dos(Math.floor(m / 60) % 24) + ':' + dos(m % 60); }
+
+  /* ---- hora de Madrid, este donde este el movil ---- */
+  function ahoraMadrid(){
+    var o = {timeZone: 'Europe/Madrid', hourCycle: 'h23', weekday: 'short',
+             hour: 'numeric', minute: 'numeric', year: 'numeric', month: '2-digit', day: '2-digit'};
+    var p = {};
+    new Intl.DateTimeFormat('en-GB', o).formatToParts(new Date())
+      .forEach(function(x){ p[x.type] = x.value; });
+    return {dia: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].indexOf(p.weekday),
+            min: parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10),
+            mes: parseInt(p.month, 10) - 1,
+            hoy: p.year + '-' + p.month + '-' + p.day};
+  }
+
+  function ponCielo(){
+    var a = ahoraMadrid(), l = LUZ[a.mes], m = a.min, c;
+    if (m < l[0] - 45 || m >= l[1] + 45) c = 'noche';
+    else if (m < l[0] + 60) c = 'alba';
+    else if (m < l[1] - 60) c = 'dia';
+    else c = 'ocaso';
+    $('escena').setAttribute('data-cielo', c);
+    $('tema').setAttribute('content', {noche: '#070a22', alba: '#26336f', dia: '#2f7fd6', ocaso: '#1b1f56'}[c]);
+  }
+  function ponEstrellas(){
+    var g = '', s = 7;
+    function r(){ s = (s * 16807) % 2147483647; return s / 2147483647; }
+    for (var i = 0; i < 150; i++) {
+      g += '<circle cx="' + (r() * 1600).toFixed(0) + '" cy="' + (r() * 430).toFixed(0) +
+           '" r="' + (0.5 + r() * 0.9).toFixed(2) + '" fill="#fff" opacity="' + (0.35 + r() * 0.65).toFixed(2) + '"/>';
+    }
+    $('estrellas').innerHTML = g;
+  }
+
+  /* ---- digitos de siete segmentos ---- */
+  var W = 20, H = 36, T = 4.3, G = 0.5;
+  function hz(x1, x2, y){
+    var t = T / 2;
+    return 'M' + (x1 + G) + ' ' + y + 'L' + (x1 + G + t) + ' ' + (y - t) + 'H' + (x2 - G - t) +
+           'L' + (x2 - G) + ' ' + y + 'L' + (x2 - G - t) + ' ' + (y + t) + 'H' + (x1 + G + t) + 'Z';
+  }
+  function vt(x, y1, y2){
+    var t = T / 2;
+    return 'M' + x + ' ' + (y1 + G) + 'L' + (x + t) + ' ' + (y1 + G + t) + 'V' + (y2 - G - t) +
+           'L' + x + ' ' + (y2 - G) + 'L' + (x - t) + ' ' + (y2 - G - t) + 'V' + (y1 + G + t) + 'Z';
+  }
+  var M = T / 2, SEG = {
+    a: hz(M, W - M, M), b: vt(W - M, M, H / 2), c: vt(W - M, H / 2, H - M), d: hz(M, W - M, H - M),
+    e: vt(M, H / 2, H - M), f: vt(M, M, H / 2), g: hz(M, W - M, H / 2)
+  };
+  var CIFRAS = {'0': 'abcdef', '1': 'bc', '2': 'abged', '3': 'abgcd', '4': 'fgbc', '5': 'afgcd',
+                '6': 'afgedc', '7': 'abc', '8': 'abcdefg', '9': 'abcdfg', '-': 'g', ' ': ''};
+  function mueve(d, x){
+    return d.replace(/([ML])(-?[\d.]+) /g, function(_, l, n){ return l + (+n + x).toFixed(2) + ' '; })
+            .replace(/H(-?[\d.]+)/g, function(_, n){ return 'H' + (+n + x).toFixed(2); });
+  }
+  /* txt como "1,699", "-,---" o " , " apagado */
+  function ledSVG(txt){
+    var x = 2, fan = '', luz = '';
+    txt.split('').forEach(function(c){
+      if (c === ',') {
+        var coma = 'M' + (x + 0.4) + ' ' + (H - 3.4) + 'h3.2v3.4l-2.2 3.2h-1.4l1-3.2h-.6z';
+        if (txt.trim() !== ',') luz += coma; else fan += coma;
+        x += 6.6;
+        return;
+      }
+      'abcdefg'.split('').forEach(function(s){
+        var d = mueve(SEG[s], x);
+        fan += d;
+        if ((CIFRAS[c] || '').indexOf(s) >= 0) luz += d;
+      });
+      x += W + 3.4;
+    });
+    return '<svg aria-hidden="true" viewBox="0 0 ' + (x + 1).toFixed(1) + ' ' + (H + 4) + '">' +
+           '<g transform="skewX(-5) translate(3.5 0)"><path class="fantasma" d="' + fan + '"/>' +
+           '<path class="luz" d="' + luz + '"/></g></svg>';
+  }
+  function txtPrecio(p){ return p ? coma(p, 3) : '-,---'; }
+  function led(el, txt){ el.innerHTML = ledSVG(txt); }
+
+  /* ---- horario: "L-V: 06:00-22:00 y 16:00-20:00; S: 24H" ----
+     Devuelve 7 listas de tramos (lunes primero), o null si no se entiende.
+     Un "L:" suelto es ambiguo en los datos del Ministerio: no se da por bueno. */
+  function leeHorario(txt){
+    if (!txt) return null;
+    var DIAS = 'LMXJVSD', semana = [[],[],[],[],[],[],[]], ok = false;
+    var bloques = txt.split(';');
+    if (bloques.length === 1 && /^\s*L\s*:/.test(txt)) return null;
+    for (var i = 0; i < bloques.length; i++) {
+      var m = bloques[i].trim().match(/^([LMXJVSD])(?:\s*-\s*([LMXJVSD]))?\s*:\s*(.+)$/);
+      if (!m) return null;
+      var a = DIAS.indexOf(m[1]), b = m[2] ? DIAS.indexOf(m[2]) : a, tramos = [];
+      var trozos = m[3].split(/\s+y\s+/);
+      for (var t = 0; t < trozos.length; t++) {
+        if (/^24\s*H$/i.test(trozos[t].trim())) { tramos.push([0, 1440]); continue; }
+        var h = trozos[t].trim().match(/^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/);
+        if (!h) return null;
+        tramos.push([+h[1] * 60 + +h[2], +h[3] * 60 + +h[4]]);
+      }
+      for (var d = a; ; d = (d + 1) % 7) {
+        semana[d] = semana[d].concat(tramos);
+        ok = true;
+        if (d === b) break;
+      }
+    }
+    return ok ? semana : null;
+  }
+
+  /* {abierta, texto}; abierta es null si el horario no se sabe */
+  function estado(s, ahora){
+    var sem = leeHorario(s.h);
+    if (!sem) return {abierta: null, texto: 'Horario sin confirmar'};
+    var hoy = sem[ahora.dia], ayer = sem[(ahora.dia + 6) % 7], i, t;
+    for (i = 0; i < hoy.length; i++) {
+      t = hoy[i];
+      if (t[0] === 0 && t[1] === 1440) return {abierta: true, texto: 'Abierta 24 h'};
+      if (t[1] > t[0] ? (ahora.min >= t[0] && ahora.min < t[1]) : ahora.min >= t[0])
+        return {abierta: true, texto: 'Abierta hasta las ' + hhmm(t[1])};
+    }
+    for (i = 0; i < ayer.length; i++) {          /* tramo que pasa de medianoche */
+      t = ayer[i];
+      if (t[1] <= t[0] && ahora.min < t[1])
+        return {abierta: true, texto: 'Abierta hasta las ' + hhmm(t[1])};
+    }
+    var prox = hoy.map(function(x){ return x[0]; })
+                  .filter(function(x){ return x > ahora.min; }).sort(function(a, b){ return a - b; })[0];
+    return {abierta: false, texto: prox !== undefined ? 'Cerrada, abre a las ' + hhmm(prox) : 'Cerrada por hoy'};
+  }
+
+  /* ---- calculo ---- */
+  function km(a, b){
+    var r = Math.PI / 180, x = Math.sin((b.lat - a.lat) * r / 2), y = Math.sin((b.lon - a.lon) * r / 2);
+    return 12742 * Math.asin(Math.sqrt(x * x + Math.cos(a.lat * r) * Math.cos(b.lat * r) * y * y));
+  }
+  function mediana(v){
+    if (!v.length) return null;
+    var o = v.slice().sort(function(a, b){ return a - b; }), n = o.length;
+    return n % 2 ? o[(n - 1) / 2] : (o[n / 2 - 1] + o[n / 2]) / 2;
+  }
+  function esTudela(s){ return s.m.toLowerCase() === 'tudela'; }
+  function cambio(s, f){
+    var h = (s.hs || {})[f];
+    if (!h || h.length < 2) return null;
+    var a = h[h.length - 1], b = h[h.length - 2];
+    var dias = (Date.now() - new Date(a[0] + 'T12:00:00Z').getTime()) / 864e5;
+    return dias > 14 ? null : {c: (a[1] - b[1]) * 100, f: a[0]};
+  }
+
+  function filas(){
+    var ahora = ahoraMadrid(), base = posicion || CENTRO;
+    var ref = mediana(estaciones.filter(function(s){ return esTudela(s) && s.pr[prefs.fuel]; })
+                                .map(function(s){ return s.pr[prefs.fuel]; }));
+    var todas = [];
+    estaciones.forEach(function(s){
+      var p = s.pr[prefs.fuel];
+      if (!p) return;
+      var d = km(base, s);
+      var zonaOk = prefs.zona === 'tudela' ? esTudela(s) : d <= +prefs.zona;
+      if (!zonaOk) return;
+      var est = estado(s, ahora);
+      var viaje = 2 * d * FACTOR_RUTA * prefs.consumo / 100;       /* litros */
+      todas.push({s: s, p: p, d: d, est: est, coste: p * (prefs.litros + viaje),
+                  neto: ref === null ? null : ref * prefs.litros - p * (prefs.litros + viaje)});
+    });
+    var vis = prefs.abiertas ? todas.filter(function(x){ return x.est.abierta !== false; }) : todas;
+    var orden = {
+      neto: function(a, b){ return a.coste - b.coste; },
+      precio: function(a, b){ return a.p - b.p || a.d - b.d; },
+      cerca: function(a, b){ return a.d - b.d; }
+    }[prefs.orden];
+    return {ref: ref, todas: todas, vis: vis.slice().sort(orden), cerradas: todas.length - vis.length};
+  }
+  /* Tramo de color frente a la mediana de Tudela */
+  function tramo(p, ref){
+    if (ref === null) return 2;
+    var c = (p - ref) * 100;
+    return c <= -6 ? 0 : c <= -2 ? 1 : c < 2 ? 2 : c < 6 ? 3 : 4;
+  }
+
+  /* ---- pintar ---- */
+  function nodo(tag, cls, txt){
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt !== undefined) n.textContent = txt;
+    return n;
+  }
+  function ruta(s){
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lon;
+  }
+  function placa(p){
+    var a = nodo('span', 'placa'), l = nodo('span', 'led');
+    l.innerHTML = ledSVG(txtPrecio(p));
+    l.style.display = 'block';
+    a.appendChild(l);
+    return a;
+  }
+  function lineaDatos(x, conCambio){
+    var dat = nodo('span', 'dat');
+    dat.appendChild(nodo('span', '', coma(x.d, 1) + ' km'));
+    dat.appendChild(nodo('span', '', x.est.texto));
+    var c = conCambio && cambio(x.s, prefs.fuel);
+    if (c && Math.abs(c.c) >= 0.05)
+      dat.appendChild(nodo('span', c.c < 0 ? 'baja' : 'sube',
+        (c.c < 0 ? 'Bajó ' : 'Subió ') + coma(Math.abs(c.c), 1) + ' c€ el ' + fechaCorta(c.f)));
+    return dat;
+  }
+  function textoDir(s){ return (esTudela(s) ? '' : bonito(s.m) + ', ') + bonito(s.d); }
+
+  function pintaBotones(){
+    document.querySelectorAll('.seg').forEach(function(g){
+      var clave = g.getAttribute('data-grupo');
+      g.querySelectorAll('button').forEach(function(b){
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === String(prefs[clave])));
+      });
+    });
+    document.querySelectorAll('.surtidor').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === prefs.fuel));
+    });
+  }
+
+  function pintaTotem(mejor, r, conEfecto){
+    var nom = $('t-nombre');
+    if (!mejor) {
+      nom.textContent = 'Sin resultados'; nom.setAttribute('data-largo', 'l');
+      $('t-et').textContent = 'Con estos filtros';
+      $('t-estado').textContent = 'Prueba con más zona'; $('t-km').textContent = '';
+      COMB.forEach(function(c){ led($('led-' + c.k), '-,---'); });
+      return;
+    }
+    var n = nombre(mejor.s), L = n.length;
+    nom.textContent = n;
+    nom.setAttribute('data-largo', L <= 10 ? 's' : L <= 15 ? 'm' : L <= 24 ? 'l' : 'xl');
+    $('t-et').textContent = 'La que más compensa';
+    $('t-estado').textContent = mejor.est.texto;
+    $('t-km').textContent = coma(mejor.d, 1) + ' km';
+    COMB.forEach(function(c, i){
+      var el = $('led-' + c.k), fin = txtPrecio(mejor.s.pr[c.k]);
+      el.parentNode.setAttribute('aria-label', c.nom + ': ' +
+        (mejor.s.pr[c.k] ? euros(mejor.s.pr[c.k]) + ' el litro' : 'no disponible'));
+      if (!conEfecto || quieto) { led(el, fin); return; }
+      revela(el, fin, 260 + i * 170);
+    });
+  }
+  /* Al encender, cada fila baraja digitos y se queda en su precio */
+  function revela(el, fin, ms){
+    var t0 = Date.now();
+    (function paso(){
+      if (Date.now() - t0 >= ms) { led(el, fin); return; }
+      led(el, fin.replace(/\d/g, function(){ return Math.floor(Math.random() * 10); }));
+      setTimeout(paso, 55);
+    })();
+  }
+
+  function pintaPortada(mejor){
+    var cifra = $('a-cifra'), texto = $('a-texto'), et = $('a-et'), ir = $('ir');
+    if (!mejor) {
+      et.textContent = ''; cifra.textContent = ''; texto.textContent = '';
+      ir.style.display = 'none';
+      $('donde').textContent = 'Ninguna gasolinera cumple estos filtros. Prueba con más zona o quita “Abiertas”.';
+      return;
+    }
+    ir.style.display = ''; ir.href = ruta(mejor.s);
+    ir.textContent = 'Cómo llegar a ' + bonito(nombre(mejor.s)).replace(/^(.{22}).+$/, '$1…');
+    $('donde').textContent = textoDir(mejor.s);
+    if (mejor.neto === null) {
+      et.textContent = 'Precio'; cifra.textContent = coma(mejor.p, 3); texto.textContent = 'euros por litro';
+      cifra.setAttribute('data-largo', '5');
+      return;
+    }
+    et.textContent = mejor.neto >= 0 ? 'Te ahorras' : 'Te cuesta';
+    var num = coma(Math.abs(mejor.neto), 2);
+    cifra.textContent = num;
+    cifra.setAttribute('data-largo', String(Math.min(num.length, 6)));
+    texto.textContent = 'euros' + (mejor.neto >= 0 ? '' : ' más') + ' con ' + prefs.litros + ' litros, frente a la mediana';
+  }
+
+  function pintaFranja(r){
+    var svg = $('franja');
+    puntosFranja = [];
+    if (!r.vis.length) { svg.innerHTML = ''; return; }
+    var ps = r.vis.map(function(x){ return x.p; });
+    var lo = Math.min.apply(null, ps), hi = Math.max.apply(null, ps);
+    if (hi - lo < 0.01) { lo -= 0.01; hi += 0.01; }
+    var A = 6, B = 354;
+    function X(p){ return A + (p - lo) / (hi - lo) * (B - A); }
+    var h = '<line x1="' + A + '" x2="' + B + '" y1="40" y2="40" stroke="var(--line-2)"/>';
+    r.vis.slice().sort(function(a, b){ return b.p - a.p; }).forEach(function(x){
+      var cx = X(x.p), sel = elegida === x.s.id;
+      puntosFranja.push({id: x.s.id, x: cx});
+      h += '<rect class="c' + tramo(x.p, r.ref) + ' aro" x="' + (cx - 2.5).toFixed(1) + '" width="5" rx="2.5" ' +
+           'y="' + (sel ? 24 : 29) + '" height="' + (sel ? 32 : 22) + '" paint-order="stroke"/>';
+    });
+    if (r.ref !== null && r.ref >= lo && r.ref <= hi) {
+      var mx = X(r.ref), ax = mx < 90 ? 'start' : mx > 270 ? 'end' : 'middle';
+      h += '<path d="M' + mx.toFixed(1) + ' 21l-4-6h8z" fill="var(--ink)"/>' +
+           '<text class="t f" text-anchor="' + ax + '" x="' + mx.toFixed(1) + '" y="11">Mediana de Tudela, ' + esc(euros(r.ref)) + '</text>';
+    }
+    h += '<text class="t f" x="' + A + '" y="74">' + esc(euros(Math.min.apply(null, ps))) + '</text>' +
+         '<text class="t f" text-anchor="end" x="' + B + '" y="74">' + esc(euros(Math.max.apply(null, ps))) + '</text>';
+    svg.innerHTML = h;
+  }
+
+  function pintaRadar(r){
+    var svg = $('radar'), C = 180, R = 166, base = posicion || CENTRO;
+    var Z = prefs.zona === 'tudela'
+      ? Math.max(5, Math.ceil(Math.max.apply(null, r.vis.map(function(x){ return x.d; }).concat(0)) * 1.04))
+      : +prefs.zona;
+    var cosLat = Math.cos(base.lat * Math.PI / 180);
+    function pro(lat, lon){
+      var dy = (lat - base.lat) * 111.2, dx = (lon - base.lon) * 111.2 * cosLat, d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 1e-6) return [C, C, 0];
+      var k = R * Math.sqrt(d / Z) / d;
+      return [C + dx * k, C - dy * k, d];
+    }
+    var h = '<defs><clipPath id="disco"><circle cx="' + C + '" cy="' + C + '" r="' + (R + 6) + '"/></clipPath></defs>';
+    var anillos = [Z, Math.max(1, Math.round(Z / 3)), Math.max(1, Math.round(Z / 9))];
+    anillos.forEach(function(a, i){
+      var rr = R * Math.sqrt(a / Z);
+      if (i && a === anillos[i - 1]) return;
+      h += '<circle cx="' + C + '" cy="' + C + '" r="' + rr.toFixed(1) + '" fill="none" stroke="var(--line-2)"/>';
+    });
+    var linea = [];
+    EBRO.forEach(function(p, i){
+      if (!i) return;
+      var a = EBRO[i - 1];
+      for (var t = 0; t < 12; t++) {
+        var q = pro(a[0] + (p[0] - a[0]) * t / 12, a[1] + (p[1] - a[1]) * t / 12);
+        linea.push(q[0].toFixed(1) + ' ' + q[1].toFixed(1));
+      }
+    });
+    h += '<path clip-path="url(#disco)" d="M' + linea.join('L') + '" fill="none" stroke="var(--rio)" ' +
+         'stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    /* puntos: los baratos encima */
+    puntosRadar = [];
+    var marcas = '';
+    r.vis.slice().sort(function(a, b){ return b.p - a.p; }).forEach(function(x){
+      var q = pro(x.s.lat, x.s.lon);
+      puntosRadar.push({id: x.s.id, x: q[0], y: q[1]});
+    });
+    /* los km de cada anillo van en el radio con menos puntos alrededor */
+    var mejorRumbo = 90, holgura = -1;
+    [90, 45, 135, 0, 180, 315, 225, 270].forEach(function(g){
+      var cerca = 999, rad = g * Math.PI / 180;
+      anillos.forEach(function(a){
+        var rr = R * Math.sqrt(a / Z), lx = C + Math.cos(rad) * rr, ly = C + Math.sin(rad) * rr;
+        puntosRadar.forEach(function(p){
+          cerca = Math.min(cerca, Math.sqrt(Math.pow(p.x - lx, 2) + Math.pow(p.y - ly, 2)));
+        });
+      });
+      if (cerca > holgura) { holgura = cerca; mejorRumbo = g; }
+    });
+    var rumbo = mejorRumbo * Math.PI / 180;
+    anillos.forEach(function(a, i){
+      if (i && a === anillos[i - 1]) return;
+      var rr = R * Math.sqrt(a / Z);
+      h += '<text class="t halo" text-anchor="middle" x="' + (C + Math.cos(rumbo) * rr).toFixed(1) +
+           '" y="' + (C + Math.sin(rumbo) * rr + 4).toFixed(1) + '">' + a + ' km</text>';
+    });
+    r.vis.slice().sort(function(a, b){ return b.p - a.p; }).forEach(function(x){
+      var q = pro(x.s.lat, x.s.lon);
+      if (x.s.id === elegida)
+        marcas += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="10.5" fill="none" stroke="var(--ink)" stroke-width="2"/>';
+      marcas += '<circle class="c' + tramo(x.p, r.ref) + ' aro" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="6" paint-order="stroke"/>';
+    });
+
+    /* nombres de pueblos, sin pisarse entre si ni con los puntos */
+    var pue = {}, ocupado = puntosRadar.map(function(p){
+      return {a: p.x - 7, b: p.x + 7, c: p.y - 7, d: p.y + 7};
+    }), rot = '';
+    estaciones.forEach(function(s){
+      if (PUEBLOS.indexOf(s.m) < 0) return;
+      var p = pue[s.m] = pue[s.m] || {n: 0, lat: 0, lon: 0};
+      p.n++; p.lat += s.lat; p.lon += s.lon;
+    });
+    PUEBLOS.forEach(function(nom){
+      var p = pue[nom];
+      if (!p) return;
+      var q = pro(p.lat / p.n, p.lon / p.n);
+      if (q[2] > Z * 0.98) return;
+      var w = nom.length * 6.3, ops = [[q[0] + 10, q[1] + 4, 'start'], [q[0] - 10, q[1] + 4, 'end'],
+                                       [q[0], q[1] - 11, 'middle'], [q[0], q[1] + 19, 'middle']];
+      for (var i = 0; i < ops.length; i++) {
+        var o = ops[i], a = o[2] === 'start' ? o[0] : o[2] === 'end' ? o[0] - w : o[0] - w / 2;
+        var caja = {a: a, b: a + w, c: o[1] - 11, d: o[1] + 3};
+        var dentro = caja.a > 2 && caja.b < 358;
+        if (dentro && !ocupado.some(function(u){ return caja.a < u.b && caja.b > u.a && caja.c < u.d && caja.d > u.c; })) {
+          ocupado.push(caja);
+          rot += '<text class="t f halo" text-anchor="' + o[2] + '" x="' + o[0].toFixed(1) + '" y="' + o[1].toFixed(1) + '">' + esc(nom) + '</text>';
+          break;
+        }
+      }
+    });
+
+    var nomBase = posicion ? 'Tú' : 'Tudela';
+    h += marcas + rot +
+         '<text class="t f halo" style="fill:var(--ink);font-weight:700;font-size:13.5px" text-anchor="middle" x="' + C + '" y="' + (C + 5) + '">' + nomBase + '</text>';
+    svg.innerHTML = h;
+  }
+
+  function pintaElegida(r){
+    var caja = $('sel');
+    caja.textContent = '';
+    var x = r.vis.filter(function(v){ return v.s.id === elegida; })[0];
+    if (!x) { caja.style.display = 'none'; return; }
+    caja.style.display = '';
+    var a = nodo('div', 'sel-in');
+    a.appendChild(placa(x.p));
+    var t = nodo('div');
+    t.appendChild(nodo('span', 'nombre', nombre(x.s)));
+    t.appendChild(nodo('span', 'dir', textoDir(x.s)));
+    t.appendChild(lineaDatos(x, false));
+    a.appendChild(t);
+    caja.appendChild(a);
+    var f = nodo('div', 'sel-fin');
+    if (x.neto !== null)
+      f.appendChild(nodo('span', x.neto >= 0 ? 'baja' : 'sube', firmado(x.neto) + ' frente a la mediana'));
+    var l = nodo('a', '', 'Cómo llegar');
+    l.href = ruta(x.s); l.target = '_blank'; l.rel = 'noopener';
+    f.appendChild(l);
+    caja.appendChild(f);
+  }
+
+  function pintaFigura(r){
+    pintaFranja(r); pintaRadar(r); pintaElegida(r);
+  }
+
+  function fila(x, primera){
+    var d = nodo('details', 'fila');
+    d.setAttribute('name', 'gasolinera');
+    var s = nodo('summary');
+    s.appendChild(placa(x.p));
+    var t = nodo('span');
+    t.style.minWidth = '0';
+    t.appendChild(nodo('span', 'nombre', nombre(x.s)));
+    t.appendChild(nodo('span', 'dir', textoDir(x.s)));
+    t.appendChild(lineaDatos(x, true));
+    s.appendChild(t);
+    if (x.neto !== null) {
+      var n = nodo('span', 'neto ' + (x.neto >= 0 ? 'baja' : 'sube'), firmado(x.neto));
+      s.appendChild(n);
+    }
+    d.appendChild(s);
+    var m = nodo('div', 'detalle'), dl = nodo('dl', 'tabla');
+    COMB.forEach(function(c){
+      if (!x.s.pr[c.k]) return;
+      var w = nodo('div');
+      w.appendChild(nodo('dt', '', c.nom === 'Gasóleo Premium' ? 'Premium' : c.nom));
+      w.appendChild(nodo('dd', '', euros(x.s.pr[c.k])));
+      dl.appendChild(w);
+    });
+    m.appendChild(dl);
+    if (x.s.h) m.appendChild(nodo('p', '', 'Horario declarado: ' + x.s.h));
+    var ir = nodo('a', 'ir chica', 'Cómo llegar');
+    ir.href = ruta(x.s); ir.target = '_blank'; ir.rel = 'noopener';
+    m.appendChild(ir);
+    d.appendChild(m);
+    d.addEventListener('toggle', function(){
+      if (d.open && elegida !== x.s.id) { elegida = x.s.id; if (ultimo) pintaFigura(ultimo); }
+    });
+    return d;
+  }
+
+  function pinta(conEfecto){
+    pintaBotones();
+    if (!estaciones.length) return;
+    var r = ultimo = filas();
+    var mejor = r.vis.slice().sort(function(a, b){ return a.coste - b.coste; })[0];
+    if (!elegida || !r.vis.some(function(x){ return x.s.id === elegida; }))
+      elegida = mejor ? mejor.s.id : null;
+
+    pintaTotem(mejor, r, conEfecto);
+    pintaPortada(mejor);
+
+    var ps = r.todas.map(function(x){ return x.p; });
+    if (ps.length > 1) {
+      var dif = (Math.max.apply(null, ps) - Math.min.apply(null, ps)) * prefs.litros;
+      $('f-titulo').textContent = coma(dif, 2) + ' € entre la más barata y la más cara';
+      $('f-sub').textContent = 'Es lo que separa a estas gasolineras al echar ' + prefs.litros + ' litros, antes de contar el viaje.';
+    } else {
+      $('f-titulo').textContent = 'Dónde están los precios';
+      $('f-sub').textContent = '';
+    }
+    pintaFigura(r);
+
+    $('lista-titulo').textContent = r.vis.length + (r.vis.length === 1 ? ' gasolinera' : ' gasolineras') +
+      (r.cerradas ? ', ' + r.cerradas + (r.cerradas === 1 ? ' cerrada oculta' : ' cerradas ocultas') : '');
+    var lista = $('lista');
+    lista.textContent = '';
+    r.vis.slice(0, mostrar).forEach(function(x){ lista.appendChild(fila(x)); });
+    if (!r.vis.length) lista.appendChild(nodo('div', 'vacio', 'Ninguna gasolinera cumple estos filtros.'));
+    var resto = r.vis.length - mostrar;
+    if (resto > 0) {
+      var mas = nodo('button', '', 'Ver ' + resto + ' más');
+      mas.id = 'mas'; mas.type = 'button'; mas.className = 'on';
+      mas.addEventListener('click', function(){ mostrar = 1e4; pinta(); });
+      lista.appendChild(mas);
+    }
+  }
+
+  function pintaFuente(){
+    var av = $('aviso'), f = $('fuente');
+    if (!fuente) { f.textContent = ''; return; }
+    f.textContent = fuente.directo ? 'Precios en directo del Ministerio, ' + fuente.texto
+                                   : 'Precios leídos ' + fuente.texto;
+    if (!fuente.directo && fuente.horas > VIEJA_HORAS) {
+      av.className = 'on';
+      av.textContent = 'Estos precios son de hace ' + Math.round(fuente.horas / 24) +
+        ' días porque el Ministerio no ha respondido. Compruébalos en el surtidor.';
+    } else { av.className = ''; av.textContent = ''; }
+  }
+
+  function sinDatos(){
+    var av = $('aviso');
+    av.className = 'on';
+    av.textContent = 'No se han podido leer los precios. Vuelve a intentarlo en unos minutos.';
+    var b = nodo('button', '', 'Reintentar');
+    b.type = 'button';
+    b.addEventListener('click', function(){ av.className = ''; carga(); });
+    av.appendChild(b);
+    $('fuente').textContent = '';
+    $('ir').style.display = 'none';
+    $('a-et').textContent = '';
+    $('t-et').textContent = 'Precios no disponibles';
+    $('t-nombre').textContent = 'Sin datos';
+    $('t-nombre').setAttribute('data-largo', 'm');
+    COMB.forEach(function(c){ led($('led-' + c.k), '-,---'); });
+  }
+
+  /* ---- datos ---- */
+  function conTiempo(url, ms){
+    var c = new AbortController(), t = setTimeout(function(){ c.abort(); }, ms);
+    return fetch(url, {signal: c.signal}).then(function(r){
+      clearTimeout(t);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function num(t, lo, hi){
+    var v = parseFloat(String(t || '').replace(',', '.'));
+    return (v > lo && v < hi) ? v : null;
+  }
+
+  /* Aplica una lista del Ministerio sobre lo que ya hay. Devuelve cuantas leyo. */
+  function aplica(lista, hoy){
+    var porId = {}, n = 0;
+    estaciones.forEach(function(s){ porId[s.id] = s; });
+    lista.forEach(function(e){
+      if (String(e['Tipo Venta'] || 'P').toUpperCase() === 'R') return;
+      var lat = num(e['Latitud'], 27, 44), lon = num(e['Longitud (WGS84)'], -19, 5);
+      if (lat === null || lon === null || km(CENTRO, {lat: lat, lon: lon}) > RADIO) return;
+      var pr = {};
+      Object.keys(CAMPOS).forEach(function(k){
+        var p = num(e[CAMPOS[k]], 0.3, 5);
+        if (p !== null) pr[k] = p;
+      });
+      var id = String(e['IDEESS'] || '').trim();
+      if (!id || !Object.keys(pr).length) return;
+      n++;
+      var s = porId[id];
+      if (!s) {
+        s = {id: id, hs: {}, lat: lat, lon: lon};
+        estaciones.push(s); porId[id] = s;
+      }
+      s.r = (e['Rótulo'] || '').trim(); s.d = (e['Dirección'] || '').trim();
+      s.m = (e['Municipio'] || '').trim(); s.h = (e['Horario'] || '').trim();
+      Object.keys(pr).forEach(function(k){
+        var h = s.hs[k] = s.hs[k] || [];
+        if (!h.length || h[h.length - 1][1] !== pr[k]) h.push([hoy, pr[k]]);
+      });
+      s.pr = pr;
+    });
+    return n;
+  }
+
+  function carga(){
+    $('ir').style.display = '';
+    var copia = conTiempo(COPIA + '?t=' + Math.floor(Date.now() / 6e5), 15000)
+      .then(function(j){
+        if (!j.estaciones || !j.estaciones.length) throw new Error('copia vacia');
+        estaciones = j.estaciones;
+        var h = (Date.now() - new Date(j.generado).getTime()) / 36e5;
+        fuente = {directo: false, horas: h,
+                  texto: h < 1 ? 'hace menos de 1 hora' : h < 1.5 ? 'hace 1 hora' :
+                         h < 48 ? 'hace ' + Math.round(h) + ' horas' : 'hace ' + Math.round(h / 24) + ' días'};
+        pintaFuente(); pinta(!arrancado); arrancado = true;
+        return true;
+      })
+      .catch(function(){ return false; });
+
+    /* El Ministerio no siempre deja leerse desde el navegador. Si deja, mejor
+       dato; si no, se queda la ultima lectura y no pasa nada. */
+    var hoy = ahoraMadrid().hoy;
+    var directo = Promise.all(PROVINCIAS.map(function(p){
+      return conTiempo(API + p, 12000).catch(function(){ return null; });
+    }));
+
+    return Promise.all([copia, directo]).then(function(r){
+      var listas = r[1].filter(Boolean), leidas = 0, fecha = '';
+      listas.forEach(function(j){
+        leidas += aplica(j.ListaEESSPrecio || [], hoy);
+        fecha = j.Fecha || fecha;
+      });
+      if (leidas) {
+        var hora = String(fecha).match(/(\d{1,2}:\d{2}):\d{2}/);
+        fuente = {directo: true, texto: hora ? 'a las ' + hora[1] : 'ahora'};
+        pintaFuente(); pinta(!arrancado); arrancado = true;
+      } else if (!r[0]) {
+        sinDatos();
+      }
+    });
+  }
+
+  /* ---- montaje ---- */
+  (function(){
+    var caja = $('surtidores');
+    COMB.forEach(function(c){
+      var b = nodo('button', 'surtidor');
+      b.type = 'button';
+      b.setAttribute('data-v', c.k);
+      b.setAttribute('aria-label', c.nom);
+      b.appendChild(nodo('span', 'sello ' + c.forma, c.sello));
+      b.appendChild(nodo('span', 'nom', c.corta));
+      var l = nodo('span', 'led');
+      l.id = 'led-' + c.k;
+      l.innerHTML = ledSVG(' , ');
+      b.appendChild(l);
+      b.addEventListener('click', function(){
+        prefs.fuel = c.k; mostrar = TANDA; elegida = null; guarda(); pinta();
+      });
+      caja.appendChild(b);
+    });
+  })();
+
+  document.querySelectorAll('.seg').forEach(function(g){
+    g.addEventListener('click', function(ev){
+      var b = ev.target.closest('button');
+      if (!b) return;
+      prefs[g.getAttribute('data-grupo')] = b.getAttribute('data-v');
+      mostrar = TANDA; guarda(); pinta();
+    });
+  });
+  $('abiertas').checked = !!prefs.abiertas;
+  $('abiertas').addEventListener('change', function(ev){
+    prefs.abiertas = ev.target.checked; mostrar = TANDA; guarda(); pinta();
+  });
+
+  function campo(id, clave, lo, hi){
+    var i = $(id);
+    i.value = String(prefs[clave]).replace('.', ',');
+    i.addEventListener('input', function(){
+      var v = parseFloat(String(i.value).replace(',', '.'));
+      if (v >= lo && v <= hi) { prefs[clave] = v; guarda(); pinta(); }
+    });
+  }
+  campo('litros', 'litros', 5, 200);
+  campo('consumo', 'consumo', 2, 30);
+
+  /* Tocar el grafico elige la gasolinera mas cercana al dedo */
+  function tocar(svg, puntos, soloX, vbW, vbH){
+    svg.addEventListener('click', function(ev){
+      var c = svg.getBoundingClientRect();
+      var x = (ev.clientX - c.left) * vbW / c.width, y = (ev.clientY - c.top) * vbH / c.height;
+      var mejor = null, dist = 26;
+      puntos().forEach(function(p){
+        var d = soloX ? Math.abs(p.x - x) : Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
+        if (d < dist) { dist = d; mejor = p; }
+      });
+      if (mejor && ultimo) { elegida = mejor.id; pintaFigura(ultimo); }
+    });
+  }
+  tocar($('radar'), function(){ return puntosRadar; }, false, 360, 360);
+  tocar($('franja'), function(){ return puntosFranja; }, true, 360, 78);
+
+  $('geo').addEventListener('click', function(){
+    var b = $('geo');
+    if (posicion) {
+      posicion = null; b.textContent = 'del centro de Tudela'; pinta(); return;
+    }
+    if (!navigator.geolocation) { b.textContent = 'del centro de Tudela (sin ubicación)'; return; }
+    b.textContent = 'buscando tu ubicación…';
+    navigator.geolocation.getCurrentPosition(function(p){
+      posicion = {lat: p.coords.latitude, lon: p.coords.longitude};
+      b.textContent = 'de donde estoy';
+      pinta();
+    }, function(){
+      b.textContent = 'del centro de Tudela (sin permiso de ubicación)';
+    }, {timeout: 10000, maximumAge: 120000});
+  });
+
+  ponCielo();
+  ponEstrellas();
+  pintaBotones();
+  carga();
+})();
+</script>
+</body>
+</html>
