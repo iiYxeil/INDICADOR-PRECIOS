@@ -466,15 +466,15 @@ svg.curva{display:block;width:100%;height:auto;touch-action:pan-y}
 .fab svg{width:27px;height:27px;stroke-width:2.5}
 
 /* hojas */
-.velo{position:fixed;inset:0;z-index:50;background:rgba(2,6,5,.62);opacity:0;transition:opacity .25s ease;
+.velo{position:fixed;inset:0;z-index:50;touch-action:none;background:rgba(2,6,5,.62);opacity:0;transition:opacity .25s ease;
       -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .velo.on{opacity:1}
 .hoja{position:fixed;left:50%;bottom:0;z-index:51;width:100%;max-width:560px;max-height:90vh;max-height:calc(100dvh - var(--seg-t) - 18px);overflow-y:auto;
       background:var(--bg);border-radius:30px 30px 0 0;box-shadow:var(--sombra-sube);border-top:1px solid var(--line2);
-      padding:8px 16px calc(18px + var(--seg-b));transform:translate(-50%,102%);transition:transform .36s cubic-bezier(.2,.95,.25,1);overscroll-behavior:contain}
+      padding:8px 16px calc(18px + var(--seg-b));transform:translate(-50%,102%);transition:transform .36s cubic-bezier(.2,.95,.25,1);overscroll-behavior:none;-webkit-overflow-scrolling:touch}
 :root[data-tema="claro"] .hoja{background:var(--card)}
 .hoja.on{transform:translate(-50%,0)}
-.asa{display:block;width:100%;padding:6px 0 11px;touch-action:none}
+.asa{display:block;width:100%;padding:8px 0 14px;touch-action:none}
 .asa::before{content:"";display:block;width:44px;height:5px;border-radius:3px;margin:0 auto;background:var(--line2)}
 .hoja h2{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:13px}
 .hoja p.ayuda{font-size:14px;color:var(--ink2);margin:-6px 0 14px;line-height:1.45}
@@ -1467,17 +1467,55 @@ function abreHoja(html) {
   document.body.append(v, h);
   document.body.style.overflow = 'hidden';
   requestAnimationFrame(() => requestAnimationFrame(() => { v.classList.add('on'); h.classList.add('on'); }));
+  /* Se cierra arrastrando hacia abajo desde cualquier punto, como una hoja nativa:
+     si el contenido esta arriba del todo, el dedo mueve la hoja y no el contenido */
+  const mueve = d => {
+    h.style.transform = `translate(-50%,${d}px)`;
+    v.style.opacity = String(Math.max(.2, 1 - d / (h.offsetHeight || 1)));
+  };
+  const suelta = (d, vel) => {
+    h.style.transition = ''; v.style.transition = ''; v.style.opacity = '';
+    if (d > 110 || (d > 36 && vel > .4)) cierraHoja(); else h.style.transform = '';
+  };
+  const empieza = () => { h.style.transition = 'none'; v.style.transition = 'none'; };
+
+  let t = null;
+  h.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { t = null; return; }
+    const c = e.touches[0];
+    t = {x: c.clientX, y: c.clientY, va: false, ini: 0, d: 0, ty: c.clientY, tt: e.timeStamp, vel: 0};
+  }, {passive: true});
+  h.addEventListener('touchmove', e => {
+    if (!t) return;
+    const c = e.touches[0];
+    if (!t.va) {
+      if (h.scrollTop > 0) { t.x = c.clientX; t.y = c.clientY; return; }
+      const dx = c.clientX - t.x, dy = c.clientY - t.y;
+      if (Math.abs(dx) > Math.abs(dy)) { if (Math.abs(dx) > 10) t = null; return; }
+      if (dy <= 0) { if (h.scrollHeight <= h.clientHeight && e.cancelable) e.preventDefault(); return; }
+      if (!e.cancelable) return;
+      t.va = true; t.ini = t.y; t.t0 = t.tt; empieza();
+    }
+    e.preventDefault();
+    t.d = Math.max(0, c.clientY - t.ini);
+    const dt = e.timeStamp - t.tt, total = e.timeStamp - t.t0;
+    const ultimo = dt > 0 ? (c.clientY - t.ty) / dt : 0, media = total > 0 ? t.d / total : 0;
+    t.vel = Math.max(ultimo, media);
+    t.ty = c.clientY; t.tt = e.timeStamp;
+    mueve(t.d);
+  }, {passive: false});
+  const finToque = () => { if (t && t.va) suelta(t.d, t.vel); t = null; };
+  h.addEventListener('touchend', finToque);
+  h.addEventListener('touchcancel', finToque);
+
+  /* Con raton, desde el asa */
   const asa = $('.asa', h);
   let y0 = null;
-  asa.addEventListener('pointerdown', e => { y0 = e.clientY; h.style.transition = 'none'; asa.setPointerCapture(e.pointerId); });
-  asa.addEventListener('pointermove', e => { if (y0 !== null) h.style.transform = `translate(-50%,${Math.max(0, e.clientY - y0)}px)`; });
-  const suelta = e => {
-    if (y0 === null) return;
-    const dy = e.clientY - y0; y0 = null; h.style.transition = '';
-    if (dy > 90) cierraHoja(); else h.style.transform = '';
-  };
-  asa.addEventListener('pointerup', suelta);
-  asa.addEventListener('pointercancel', suelta);
+  asa.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; y0 = e.clientY; empieza(); asa.setPointerCapture(e.pointerId); });
+  asa.addEventListener('pointermove', e => { if (y0 !== null) mueve(Math.max(0, e.clientY - y0)); });
+  const sueltaR = e => { if (y0 === null) return; const d = e.clientY - y0; y0 = null; suelta(d, 0); };
+  asa.addEventListener('pointerup', sueltaR);
+  asa.addEventListener('pointercancel', sueltaR);
   return h;
 }
 function confirma(titulo, texto, boton, fn) {
