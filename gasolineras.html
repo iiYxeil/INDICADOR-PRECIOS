@@ -63,23 +63,25 @@
   .escena{position:relative;overflow:hidden;color:var(--s-ink);
           background:linear-gradient(180deg,var(--s1) 0%,var(--s2) 46%,var(--s3) 74%,var(--s4) 92%);
           --halo:.0;--charco:0;--estrellas:0;--sol-o:0}
-  .escena[data-cielo="alba"]{--s1:#26336f;--s2:#7d5a9e;--s3:#f2a58f;--s4:#ffd9a0;
+  .escena[data-cielo="alba"]{--faros:.3;--coche:#f4f4fb;--cristal:#2b3a78;--s1:#26336f;--s2:#7d5a9e;--s3:#f2a58f;--s4:#ffd9a0;
     --lejos:#c79bb0;--far2:#7e6592;--arcen:#3d3162;--asfalto:#2c2748;--linea:rgba(255,255,255,.5);
     --far:#8a6f9c;--mid:#5d4a7e;--veta:#74598f;--roca:#46375f;--sol:#ffe2a8;--sol-o:1;
     --s-ink:#fff;--s-ink-2:rgba(255,255,255,.84);--halo:.16;--charco:.16;--estrellas:.35}
-  .escena[data-cielo="dia"]{--s1:#2f7fd6;--s2:#74b6ee;--s3:#c9e4f4;--s4:#f4ecd8;
+  .escena[data-cielo="dia"]{--faros:0;--coche:#f8f8fd;--cristal:#26408c;--s1:#2f7fd6;--s2:#74b6ee;--s3:#c9e4f4;--s4:#f4ecd8;
     --lejos:#e9dfc9;--far2:#cdb992;--arcen:#d6bf94;--asfalto:#4a4e68;--linea:rgba(255,255,255,.72);
     --far:#d9c8a8;--mid:#c29b6c;--veta:#e0c79f;--roca:#a47a4c;--sol:#fff;--sol-o:0;
     --s-ink:#0d1a4a;--s-ink-2:#14275e;--halo:0;--charco:0;--estrellas:0}
-  .escena[data-cielo="ocaso"]{--s1:#1b1f56;--s2:#7a2f7c;--s3:#ee6c4d;--s4:#ffc35e;
+  .escena[data-cielo="ocaso"]{--faros:.55;--coche:#e8e8f4;--cristal:#1b1f56;--s1:#1b1f56;--s2:#7a2f7c;--s3:#ee6c4d;--s4:#ffc35e;
     --lejos:#9c3f77;--far2:#4c2560;--arcen:#1c1440;--asfalto:#23203f;--linea:rgba(255,255,255,.45);
     --far:#5a2c66;--mid:#2f2052;--veta:#452a68;--roca:#231743;--sol:#ffe08a;--sol-o:1;
     --s-ink:#fff;--s-ink-2:rgba(255,255,255,.86);--halo:.28;--charco:.26;--estrellas:.5}
-  .escena[data-cielo="noche"]{--s1:#070a22;--s2:#121848;--s3:#25286a;--s4:#3f3a80;
+  .escena[data-cielo="noche"]{--faros:.85;--coche:#c9cbe2;--cristal:#0c0e22;--s1:#070a22;--s2:#121848;--s3:#25286a;--s4:#3f3a80;
     --lejos:#262c70;--far2:#20265e;--arcen:#0c0f2c;--asfalto:#1b1e3e;--linea:rgba(255,255,255,.4);
     --far:#1c2257;--mid:#141941;--veta:#1f2558;--roca:#0e1233;--sol:#fff;--sol-o:0;
     --s-ink:#fff;--s-ink-2:rgba(255,255,255,.82);--halo:.42;--charco:.4;--estrellas:1}
 
+  .coche{transform:translate(628px,672px);animation:llega 2.5s cubic-bezier(.16,1,.3,1) .25s both}
+  @keyframes llega{from{transform:translate(-160px,672px)}to{transform:translate(628px,672px)}}
   .paisaje{position:absolute;left:50%;bottom:0;width:1600px;height:720px;margin-left:-800px;
            pointer-events:none}
   .portada{position:relative;z-index:1;max-width:520px;margin:0 auto;
@@ -207,6 +209,13 @@
   .dat{display:flex;flex-wrap:wrap;gap:0 9px;font-size:13px;line-height:1.3;color:var(--muted);margin-top:3px}
   .baja{color:var(--barato)} .sube{color:var(--caro)}
 
+  .historia{margin-top:40px}
+  #curva{display:block;width:100%;height:auto;margin-top:8px;cursor:crosshair;touch-action:pan-y}
+  .h-leyenda{display:flex;flex-wrap:wrap;gap:4px 16px;margin:13px 2px 0;font-size:13.5px;font-weight:500;color:var(--ink-2)}
+  .h-leyenda span{display:inline-flex;align-items:center;gap:7px}
+  .h-leyenda i{display:block;width:18px;height:3px;border-radius:2px}
+  .l-min{background:var(--barato)} .l-med{background:var(--muted)}
+  .h-dato{margin:6px 2px 0;font-size:14px;font-weight:600;color:var(--ink-2);min-height:1.4em}
   .lista{margin-top:42px}
   .lista-cabeza{display:flex;flex-direction:column;gap:12px;margin-bottom:13px}
   #lista{background:var(--raise);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
@@ -245,7 +254,7 @@
   .metodo code{font-family:var(--sans);font-weight:600;font-size:14px;color:var(--ink);
                background:var(--hundido);padding:3px 7px;border-radius:5px}
   footer{margin-top:16px;font-size:13px;line-height:1.5;color:var(--muted)}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}.coche{animation:none}}
 </style>
 </head>
 <body>
@@ -257,6 +266,7 @@
     <clipPath id="clip-roca"><path d="M586 672L612 654L626 640L634 622L648 606L652 588L660 574L664 556L666 540H684L688 556L694 572L700 590L712 606L722 626L736 642L756 656L786 672Z"/></clipPath>
     <clipPath id="clip-mesa"><path d="M0 524L150 524L176 508L330 508L356 492L520 492L546 512L600 512L624 498L700 498L720 508L860 508L888 484L1040 484L1070 506L1240 506L1270 490L1430 490L1460 518L1600 518V720H0Z"/></clipPath>
     <radialGradient id="resol"><stop offset="0" stop-color="var(--sol)" stop-opacity=".8"/><stop offset="1" stop-color="var(--sol)" stop-opacity="0"/></radialGradient>
+    <linearGradient id="faro"><stop offset="0" stop-color="#ffe9a8" stop-opacity=".85"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></linearGradient>
     <radialGradient id="luz-suelo"><stop offset="0" stop-color="#ffb627" stop-opacity=".9"/><stop offset="1" stop-color="#ffb627" stop-opacity="0"/></radialGradient>
   </defs>
   <g id="estrellas" style="opacity:var(--estrellas)"></g>
@@ -296,6 +306,15 @@
   <rect fill="var(--linea)" height="1.5" width="1600" y="707"/>
   <path d="M0 696H1600" stroke="var(--linea)" stroke-dasharray="26 20" stroke-width="2.5"/>
   <rect fill="var(--bg)" height="8" width="1600" y="712"/>
+  <g class="coche">
+    <path d="M64 12L136 3V24Z" fill="url(#faro)" style="opacity:var(--faros)"/>
+    <path d="M0 14C0 11 2 10 6 9.5L14 8.5L21 2.5C22 1.5 23 1 25 1H41C43 1 44.5 1.6 46 3L51 8L60 9.5C63 10 64 11.5 64 14V17C64 18 63 18.5 62 18.5H2C1 18.5 0 18 0 17Z" fill="var(--coche)"/>
+    <path d="M18.5 8.5L23.5 4C24.2 3.4 25 3.2 26 3.2H31.5V8.5ZM33.5 3.2H40.5C42 3.2 43 3.7 44 4.7L47.5 8.5H33.5Z" fill="var(--cristal)"/>
+    <rect fill="#ffe9a8" height="2.6" rx="1" width="3" x="61" y="11"/>
+    <rect fill="#e0344b" height="3" rx="1" width="2" x="0" y="11"/>
+    <circle cx="13" cy="18.5" fill="#0c0e22" r="5"/><circle cx="13" cy="18.5" fill="#9ea3bf" r="2"/>
+    <circle cx="51" cy="18.5" fill="#0c0e22" r="5"/><circle cx="51" cy="18.5" fill="#9ea3bf" r="2"/>
+  </g>
 </svg>
 
 <div class="portada">
@@ -350,6 +369,14 @@
     <div class="leyenda"><span>Más barata</span><div class="esc"><i class="b0"></i><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div><span>Más cara</span></div>
     <p class="pie-fig">Color frente a la mediana de Tudela, en tramos de 2 y 6 céntimos. El centro está ampliado para distinguir las gasolineras de la ciudad.</p>
     <div id="sel"></div>
+  </section>
+
+  <section class="historia" hidden id="historia">
+    <h2 id="h-titulo"></h2>
+    <p class="sub" id="h-sub"></p>
+    <div class="h-leyenda"><span><i class="l-min"></i>Más barata de Tudela</span><span><i class="l-med"></i>Mediana de Tudela</span></div>
+    <svg aria-hidden="true" id="curva" viewBox="0 0 360 196"></svg>
+    <p class="h-dato" id="h-dato"></p>
   </section>
 
   <section class="lista">
@@ -1058,6 +1085,87 @@
     });
   }
 
+  /* ---- evolucion del gasoleo A en Tudela: el mismo historico que diesel.html ---- */
+  function fechaLarga(f){
+    var p = f.split('-'), M = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return +p[2] + ' ' + M[+p[1] - 1];
+  }
+  function pintaHistoria(){
+    fetch('historico-diesel.json?v=' + Math.floor(Date.now() / 36e5))
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(h){
+        if (!h) return;
+        var pts = Object.keys(h).sort().map(function(f){
+          var r = h[f] || {};
+          return (typeof r.min === 'number' && typeof r.municipio === 'number')
+            ? {f: f, t: new Date(f + 'T12:00:00Z').getTime(), a: r.min, b: r.municipio} : null;
+        }).filter(Boolean).slice(-90);
+        if (pts.length < 5) return;
+        dibujaCurva(pts);
+        $('historia').hidden = false;
+      })
+      .catch(function(){ /* sin grafico, el resto de la pagina va igual */ });
+  }
+  function dibujaCurva(pts){
+    var svg = $('curva'), W2 = 360, H2 = 196, L = 42, Rr = 356, T2 = 10, B = 170;
+    var mins = pts.map(function(p){ return p.a; }), meds = pts.map(function(p){ return p.b; });
+    var todos = mins.concat(meds), bajo = Math.min.apply(null, todos), alto = Math.max.apply(null, todos);
+    var paso = (alto - bajo) > 0.24 ? 0.1 : 0.05;
+    var lo = Math.floor(bajo / paso) * paso, hi = Math.ceil(alto / paso) * paso;
+    var t0 = pts[0].t, t1 = pts[pts.length - 1].t;
+    function X(t){ return L + (t - t0) / (t1 - t0) * (Rr - L); }
+    function Y(v){ return B - (v - lo) / (hi - lo) * (B - T2); }
+    var g = '';
+    for (var v = lo; v <= hi + 1e-6; v += paso) {
+      g += '<line x1="' + L + '" x2="' + Rr + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '" stroke="var(--line)"/>' +
+           '<text class="t" x="0" y="' + (Y(v) + 4).toFixed(1) + '">' + coma(v, 2) + ' €</text>';
+    }
+    /* meses en el eje */
+    var M = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'], d = new Date(t0);
+    d.setUTCDate(1); d.setUTCHours(12); d.setUTCMonth(d.getUTCMonth() + 1);
+    for (; d.getTime() < t1; d.setUTCMonth(d.getUTCMonth() + 1)) {
+      var mx = X(d.getTime());
+      g += '<line x1="' + mx.toFixed(1) + '" x2="' + mx.toFixed(1) + '" y1="' + B + '" y2="' + (B + 5) + '" stroke="var(--line-2)"/>' +
+           '<text class="t" text-anchor="middle" x="' + mx.toFixed(1) + '" y="' + (B + 19) + '">' + M[d.getUTCMonth()] + '</text>';
+    }
+    function linea(k){
+      return pts.map(function(p, i){
+        return (i ? 'L' : 'M') + X(p.t).toFixed(1) + ' ' + Y(p[k]).toFixed(1);
+      }).join('');
+    }
+    g += '<path d="' + linea('b') + '" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+         '<path d="' + linea('a') + '" fill="none" stroke="var(--barato)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    svg.innerHTML = g + '<g id="cruz"></g>';
+
+    function marca(i){
+      var p = pts[i], x = X(p.t);
+      $('cruz').innerHTML = '<line x1="' + x.toFixed(1) + '" x2="' + x.toFixed(1) + '" y1="' + T2 + '" y2="' + B + '" stroke="var(--line-2)"/>' +
+        '<circle cx="' + x.toFixed(1) + '" cy="' + Y(p.b).toFixed(1) + '" r="4.5" fill="var(--muted)" stroke="var(--bg)" stroke-width="2"/>' +
+        '<circle cx="' + x.toFixed(1) + '" cy="' + Y(p.a).toFixed(1) + '" r="4.5" fill="var(--barato)" stroke="var(--bg)" stroke-width="2"/>';
+      $('h-dato').textContent = fechaLarga(p.f) + ': ' + euros(p.a) + ' la más barata, ' + euros(p.b) + ' la mediana';
+    }
+    function aqui(ev){
+      var c = svg.getBoundingClientRect(), t = t0 + ((ev.clientX - c.left) * W2 / c.width - L) / (Rr - L) * (t1 - t0);
+      var mejor = 0;
+      pts.forEach(function(p, i){ if (Math.abs(p.t - t) < Math.abs(pts[mejor].t - t)) mejor = i; });
+      marca(mejor);
+    }
+    svg.addEventListener('pointermove', aqui);
+    svg.addEventListener('pointerdown', aqui);
+    svg.addEventListener('pointerleave', function(){ marca(pts.length - 1); });
+    marca(pts.length - 1);
+
+    var hoy = pts[pts.length - 1], amin = Math.min.apply(null, mins), amax = Math.max.apply(null, mins);
+    var pos = amax > amin ? (hoy.a - amin) / (amax - amin) : 0.5;
+    var diaMin = pts.filter(function(p){ return p.a === amin; })[0];
+    var diaMax = pts.filter(function(p){ return p.a === amax; }).slice(-1)[0];
+    $('h-titulo').textContent = pos >= 0.66 ? 'El diésel está caro para lo que viene costando'
+                              : pos <= 0.33 ? 'El diésel está barato para lo que viene costando'
+                              : 'El diésel está en su precio de estos meses';
+    $('h-sub').textContent = 'La más barata de Tudela ha ido de ' + euros(amin) + ' el ' + fechaLarga(diaMin.f) +
+                             ' a ' + euros(amax) + ' el ' + fechaLarga(diaMax.f) + '.';
+  }
+
   /* ---- montaje ---- */
   (function(){
     var caja = $('surtidores');
@@ -1139,6 +1247,7 @@
   ponEstrellas();
   pintaBotones();
   carga();
+  pintaHistoria();
 })();
 </script>
 </body>
