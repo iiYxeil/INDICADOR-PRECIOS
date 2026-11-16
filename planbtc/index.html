@@ -2,92 +2,143 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gráficas Bitcoin Ciclos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ciclo BTC</title>
+<meta name="description" content="Las gráficas de ciclo de Bitcoin que usa Plan BTC, con datos reales.">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ciclo BTC">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
 <script src="data.js"></script>
 <style>
 :root{
   color-scheme: light;
-  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
-  --grid:#e1e0d9; --axis:#c3c2b7; --border:#e1e0d9;
+  --page:#f4f4f1; --surface:#fcfcfb; --surface2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:#e1e0d9; --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);
   --s-violet:#6250d6; --s-aqua:#1baf7a; --s-blue:#2a78d6; --s-orange:#eb6834; --s-yellow:#eda100; --s-magenta:#e87ba4;
-  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --neutral:#f0efec;
-  --other:#c3c2b7;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --neutral:#e6e5e0;
+  --other:#b5b4ab; --accent:#f7931a; --bar:rgba(244,244,241,.86);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
-    --grid:#2c2c2a; --axis:#383835; --border:#2c2c2a;
+    --page:#0d0d0d; --surface:#161615; --surface2:#1f1f1d; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2a2a28; --axis:#383835; --border:#262624; --shadow:0 1px 2px rgba(0,0,0,.3);
     --s-violet:#9085e9; --s-aqua:#199e70; --s-blue:#3987e5; --s-orange:#d95926; --s-yellow:#c98500; --s-magenta:#d55181;
-    --neutral:#383835; --other:#52514e;
+    --neutral:#383835; --other:#5a5a56; --bar:rgba(13,13,13,.86);
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
-  --grid:#2c2c2a; --axis:#383835; --border:#2c2c2a;
+  --page:#0d0d0d; --surface:#161615; --surface2:#1f1f1d; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2a2a28; --axis:#383835; --border:#262624; --shadow:0 1px 2px rgba(0,0,0,.3);
   --s-violet:#9085e9; --s-aqua:#199e70; --s-blue:#3987e5; --s-orange:#d95926; --s-yellow:#c98500; --s-magenta:#d55181;
-  --neutral:#383835; --other:#52514e;
+  --neutral:#383835; --other:#5a5a56; --bar:rgba(13,13,13,.86);
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{padding:20px 16px 8px;max-width:1200px;margin:0 auto}
-h1{font-size:22px;margin:0 0 4px}
-.sub{color:var(--ink2);font-size:13px}
-nav{position:sticky;top:0;z-index:5;background:var(--page);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;padding:8px 16px}
-nav a{display:inline-block;color:var(--ink2);text-decoration:none;font-size:13px;padding:4px 10px;border-radius:999px;margin-right:4px}
-nav a:hover{background:var(--surface);color:var(--ink)}
-main{max-width:1200px;margin:0 auto;padding:8px 16px 60px}
-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0;scroll-margin-top:56px}
-section h2{font-size:18px;margin:0 0 4px}
-.how{color:var(--ink2);font-size:13px;margin:0 0 8px}
-.read{background:var(--page);border-left:3px solid var(--s-orange);padding:8px 12px;border-radius:6px;font-size:14px;margin:8px 0 12px}
-.read b{font-weight:600}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.appbar{position:sticky;top:0;z-index:20;background:var(--bar);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top)}
+.appbar .row{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px 6px}
+.logo{width:34px;height:34px;border-radius:10px;flex:none;background:url(icons/icon-192.png) center/cover}
+.brand{flex:1;min-width:0}
+.brand b{display:block;font-size:16px;letter-spacing:-.01em}
+.brand small{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live{text-align:right}
+.live .px{font-size:19px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.chg{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;margin-top:1px}
+.chg.up{background:rgba(12,163,12,.15);color:var(--good)}.chg.dn{background:rgba(208,59,59,.15);color:var(--crit)}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--good);margin-right:4px;vertical-align:middle;animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.iconbtn{flex:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--ink2);font-size:16px;cursor:pointer;display:grid;place-items:center}
+nav{max-width:1200px;margin:0 auto;overflow-x:auto;white-space:nowrap;padding:4px 12px 10px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{display:inline-block;color:var(--ink2);text-decoration:none;font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px;margin-right:2px;transition:background .15s,color .15s}
+nav a:hover{color:var(--ink)}
+nav a.on{background:var(--ink);color:var(--surface)}
+main{max-width:1200px;margin:0 auto;padding:4px 16px calc(40px + env(safe-area-inset-bottom))}
+section{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin:14px 0;scroll-margin-top:110px;box-shadow:var(--shadow)}
+section h2{font-size:17px;margin:0 0 6px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.num{flex:none;width:26px;height:26px;border-radius:8px;background:var(--surface2);color:var(--accent);font-size:13px;font-weight:700;display:grid;place-items:center}
+.how{color:var(--ink2);font-size:13px;margin:0 0 10px}
+.read{background:var(--surface2);border-left:3px solid var(--accent);padding:10px 12px;border-radius:10px;font-size:14px;margin:8px 0 12px}
+.read b{font-weight:650}
+.chartbox{display:flex;flex-direction:column}
 .chart{width:100%;height:440px}
 .chart.sm{height:260px}
+.zoombtn{order:-1;align-self:flex-end;margin:2px 0 4px;border:1px solid var(--border);background:var(--surface);color:var(--ink2);border-radius:8px;font:500 12px Inter,system-ui,sans-serif;padding:4px 9px;cursor:pointer;box-shadow:var(--shadow)}
+.zoombtn:hover{color:var(--ink)}
 .controls{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
-.controls button{font:inherit;font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid var(--axis);background:transparent;color:var(--ink2);cursor:pointer}
+.controls button{font:inherit;font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--ink2);cursor:pointer}
 .controls button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-@media (max-width:600px){.chart{height:340px}.chart.sm{height:220px}section{padding:12px}.tile .v{font-size:20px}h1{font-size:19px}}
-.tile{background:var(--page);border-radius:10px;padding:12px}
+.tile{background:var(--surface2);border-radius:14px;padding:12px 14px}
 .tile .k{font-size:12px;color:var(--ink2)}
-.tile .v{font-size:24px;font-weight:650;margin-top:2px}
+.tile .v{font-size:24px;font-weight:700;margin-top:2px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tile .n{font-size:12px;color:var(--muted)}
-table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}
-th,td{text-align:right;padding:5px 8px;border-bottom:1px solid var(--border)}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border)}
 th:first-child,td:first-child{text-align:left}
 th{color:var(--ink2);font-weight:600}
 .tablewrap{overflow-x:auto}
 .note{font-size:12px;color:var(--muted);margin-top:6px}
-.warnbox{background:var(--page);border:1px dashed var(--axis);padding:10px 12px;border-radius:8px;font-size:13px;color:var(--ink2)}
-.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.warnbox{display:block;background:var(--surface2);border:1px dashed var(--axis);padding:10px 12px;border-radius:10px;font-size:13px;color:var(--ink2)}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;white-space:nowrap}
 .pill.on{background:var(--good);color:#fff}.pill.off{background:var(--neutral);color:var(--ink2)}
 a{color:var(--s-blue)}
 .sigcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:8px 0 16px}
-.sigcard{background:var(--page);border-radius:10px;padding:12px;border-left:4px solid var(--neutral)}
+.sigcard{background:var(--surface2);border-radius:14px;padding:12px 14px;border-left:4px solid var(--neutral)}
 .sigcard.on{border-left-color:var(--good)}
 .sigcard .t{font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:6px}
 .sigcard .e{font-size:12px;color:var(--ink2);margin:4px 0 8px}
 .sigcard .val{font-size:13px}
 .sigcard .val b{font-size:18px}
-.h3{font-size:15px;margin:14px 0 2px}
-footer{max-width:1200px;margin:0 auto;padding:0 16px 40px;font-size:12px;color:var(--muted)}
+.h3{font-size:15px;margin:16px 0 2px}
+footer{max-width:1200px;margin:0 auto;padding:0 16px calc(30px + env(safe-area-inset-bottom));font-size:12px;color:var(--muted)}
+#zoomModal{position:fixed;inset:0;z-index:50;background:var(--page);display:none;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#zoomModal.open{display:flex}
+#zoomModal .zbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border)}
+#zoomModal .zbar b{flex:1;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#zoomModal .zbar button{font:500 13px Inter,system-ui,sans-serif;border:1px solid var(--border);background:var(--surface2);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+#zoomModal .zhint{font-size:11px;color:var(--muted);padding:4px 12px}
+#zoomChart{flex:1;min-height:0}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--surface);font-size:13px;padding:8px 14px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:60}
+#toast.show{opacity:1}
+@media (max-width:600px){
+  .chart{height:330px}.chart.sm{height:220px}
+  section{padding:14px;border-radius:16px;margin:10px 0}
+  main{padding-left:10px;padding-right:10px}
+  .tile .v{font-size:20px}
+  .how{font-size:12.5px}
+  .read{font-size:13px}
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>Gráficas de ciclo de Bitcoin</h1>
-  <div class="sub">Las gráficas que más usa el canal Plan BTC, con datos reales. <span id="stamp"></span></div>
-</header>
-<nav>
-  <a href="#resumen">Resumen</a><a href="#ciclos">Ciclos</a><a href="#midterm">Midterm</a><a href="#magica">Gráfica mágica</a>
-  <a href="#fib">Fibonacci</a><a href="#nasdaq">Nasdaq</a><a href="#liq">Apalancamiento</a><a href="#rsi">RSI</a>
-  <a href="#rachas">Rachas</a><a href="#estacional">Estacionalidad</a><a href="#fng">Miedo/Codicia</a>
-  <a href="#sth">Corto plazo</a><a href="#senales">4 señales</a>
-</nav>
+<div class="appbar">
+  <div class="row">
+    <div class="logo" aria-hidden="true"></div>
+    <div class="brand"><b>Ciclo BTC</b><small id="stamp">Cargando…</small></div>
+    <div class="live"><div class="px" id="hdrPx">—</div><span class="chg" id="hdrChg"></span></div>
+    <button class="iconbtn" id="refreshBtn" title="Actualizar" aria-label="Actualizar">↻</button>
+  </div>
+  <nav id="nav">
+    <a href="#resumen">Resumen</a><a href="#ciclos">Ciclos</a><a href="#midterm">Midterm</a><a href="#magica">Gráfica mágica</a><a href="#fib">Fibonacci</a><a href="#nasdaq">Nasdaq</a><a href="#liq">Apalancamiento</a><a href="#rsi">RSI</a><a href="#rachas">Rachas</a><a href="#estacional">Estacionalidad</a><a href="#fng">Miedo/Codicia</a><a href="#sth">Corto plazo</a><a href="#senales">4 señales</a>
+  </nav>
+</div>
+<div id="zoomModal" role="dialog" aria-modal="true">
+  <div class="zbar"><b id="zoomTitle"></b><button id="zoomReset">Restablecer</button><button id="zoomClose">✕ Cerrar</button></div>
+  <div class="zhint" id="zoomHint"></div>
+  <div id="zoomChart"></div>
+</div>
+<div id="toast"></div>
 <main>
 
 <section id="resumen">
@@ -541,7 +592,7 @@ function renderFng(){
 function series(o){ return o&&o.d&&o.d.length? o : null; }
 function renderSTH(){
   const c=C(); const S=series(D.sthMvrv), RP=series(D.sthRp);
-  if(!S){ $('sthRead').innerHTML='<span class="warnbox">Faltan los datos on-chain (bitcoin-data.com limita a 15 consultas al día). Ejecuta <code>python actualizar_datos.py</code> más tarde.</span>'; $('sthChart').style.display='none'; $('sthPl').style.display='none'; return; }
+  if(!S){ $('sthRead').innerHTML='<span class="warnbox">No se han podido cargar los datos on-chain: bitcoin-data.com (gratis) solo permite 10 consultas por hora y 15 al día por conexión. Vuelve a abrir la página dentro de una hora.</span>'; $('sthChart').style.display='none'; $('sthPl').style.display='none'; return; }
   const zones=[[0,0.85,'#0d366b','Muy incómodo'],[0.85,0.95,'#1baf7a','Incómodo'],[0.95,1.1,'#008300','Cómodo'],[1.1,1.25,'#eda100','Muy cómodo'],[1.25,9,'#eb6834','Extremadamente cómodo']];
   const zoneColor = v => (zones.find(z=>v>=z[0]&&v<z[1])||zones[2]);
   const x=S.d.map(iso), py=S.d.map(d=>priceAt(d));
@@ -585,7 +636,7 @@ function renderSignals(){
     {n:'Puell < 0,6',e:'Compara lo que ganan hoy los mineros con su media del último año. Por debajo de 0,6 los mineros sufren y suelen vender: típico de suelos.',m:v4,on:v=>v<0.6,f:v=>v.toFixed(2),th:'se enciende por debajo de 0,6'}];
   const lastOf=m=>{ if(!m.size) return null; const k=Math.max(...m.keys()); return {d:k,v:m.get(k)}; };
   let onCount=0, avail=0;
-  $('sigCards').innerHTML=SIG.map(s=>{ const l=lastOf(s.m); if(!l) return `<div class="sigcard"><div class="t">${s.n}<span class="pill off">sin datos</span></div><div class="e">${s.e}</div><div class="val">Falta descargar (bitcoin-data.com)</div></div>`;
+  $('sigCards').innerHTML=SIG.map(s=>{ const l=lastOf(s.m); if(!l) return `<div class="sigcard"><div class="t">${s.n}<span class="pill off">sin datos</span></div><div class="e">${s.e}</div><div class="val">Sin datos ahora mismo (límite de consultas de bitcoin-data.com). Vuelve en una hora.</div></div>`;
     const on=s.on(l.v); avail++; if(on) onCount++;
     return `<div class="sigcard ${on?'on':''}"><div class="t">${s.n}<span class="pill ${on?'on':'off'}">${on?'ENCENDIDA':'apagada'}</span></div><div class="e">${s.e}</div><div class="val">Ahora: <b>${s.f(l.v)}</b> · ${s.th}<br><span style="color:var(--muted)">dato del ${iso(l.d)}</span></div></div>`; }).join('');
   $('sigRead').innerHTML = `<b>${onCount} de ${avail}</b> señales encendidas ahora${avail<4?` (${4-avail} sin datos todavía)`:''}. ` +
@@ -613,7 +664,8 @@ function renderTiles(sig){
   const cur=W.streak, sign=W.sign;
   const prevTB=[0,1,2].map(k=>P.d[CYC.bots[k+1]]-P.d[CYC.tops[k]]);
   const ch24 = now/P.p[n-2]-1;
-  const t=[['Precio BTC',fmt$(now),`${pct(ch24)} en 24 h · ${iso(last)}`],
+  const lo=P.p[CYC.curBot];
+  const t=[['Mínimo del ciclo',fmt$(lo),`${iso(P.d[CYC.curBot])} · hoy ${pct(now/lo-1,0)} por encima`],
     ['Desde el máximo',pct(now/top-1,0),`máx. ${fmt$(top)} el ${iso(P.d[CYC.tops[3]])}`],
     ['Días desde el máximo',String(last-P.d[CYC.tops[3]]),`mínimos anteriores: ${Math.min(...prevTB)}–${Math.max(...prevTB)} días`],
     ['Miedo y Codicia',fv==null?'–':String(fv),fv!=null&&fv<=10?'miedo extremo':fv!=null&&fv<=25?'miedo':''],
@@ -632,9 +684,67 @@ async function liveMerge(){
     return true;
   }catch(e){ return false; }
 }
+// on-chain de bitcoin-data.com: si data.js no los trae (límite de IP en GitHub), los pide el navegador y los guarda 20 h
+async function loadOnchain(){
+  const eps=[['sthMvrv','sth-mvrv','sthMvrv'],['sthRp','sth-realized-price','sthRealizedPrice'],['asopr','asopr','asopr'],['reserveRisk','reserve-risk','reserveRisk']];
+  const today=Math.floor(Date.now()/DAY);
+  for(const [k,ep,key] of eps){
+    const s=D[k]; if(s&&s.d&&s.d.length&&s.d[s.d.length-1]>=today-10) continue; // la versión gratis va ~7 días retrasada
+    let cached=null; try{ cached=JSON.parse(localStorage.getItem('bd_'+ep)); }catch(e){}
+    if(cached&&Date.now()-cached.ts<20*3600e3){ D[k]=cached.v; continue; }
+    let failTs=0; try{ failTs=+localStorage.getItem('bd_fail')||0; }catch(e){}
+    if(Date.now()-failTs<3*3600e3){ if(cached) D[k]=cached.v; continue; } // falló hace poco: no gastar más consultas
+    try{
+      const r=await fetch('https://bitcoin-data.com/v1/'+ep); if(!r.ok) throw new Error(r.status);
+      const arr=await r.json(); const o={d:[],v:[]};
+      arr.forEach(x=>{ const v=x[key]; if(v==null||v==='') return; o.d.push(Math.round(Date.parse(x.d)/DAY)); o.v.push(+v); });
+      if(o.d.length){ D[k]=o; try{ localStorage.setItem('bd_'+ep,JSON.stringify({ts:Date.now(),v:o})); }catch(e){} }
+    }catch(e){ if(cached) D[k]=cached.v; try{ localStorage.setItem('bd_fail',Date.now()); }catch(_){} console.warn('bitcoin-data',ep,e.message); break; }
+  }
+}
+// ---------- interfaz tipo app ----------
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),2200); }
+function setHeader(px, chgPct){
+  $('hdrPx').textContent=fmt$(px);
+  if(chgPct!=null){ const e=$('hdrChg'); e.textContent=(chgPct>=0?'▲ ':'▼ ')+Math.abs(chgPct).toFixed(2)+'% 24h'; e.className='chg '+(chgPct>=0?'up':'dn'); }
+  $('stamp').innerHTML=`<span class="dot"></span>En directo · ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})} · histórico ${D.generado.slice(0,10)}`;
+}
+function decorate(){
+  // número de sección como insignia
+  document.querySelectorAll('section h2').forEach(h=>{ const m=h.textContent.match(/^(\d+)\s*·\s*(.*)$/); if(m) h.innerHTML=`<span class="num">${m[1]}</span><span>${m[2]}</span>`; });
+  // botón "Ampliar" en cada gráfica
+  document.querySelectorAll('.chart').forEach(el=>{ const box=document.createElement('div'); box.className='chartbox'; el.parentNode.insertBefore(box,el); box.appendChild(el);
+    const b=document.createElement('button'); b.className='zoombtn'; b.textContent='⤢ Ampliar'; b.onclick=()=>openZoom(el.id); box.appendChild(b); });
+  // pestaña activa en el menú según la sección visible
+  const links=[...document.querySelectorAll('#nav a')];
+  const obs=new IntersectionObserver(es=>{ es.forEach(e=>{ if(!e.isIntersecting) return; links.forEach(a=>{ const on=a.getAttribute('href')==='#'+e.target.id; a.classList.toggle('on',on); if(on) a.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}); }); }); },{rootMargin:'-120px 0px -60% 0px'});
+  document.querySelectorAll('main section').forEach(s=>obs.observe(s));
+}
+let zoomLayout=null;
+function openZoom(id){
+  const src=$(id); if(!src||!src.data) return;
+  $('zoomTitle').textContent=src.closest('section').querySelector('h2').innerText.replace(/^\d+\s*/,'');
+  $('zoomHint').textContent = MOBILE ? 'Desliza un dedo sobre una zona para ampliarla · usa + / − arriba · doble toque o "Restablecer" para volver · gira el móvil para verla más grande'
+                                     : 'Arrastra para ampliar una zona · rueda del ratón para acercar · doble clic o "Restablecer" para volver';
+  $('zoomModal').classList.add('open'); document.body.style.overflow='hidden';
+  history.pushState({zoom:1},'');
+  zoomLayout=JSON.parse(JSON.stringify(src.layout)); delete zoomLayout.height; delete zoomLayout.width;
+  Object.assign(zoomLayout,{autosize:true,dragmode:'zoom',margin:{...zoomLayout.margin,t:34,r:12}});
+  Plotly.newPlot('zoomChart',src.data,JSON.parse(JSON.stringify(zoomLayout)),{responsive:true,scrollZoom:true,displayModeBar:true,displaylogo:false,showTips:false,
+    modeBarButtonsToRemove:['toImage','select2d','lasso2d','autoScale2d','toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian']});
+}
+function closeZoom(){ if(!$('zoomModal').classList.contains('open')) return; $('zoomModal').classList.remove('open'); document.body.style.overflow=''; Plotly.purge('zoomChart'); }
+$('zoomClose').onclick=()=>{ if(history.state&&history.state.zoom) history.back(); else closeZoom(); };
+$('zoomReset').onclick=()=>{ if(zoomLayout) Plotly.relayout('zoomChart',JSON.parse(JSON.stringify({'xaxis.range':zoomLayout.xaxis.range||null,'yaxis.range':zoomLayout.yaxis.range||null,'xaxis.autorange':!zoomLayout.xaxis.range,'yaxis.autorange':!zoomLayout.yaxis.range}))); };
+window.addEventListener('popstate',closeZoom);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('zoomClose').click(); });
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 async function init(){
-  const live=await liveMerge(); reindex();
-  $('stamp').textContent=`Histórico: ${D.generado}${live?' · precio de hoy en directo (Binance)':''}.`;
+  decorate();
+  const [live]=await Promise.all([liveMerge(), loadOnchain()]); reindex();
+  setHeader(P.p[P.p.length-1], P.p.length>1?(P.p[P.p.length-1]/P.p[P.p.length-2]-1)*100:null);
+  if(!live) $('stamp').textContent=`Sin conexión · histórico ${D.generado.slice(0,10)}`;
   computeCycles(); weekly();
   const safe=(f)=>{ try{ return f(); }catch(e){ console.error(f.name,e); } };
   buttons($('cycCtl'),[['top','Desde el máximo'],['halv','Desde el halving'],['bot','De mínimo a mínimo']],cycMode,k=>{cycMode=k;renderCycles();});
@@ -646,18 +756,22 @@ async function init(){
   const renderAll=()=>{ computeCycles(); weekly(); [renderCycles,renderMidterm,renderMagic,renderFib,renderNasdaq,renderRSI,renderRachas,renderEst,renderFng,renderSTH].forEach(safe);
     const sig=safe(renderSignals); safe(()=>renderTiles(sig)); };
   renderAll(); renderLiq();
-  // precio en directo: cada 60 s se pide el precio a Binance y se redibuja todo
-  setInterval(async()=>{
+  // precio en directo: cada 60 s (y al pulsar ↻ o volver a la app) se pide a Binance y se redibuja
+  async function tick(manual){
     try{
-      const t=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json());
-      const px=+t.price, d=Math.floor(Date.now()/DAY);
-      if(!px) return;
+      const t=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT').then(r=>r.json());
+      const px=+t.lastPrice, d=Math.floor(Date.now()/DAY);
+      if(!px) throw 0;
       if(P.d[P.d.length-1]===d) P.p[P.p.length-1]=px; else { P.d.push(d); P.p.push(px); reindex(); }
-      renderAll();
-      $('stamp').textContent=`Histórico: ${D.generado} · precio en directo (Binance), actualizado ${new Date().toLocaleTimeString('es-ES')}.`;
-    }catch(e){}
-  },60000);
-  setInterval(renderLiq, 15*60000); // funding e interés abierto cada 15 min
+      setHeader(px,+t.priceChangePercent);
+      renderAll(); if(manual){ renderLiq(); toast('Actualizado'); }
+    }catch(e){ if(manual) toast('Sin conexión'); }
+  }
+  tick();
+  setInterval(()=>{ if(!document.hidden) tick(); },60000);
+  setInterval(renderLiq, 15*60000);
+  $('refreshBtn').onclick=()=>tick(true);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) tick(); });
 }
 init();
 })();

@@ -18,8 +18,14 @@ EPOCH = dt.date(1970, 1, 1)
 
 
 def get(url, timeout=60):
-    req = urllib.request.Request(url, headers=UA)
+    hdr = dict(UA)
+    if "bitcoin-data.com" in url:
+        hdr["Origin"] = "https://iiyxeil.github.io"
+    req = urllib.request.Request(url, headers=hdr)
     with urllib.request.urlopen(req, timeout=timeout) as r:
+        if "bitcoin-data.com" in url:
+            print("    CORS:", r.headers.get("Access-Control-Allow-Origin"),
+                  "| quedan hoy:", r.headers.get("X-RateLimit-Remaining-Day"))
         return json.loads(r.read().decode("utf-8"))
 
 
