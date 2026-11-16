@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gráficas Bitcoin Ciclos</title>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="data.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:#e1e0d9;
+  --s-violet:#6250d6; --s-aqua:#1baf7a; --s-blue:#2a78d6; --s-orange:#eb6834; --s-yellow:#eda100; --s-magenta:#e87ba4;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --neutral:#f0efec;
+  --other:#c3c2b7;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:#2c2c2a;
+    --s-violet:#9085e9; --s-aqua:#199e70; --s-blue:#3987e5; --s-orange:#d95926; --s-yellow:#c98500; --s-magenta:#d55181;
+    --neutral:#383835; --other:#52514e;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:#2c2c2a;
+  --s-violet:#9085e9; --s-aqua:#199e70; --s-blue:#3987e5; --s-orange:#d95926; --s-yellow:#c98500; --s-magenta:#d55181;
+  --neutral:#383835; --other:#52514e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:1200px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--ink2);font-size:13px}
+nav{position:sticky;top:0;z-index:5;background:var(--page);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;padding:8px 16px}
+nav a{display:inline-block;color:var(--ink2);text-decoration:none;font-size:13px;padding:4px 10px;border-radius:999px;margin-right:4px}
+nav a:hover{background:var(--surface);color:var(--ink)}
+main{max-width:1200px;margin:0 auto;padding:8px 16px 60px}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0;scroll-margin-top:56px}
+section h2{font-size:18px;margin:0 0 4px}
+.how{color:var(--ink2);font-size:13px;margin:0 0 8px}
+.read{background:var(--page);border-left:3px solid var(--s-orange);padding:8px 12px;border-radius:6px;font-size:14px;margin:8px 0 12px}
+.read b{font-weight:600}
+.chart{width:100%;height:440px}
+.chart.sm{height:260px}
+.controls{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.controls button{font:inherit;font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid var(--axis);background:transparent;color:var(--ink2);cursor:pointer}
+.controls button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+@media (max-width:600px){.chart{height:340px}.chart.sm{height:220px}section{padding:12px}.tile .v{font-size:20px}h1{font-size:19px}}
+.tile{background:var(--page);border-radius:10px;padding:12px}
+.tile .k{font-size:12px;color:var(--ink2)}
+.tile .v{font-size:24px;font-weight:650;margin-top:2px}
+.tile .n{font-size:12px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}
+th,td{text-align:right;padding:5px 8px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink2);font-weight:600}
+.tablewrap{overflow-x:auto}
+.note{font-size:12px;color:var(--muted);margin-top:6px}
+.warnbox{background:var(--page);border:1px dashed var(--axis);padding:10px 12px;border-radius:8px;font-size:13px;color:var(--ink2)}
+.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.pill.on{background:var(--good);color:#fff}.pill.off{background:var(--neutral);color:var(--ink2)}
+a{color:var(--s-blue)}
+.sigcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:8px 0 16px}
+.sigcard{background:var(--page);border-radius:10px;padding:12px;border-left:4px solid var(--neutral)}
+.sigcard.on{border-left-color:var(--good)}
+.sigcard .t{font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.sigcard .e{font-size:12px;color:var(--ink2);margin:4px 0 8px}
+.sigcard .val{font-size:13px}
+.sigcard .val b{font-size:18px}
+.h3{font-size:15px;margin:14px 0 2px}
+footer{max-width:1200px;margin:0 auto;padding:0 16px 40px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gráficas de ciclo de Bitcoin</h1>
+  <div class="sub">Las gráficas que más usa el canal Plan BTC, con datos reales. <span id="stamp"></span></div>
+</header>
+<nav>
+  <a href="#resumen">Resumen</a><a href="#ciclos">Ciclos</a><a href="#midterm">Midterm</a><a href="#magica">Gráfica mágica</a>
+  <a href="#fib">Fibonacci</a><a href="#nasdaq">Nasdaq</a><a href="#liq">Apalancamiento</a><a href="#rsi">RSI</a>
+  <a href="#rachas">Rachas</a><a href="#estacional">Estacionalidad</a><a href="#fng">Miedo/Codicia</a>
+  <a href="#sth">Corto plazo</a><a href="#senales">4 señales</a>
+</nav>
+<main>
+
+<section id="resumen">
+  <h2>Resumen de hoy</h2>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<section id="ciclos">
+  <h2>1 · Ciclos de 4 años superpuestos</h2>
+  <p class="how">Plan BTC compara todos los ciclos desde tres puntos: desde el máximo, desde el halving y de mínimo a mínimo. "Los ciclos siempre han funcionado."</p>
+  <div class="controls" id="cycCtl"></div>
+  <div class="read" id="cycRead"></div>
+  <div class="chart" id="cycChart"></div>
+  <div class="tablewrap"><table id="cycTable"></table></div>
+</section>
+
+<section id="midterm">
+  <h2>2 · Años de midterm (año a año)</h2>
+  <p class="how">Rendimiento de Bitcoin del 1 de enero al 31 de diciembre en años de elecciones de mitad de mandato en EE. UU. (2014, 2018, 2022, 2026). También desde septiembre, cuando la Fed movió tipos.</p>
+  <div class="controls" id="midCtl"></div>
+  <div class="read" id="midRead"></div>
+  <div class="chart" id="midChart"></div>
+</section>
+
+<section id="magica">
+  <h2>3 · "Gráfica mágica": el ciclo anterior proyectado</h2>
+  <p class="how">Coloca el camino que hizo Bitcoin hace 4, 8 o 12 años sobre el precio actual y lo proyecta hacia delante (línea discontinua). No es una predicción: es "si se repite el ciclo".</p>
+  <div class="controls" id="magCtl"></div>
+  <div class="controls" id="magCtl2"></div>
+  <div class="read" id="magRead"></div>
+  <div class="chart" id="magChart"></div>
+</section>
+
+<section id="fib">
+  <h2>4 · Fibonacci y estructura (zigzag)</h2>
+  <p class="how">Plan BTC cuenta ondas de Elliott y mide retrocesos de Fibonacci (0,382 · 0,5 · 0,618). El conteo de ondas es subjetivo; aquí tienes los giros principales (zigzag) y los niveles de Fibonacci automáticos.</p>
+  <div class="controls" id="fibCtl"></div>
+  <div class="read" id="fibRead"></div>
+  <div class="chart" id="fibChart"></div>
+</section>
+
+<section id="nasdaq">
+  <h2>5 · Bitcoin frente al Nasdaq y el S&amp;P 500</h2>
+  <p class="how">Usa la bolsa americana como aviso: si el Nasdaq corrige, Bitcoin suele sufrir más. Ambos indexados a 100 en la fecha de inicio (misma escala).</p>
+  <div class="controls" id="nqCtl"></div>
+  <div class="read" id="nqRead"></div>
+  <div class="chart" id="nqChart"></div>
+  <div class="chart sm" id="corrChart"></div>
+</section>
+
+<section id="liq">
+  <h2>6 · Apalancamiento: funding e interés abierto</h2>
+  <p class="how">Plan BTC usa el mapa de liquidaciones (Coinglass, de pago). Gratis podemos ver el funding y el interés abierto de Binance: funding muy negativo + caída de interés abierto = largos limpiados (capitulación).</p>
+  <div class="read" id="liqRead">Cargando datos en directo de Binance…</div>
+  <div class="chart sm" id="fundChart"></div>
+  <div class="chart sm" id="oiChart"></div>
+  <p class="note">Mapa de liquidaciones completo: <a href="https://www.coinglass.com/pro/futures/LiquidationHeatMap" target="_blank" rel="noopener">Coinglass Liquidation Heatmap</a>.</p>
+</section>
+
+<section id="rsi">
+  <h2>7 · RSI semanal y divergencias</h2>
+  <p class="how">RSI de 14 semanas. Divergencia bajista: el precio hace un máximo más alto y el RSI uno más bajo (y al revés para la alcista).</p>
+  <div class="read" id="rsiRead"></div>
+  <div class="chart" id="rsiChart" style="height:560px"></div>
+</section>
+
+<section id="rachas">
+  <h2>8 · Rachas de velas semanales</h2>
+  <p class="how">Cuántas semanas seguidas cierra Bitcoin en rojo o en verde y qué pasó después en rachas parecidas.</p>
+  <div class="read" id="rachaRead"></div>
+  <div class="chart sm" id="rachaChart"></div>
+  <div class="tablewrap"><table id="rachaTable"></table></div>
+</section>
+
+<section id="estacional">
+  <h2>9 · Estacionalidad mensual</h2>
+  <p class="how">Rendimiento de cada mes en cada año. Los años midterm van marcados con ★.</p>
+  <div class="read" id="estRead"></div>
+  <div class="chart" id="estChart" style="height:560px"></div>
+</section>
+
+<section id="fng">
+  <h2>10 · Índice de Miedo y Codicia</h2>
+  <p class="how">Por debajo de 10 = miedo extremo, que según Plan BTC suele aparecer en capitulaciones finales. Puntos rojos ≤10, naranjas 11–20.</p>
+  <div class="read" id="fngRead"></div>
+  <div class="chart" id="fngChart"></div>
+  <div class="chart sm" id="fngLine"></div>
+  <div class="tablewrap"><table id="fngTable"></table></div>
+</section>
+
+<section id="sth">
+  <h2>11 · Inversor de corto plazo (on-chain)</h2>
+  <p class="how">Mide si quienes compraron en los últimos ~155 días están en ganancias o pérdidas. Colores: azul oscuro (muy incómodo) → turquesa → verde → amarillo → naranja (muy cómodo). Según Plan BTC, el azul marca mínimos.</p>
+  <div class="read" id="sthRead"></div>
+  <div class="chart" id="sthChart"></div>
+  <div class="chart sm" id="sthPl"></div>
+</section>
+
+<section id="senales">
+  <h2>12 · Las 4 señales de compra</h2>
+  <p class="how">Plan BTC mira cuatro indicadores que se encienden cuando el mercado está vendiendo con miedo. Cada uno por separado es una pista; <b>cuando se encienden los cuatro a la vez</b>, históricamente ha sido muy buena zona de compra.</p>
+  <div class="read" id="sigRead"></div>
+  <div class="sigcards" id="sigCards"></div>
+  <h3 class="h3">¿Cuándo se encendieron en el pasado?</h3>
+  <p class="how">Arriba, el precio: las <b>franjas verdes</b> son los días en que estaban encendidas todas las señales disponibles. Abajo, cuántas señales había encendidas cada día.</p>
+  <div class="chart" id="sigChart" style="height:520px"></div>
+  <p class="note">aSOPR y Reserve Risk vienen de bitcoin-data.com (gratis solo los últimos ~4 años). MVRV y Puell de Coin Metrics desde 2010.</p>
+</section>
+
+</main>
+<footer>Datos: Coin Metrics Community, alternative.me, Yahoo Finance, bitcoin-data.com y Binance (precio de hoy y funding en directo). Para refrescar el histórico ejecuta <code>python actualizar_datos.py</code>. No es consejo de inversión.</footer>
+
+<script>
+(function(){
+const D = window.DATA;
+const DAY = 864e5;
+const iso = d => new Date(d*DAY).toISOString().slice(0,10);
+const dn = s => Math.round(Date.parse(s)/DAY);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt$ = v => '$' + (v>=1000 ? Math.round(v).toLocaleString('es-ES') : v.toFixed(v<1?4:2));
+const pct = (v,dec=1) => (v>=0?'+':'') + (v*100).toFixed(dec) + '%';
+const $ = id => document.getElementById(id);
+const MOBILE = window.innerWidth < 600;
+const CFG = {displayModeBar:false, responsive:true, scrollZoom:false};
+const LOGT = {tickvals:[100,300,1000,3000,10000,30000,100000,300000],ticktext:['$100','$300','$1k','$3k','$10k','$30k','$100k','$300k']};
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+if(!D){ document.querySelector('main').innerHTML='<div class="warnbox">Falta data.js. Ejecuta <code>python actualizar_datos.py</code>.</div>'; return; }
+
+// ---------- precio diario (con merge en directo de Binance) ----------
+const P = {d:[...D.btc.d], p:[...D.btc.p]};
+const priceIdx = new Map();
+function reindex(){ priceIdx.clear(); P.d.forEach((d,i)=>priceIdx.set(d,i)); }
+function priceAt(d){ // precio en el día d o el anterior disponible
+  for(let k=0;k<7;k++){ const i=priceIdx.get(d-k); if(i!==undefined) return P.p[i]; }
+  return null;
+}
+function idxAtOrBefore(d){ let lo=0,hi=P.d.length-1; if(d<P.d[0]) return -1; while(lo<hi){const m=(lo+hi+1)>>1; if(P.d[m]<=d) lo=m; else hi=m-1;} return lo; }
+function maxIn(a,b){ let best=-1,bv=-Infinity; for(let i=0;i<P.d.length;i++){ if(P.d[i]<a||P.d[i]>b) continue; if(P.p[i]>bv){bv=P.p[i];best=i;} } return best; }
+function minIn(a,b){ let best=-1,bv=Infinity; for(let i=0;i<P.d.length;i++){ if(P.d[i]<a||P.d[i]>b) continue; if(P.p[i]<bv){bv=P.p[i];best=i;} } return best; }
+
+function layout(extra={}){
+  const ink2=css('--ink2'), grid=css('--grid'), axis=css('--axis');
+  const ax = {gridcolor:grid, linecolor:axis, zerolinecolor:axis, tickfont:{color:ink2,size:11}, titlefont:{color:ink2,size:12}};
+  // cruz fina que sigue al ratón + etiqueta pequeña solo de la línea más cercana (no tapa la gráfica)
+  const spike = {showspikes:true, spikemode:'across', spikesnap:'cursor', spikethickness:1, spikedash:'dot', spikecolor:css('--muted')};
+  const dark = getComputedStyle(document.documentElement).colorScheme==='dark';
+  const base = {paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{family:'system-ui,Segoe UI,sans-serif',color:css('--ink'),size:12},
+    margin:MOBILE?{l:44,r:6,t:28,b:32}:{l:56,r:16,t:16,b:40}, dragmode:MOBILE?false:'zoom', hovermode:'closest', hoverdistance:40, spikedistance:-1, legend:{orientation:'h',y:MOBILE?1.18:1.08,x:0,font:{color:ink2,size:MOBILE?10:12}},
+    hoverlabel:{bgcolor:dark?'rgba(26,26,25,0.85)':'rgba(252,252,251,0.9)',bordercolor:axis,font:{color:css('--ink'),size:11}},
+    xaxis:{...ax,...spike}, yaxis:{...ax}};
+  for(const k in extra){ if((k.startsWith('xaxis')||k.startsWith('yaxis')) && typeof extra[k]==='object') base[k]={...ax,...(k.startsWith('xaxis')?spike:{}),...extra[k]}; else base[k]=extra[k]; }
+  return base;
+}
+const C = () => ({violet:css('--s-violet'),aqua:css('--s-aqua'),blue:css('--s-blue'),orange:css('--s-orange'),yellow:css('--s-yellow'),magenta:css('--s-magenta'),
+  good:css('--good'),crit:css('--crit'),warn:css('--warn'),serious:css('--serious'),other:css('--other'),muted:css('--muted'),ink:css('--ink'),neutral:css('--neutral')});
+function buttons(el, opts, cur, onPick){
+  el.innerHTML=''; opts.forEach(([k,label])=>{ const b=document.createElement('button'); b.textContent=label; if(k===cur) b.classList.add('on');
+    b.onclick=()=>{ [...el.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); onPick(k); }; el.appendChild(b); });
+}
+
+// ---------- ciclos (anclas calculadas sobre los datos) ----------
+let CYC;
+function computeCycles(){
+  const tops = [['2013-11-01','2013-12-31'],['2017-12-01','2018-01-10'],['2021-10-15','2021-11-30'],['2025-09-01','2025-11-15']].map(([a,b])=>maxIn(dn(a),dn(b)));
+  const lastTop = tops[3];
+  const bots = [['2011-10-01','2011-12-31'],['2014-12-15','2015-02-28'],['2018-11-15','2019-01-31'],['2022-11-01','2022-12-31']].map(([a,b])=>minIn(dn(a),dn(b)));
+  const curBot = minIn(P.d[lastTop], P.d[P.d.length-1]);
+  const halv = ['2012-11-28','2016-07-09','2020-05-11','2024-04-20'].map(dn);
+  CYC = {tops, bots, curBot, halv};
+}
+
+let cycMode='top';
+function renderCycles(){
+  const c=C(), cols=[c.violet,c.aqua,c.blue,c.orange];
+  const last=P.d[P.d.length-1];
+  let anchors, labels;
+  if(cycMode==='top'){ anchors=CYC.tops.map(i=>P.d[i]); labels=['Máx. 2013','Máx. 2017','Máx. 2021','Máx. 2025 (actual)']; }
+  else if(cycMode==='halv'){ anchors=CYC.halv; labels=['Halving 2012','Halving 2016','Halving 2020','Halving 2024 (actual)']; }
+  else { anchors=CYC.bots.map(i=>P.d[i]); labels=['Mín. 2011','Mín. 2015','Mín. 2018','Mín. 2022 (actual)']; }
+  const span = cycMode==='top'?1100:1600;
+  const traces = anchors.map((a,k)=>{
+    const base=priceAt(a); const x=[],y=[],t=[];
+    for(let dd=0; dd<=span && a+dd<=last; dd++){ const p=priceAt(a+dd); if(p==null) continue; x.push(dd); y.push(p/base); t.push(iso(a+dd)); }
+    return {x,y,customdata:t,name:labels[k],type:'scatter',mode:'lines',line:{color:cols[k],width:k===3?3:1.6},
+      hovertemplate:`${labels[k]}: %{y:.2f}x (%{customdata})<extra></extra>`};
+  });
+  const today = last-anchors[3];
+  Plotly.react('cycChart',traces,layout({xaxis:{title:{text:cycMode==='top'?'Días desde el máximo':cycMode==='halv'?'Días desde el halving':'Días desde el mínimo'}},
+    yaxis:{type:'log',title:{text:'Múltiplo del precio de partida'},tickvals:[0.1,0.15,0.2,0.3,0.5,0.7,1,1.5,2,3,5,10,20,50,100,200],ticktext:['0,1x','0,15x','0,2x','0,3x','0,5x','0,7x','1x','1,5x','2x','3x','5x','10x','20x','50x','100x','200x']},
+    shapes:[{type:'line',x0:today,x1:today,y0:0,y1:1,yref:'paper',line:{color:c.muted,dash:'dot',width:1}}],
+    annotations:[{x:today,y:1,yref:'paper',text:'hoy',showarrow:false,yanchor:'bottom',font:{color:c.muted,size:11}}]}),CFG);
+
+  // tabla
+  const rows=[]; const names=['2013–2015','2017–2018','2021–2022','2025–?'];
+  for(let k=0;k<4;k++){
+    const ti=CYC.tops[k], bi= k<3?CYC.bots[k+1]:CYC.curBot;
+    const td=P.d[ti], bd=P.d[bi];
+    rows.push(`<tr><td>${names[k]}${k===3?' (provisional)':''}</td><td>${iso(td)}</td><td>${fmt$(P.p[ti])}</td><td>${iso(bd)}</td><td>${fmt$(P.p[bi])}</td><td>${pct(P.p[bi]/P.p[ti]-1,0)}</td><td>${bd-td}</td><td>${bd-CYC.halv[k]}</td><td>${bd-P.d[CYC.bots[k]]}</td></tr>`);
+  }
+  $('cycTable').innerHTML='<tr><th>Ciclo</th><th>Máximo</th><th>Precio</th><th>Mínimo</th><th>Precio</th><th>Caída</th><th>Días máx→mín</th><th>Días halving→mín</th><th>Días mín→mín</th></tr>'+rows.join('');
+
+  // lectura
+  const dTop = last-P.d[CYC.tops[3]], dHal=last-CYC.halv[3], dBot=last-P.d[CYC.bots[3]];
+  const prevTB = [0,1,2].map(k=>P.d[CYC.bots[k+1]]-P.d[CYC.tops[k]]);
+  const prevBB = [0,1,2].map(k=>P.d[CYC.bots[k+1]]-P.d[CYC.bots[k]]);
+  $('cycRead').innerHTML = `Hoy van <b>${dTop} días</b> desde el máximo de ${iso(P.d[CYC.tops[3]])} (en ciclos anteriores el mínimo llegó a los ${prevTB.join(', ')} días) y <b>${dBot} días</b> desde el mínimo de 2022 (antes: ${prevBB.join(', ')} días de mínimo a mínimo). Caída actual desde el máximo: <b>${pct(P.p[P.p.length-1]/P.p[CYC.tops[3]]-1,0)}</b>.`;
+}
+
+// ---------- midterm ----------
+let midMode='ytd';
+function renderMidterm(){
+  const c=C(), last=P.d[P.d.length-1], curY=new Date(last*DAY).getUTCFullYear();
+  const main={2014:c.violet,2018:c.aqua,2022:c.blue,2026:c.orange};
+  const traces=[];
+  if(midMode==='ytd'||midMode==='all'){
+    const years=[]; for(let y=2011;y<=curY;y++) years.push(y);
+    for(const y of years){
+      const isMain = main[y]!==undefined;
+      if(midMode==='ytd' && !isMain) continue;
+      const base=priceAt(dn(`${y-1}-12-31`)); if(!base) continue;
+      const x=[],v=[];
+      for(let d=dn(`${y}-01-01`); d<=Math.min(dn(`${y}-12-31`),last); d++){ const p=priceAt(d); if(p==null) continue; x.push('2000-'+iso(d).slice(5)); v.push(p/base-1); }
+      traces.push({x,y:v,name:String(y)+(isMain&&y%4===2?' ★':''),type:'scatter',mode:'lines',
+        line:{color:isMain?main[y]:c.other,width:y===curY?3:isMain?1.8:1},opacity:isMain?1:0.7,hovertemplate:`${y}: %{y:+.1%}<extra></extra>`});
+    }
+    Plotly.react('midChart',traces,layout({xaxis:{type:'date',tickformat:'%b',dtick:'M1',range:['2000-01-01','2000-12-31']},yaxis:{tickformat:'+.0%',title:{text:'Rendimiento desde el 1 de enero'}}}),CFG);
+  } else {
+    for(const y of [2014,2018,2022,2026]){
+      const a=dn(`${y}-09-01`), base=priceAt(a); if(!base) continue;
+      const x=[],v=[]; for(let dd=0; dd<=240 && a+dd<=last; dd++){ const p=priceAt(a+dd); if(p==null) continue; x.push(dd); v.push(p/base-1); }
+      traces.push({x,y:v,name:y+(y===2018||y===2022?' (subió tipos)':''),type:'scatter',mode:'lines',line:{color:main[y],width:y===2026?3:1.8},hovertemplate:`${y}: %{y:+.1%}<extra></extra>`});
+    }
+    Plotly.react('midChart',traces,layout({xaxis:{title:{text:'Días desde el 1 de septiembre'}},yaxis:{tickformat:'+.0%',title:{text:'Rendimiento'}}}),CFG);
+  }
+  // lectura: comparar a esta fecha
+  const md=iso(last).slice(5); const out=[];
+  for(const y of [2014,2018,2022,2026]){ const b=priceAt(dn(`${y-1}-12-31`)), p=priceAt(dn(`${y}-${md}`)), e=priceAt(dn(`${y}-12-31`));
+    if(b&&p) out.push(`<b>${y}</b>: ${pct(p/b-1,0)} a esta fecha${y<curY&&e?`, cerró el año en ${pct(e/b-1,0)} (desde hoy hasta fin de año: ${pct(e/p-1,0)})`:''}`); }
+  $('midRead').innerHTML = out.join(' · ');
+}
+
+// ---------- gráfica mágica ----------
+let magYears=4, magAlign='date';
+function renderMagic(){
+  const c=C(), last=P.d[P.d.length-1], lastP=P.p[P.p.length-1];
+  let shift;
+  if(magAlign==='date'){ const dt=new Date(last*DAY); dt.setUTCFullYear(dt.getUTCFullYear()-magYears); shift=last-Math.round(dt.getTime()/DAY); }
+  else { const k=3-magYears/4; shift=P.d[CYC.tops[3]]-P.d[CYC.tops[k]]; }
+  const start=last-200, horizon=180;
+  const actual={x:[],y:[]}; for(let d=start; d<=last; d++){ const p=priceAt(d); if(p!=null){actual.x.push(iso(d)); actual.y.push(p);} }
+  const scale = lastP/priceAt(last-shift);
+  const past={x:[],y:[]}, fut={x:[],y:[]};
+  for(let d=start; d<=last+horizon; d++){ const p=priceAt(d-shift); if(p==null) continue; const v=p*scale; if(d<=last){past.x.push(iso(d));past.y.push(v);} if(d>=last){fut.x.push(iso(d));fut.y.push(v);} }
+  const srcY = new Date((last-shift)*DAY).getUTCFullYear();
+  Plotly.react('magChart',[
+    {x:past.x,y:past.y,name:`Camino de ${srcY} (escalado)`,type:'scatter',mode:'lines',line:{color:c.blue,width:1.4},opacity:.6,hovertemplate:'%{y:$,.0f}<extra>'+srcY+'</extra>'},
+    {x:fut.x,y:fut.y,name:'Proyección',type:'scatter',mode:'lines',line:{color:c.blue,width:2,dash:'dash'},hovertemplate:'%{y:$,.0f}<extra>proyección</extra>'},
+    {x:actual.x,y:actual.y,name:'Bitcoin real',type:'scatter',mode:'lines',line:{color:c.orange,width:2.4},hovertemplate:'%{y:$,.0f}<extra>real</extra>'}
+  ],layout({xaxis:{range:[iso(last-200),iso(last+horizon)]},yaxis:{type:'log',tickformat:'$,.0f'},shapes:[{type:'line',x0:iso(last),x1:iso(last),y0:0,y1:1,yref:'paper',line:{color:c.muted,dash:'dot',width:1}}]}),CFG);
+  const mn=Math.min(...fut.y), mx=Math.max(...fut.y), iMn=fut.y.indexOf(mn);
+  const at30=fut.y[30], at90=fut.y[90];
+  $('magRead').innerHTML = `Si se repite ${srcY} (${magAlign==='date'?'misma fecha':'mismos días desde el máximo'}): mínimo proyectado <b>${fmt$(mn)}</b> el ${fut.x[iMn]} (${pct(mn/lastP-1,0)}), en 30 días <b>${fmt$(at30)}</b>, en 90 días <b>${fmt$(at90)}</b>, techo a 180 días ${fmt$(mx)}.`;
+}
+
+// ---------- zigzag + fibonacci ----------
+function zigzag(xs, ys, th){
+  const piv=[{i:0,t:0}]; let dir=0, ext=0;
+  for(let i=1;i<ys.length;i++){
+    if(dir>=0){ if(ys[i]>ys[ext]) ext=i; if(ys[i]<ys[ext]*(1-th)){ if(dir!==0||true) piv.push({i:ext,t:1}); dir=-1; ext=i; } }
+    else { if(ys[i]<ys[ext]) ext=i; if(ys[i]>ys[ext]*(1+th)){ piv.push({i:ext,t:-1}); dir=1; ext=i; } }
+  }
+  piv.push({i:ext,t:dir>0?1:-1});
+  return piv;
+}
+let fibMode='down';
+function renderFib(){
+  const c=C(); const start=dn(fibMode==='down'?'2025-03-01':'2022-09-01'); const i0=idxAtOrBefore(start);
+  const xs=P.d.slice(i0).map(iso), ys=P.p.slice(i0);
+  const piv=zigzag(xs,ys,0.18).filter(p=>p.i>0);
+  const top=CYC.tops[3], bot=CYC.curBot, b22=CYC.bots[3];
+  let hi=P.p[top], lo, from, to, label;
+  if(fibMode==='down'){ lo=P.p[bot]; from=P.d[top]; to=P.d[bot]; label=`Retroceso del rebote: de ${fmt$(lo)} (mín.) hacia ${fmt$(hi)} (máx.)`; }
+  else { lo=P.p[b22]; from=P.d[b22]; to=P.d[top]; label=`Retroceso de toda la subida: de ${fmt$(lo)} (2022) a ${fmt$(hi)} (2025)`; }
+  const lv=[0,0.236,0.382,0.5,0.618,0.786,1];
+  const levels = lv.map(r=> fibMode==='down' ? lo + (hi-lo)*r : hi - (hi-lo)*r);
+  const shapes=[], ann=[];
+  levels.forEach((v,k)=>{ const key=lv[k]===0.382||lv[k]===0.618||lv[k]===0.5;
+    shapes.push({type:'line',x0:iso(from),x1:xs[xs.length-1],y0:v,y1:v,line:{color:key?c.yellow:c.muted,width:key?1.5:1,dash:key?'solid':'dot'}});
+    ann.push({x:xs[xs.length-1],y:Math.log10(v),text:`${lv[k]} · ${fmt$(v)}`,showarrow:false,xanchor:'right',yanchor:'bottom',font:{size:10,color:css('--ink2')}}); });
+  Plotly.react('fibChart',[
+    {x:xs,y:ys,name:'Bitcoin',type:'scatter',mode:'lines',line:{color:c.orange,width:1.6},hovertemplate:'%{y:$,.0f}<extra></extra>'},
+    {x:piv.map(p=>xs[p.i]),y:piv.map(p=>ys[p.i]),name:'Zigzag (giros ≥18%)',type:'scatter',mode:'lines+markers',line:{color:c.blue,width:1.4},marker:{size:8,color:c.blue,line:{color:css('--surface'),width:2}},hovertemplate:'%{y:$,.0f}<extra>giro</extra>'}
+  ],layout({yaxis:{type:'log',tickformat:'$,.0f'},shapes,annotations:ann}),CFG);
+  const now=P.p[P.p.length-1];
+  const lvls=levels.map((v,k)=>({v,r:lv[k]}));
+  const above=lvls.filter(o=>o.v>now).sort((a,b)=>a.v-b.v)[0], below=lvls.filter(o=>o.v<=now).sort((a,b)=>b.v-a.v)[0];
+  $('fibRead').innerHTML = `${label}. Precio actual <b>${fmt$(now)}</b>, entre el nivel <b>${below?below.r:'–'}</b> (${below?fmt$(below.v):'–'}) y el <b>${above?above.r:'–'}</b> (${above?fmt$(above.v):'–'}). ${fibMode==='down'?'En un rebote, el 0,382–0,618 suele ser la zona donde un rebote bajista se gira.':'El 0,618–0,786 es la zona clásica de suelo de un mercado bajista.'}`;
+}
+
+// ---------- nasdaq ----------
+let nqStart='1y';
+function renderNasdaq(){
+  const c=C(); if(!D.nasdaq){ $('nqRead').textContent='Sin datos de Nasdaq.'; return; }
+  const last=P.d[P.d.length-1];
+  const start = nqStart==='1y'? last-365 : nqStart==='3y'? last-3*365 : dn('2018-01-01');
+  const tr=[];
+  function idx(series,name,color,w){ const x=[],y=[]; let base=null;
+    for(let i=0;i<series.d.length;i++){ if(series.d[i]<start) continue; if(base==null) base=series.v[i]; x.push(iso(series.d[i])); y.push(series.v[i]/base*100); }
+    tr.push({x,y,name,type:'scatter',mode:'lines',line:{color,width:w},hovertemplate:`${name}: %{y:.0f}<extra></extra>`}); return y[y.length-1]; }
+  const btcS={d:P.d,v:P.p};
+  const b=idx(btcS,'Bitcoin',c.orange,2.2), n=idx(D.nasdaq,'Nasdaq',c.blue,1.6), s=D.sp500?idx(D.sp500,'S&P 500',c.aqua,1.6):null;
+  Plotly.react('nqChart',tr,layout({yaxis:{type:'log',title:{text:'Indexado (inicio = 100)'}}}),CFG);
+  // correlación móvil 90 sesiones
+  const xs=[],rb=[],rn=[];
+  for(let i=1;i<D.nasdaq.d.length;i++){ const d0=D.nasdaq.d[i-1], d1=D.nasdaq.d[i]; const p0=priceAt(d0), p1=priceAt(d1); if(!p0||!p1) continue;
+    xs.push(d1); rb.push(Math.log(p1/p0)); rn.push(Math.log(D.nasdaq.v[i]/D.nasdaq.v[i-1])); }
+  const W=90, cx=[], cy=[];
+  for(let i=W;i<xs.length;i++){ if(xs[i]<start) continue; let sa=0,sb=0,saa=0,sbb=0,sab=0; for(let j=i-W;j<i;j++){const a=rb[j],bb=rn[j]; sa+=a;sb+=bb;saa+=a*a;sbb+=bb*bb;sab+=a*bb;}
+    const cov=sab/W-(sa/W)*(sb/W), va=saa/W-(sa/W)**2, vb=sbb/W-(sb/W)**2; cx.push(iso(xs[i])); cy.push(cov/Math.sqrt(va*vb)); }
+  Plotly.react('corrChart',[{x:cx,y:cy,name:'Correlación 90 sesiones',type:'scatter',mode:'lines',fill:'tozeroy',line:{color:c.violet,width:1.6},fillcolor:'rgba(98,80,214,0.12)',hovertemplate:'%{y:.2f}<extra>correlación</extra>'}],
+    layout({yaxis:{range:[-0.4,1],title:{text:'Correlación BTC–Nasdaq'}},showlegend:false}),CFG);
+  const nqLast=D.nasdaq.v[D.nasdaq.v.length-1]; const nqMax=Math.max(...D.nasdaq.v.slice(-260));
+  $('nqRead').innerHTML=`Desde el inicio elegido: Bitcoin <b>${pct(b/100-1,0)}</b>, Nasdaq <b>${pct(n/100-1,0)}</b>${s?`, S&P 500 <b>${pct(s/100-1,0)}</b>`:''}. Nasdaq a <b>${pct(nqLast/nqMax-1)}</b> de su máximo de 12 meses. Correlación actual (90 sesiones): <b>${cy.length?cy[cy.length-1].toFixed(2):'–'}</b>.`;
+}
+
+// ---------- funding / OI (en directo) ----------
+async function renderLiq(){
+  const c=C();
+  try{
+    const [f,oi] = await Promise.all([
+      fetch('https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT&limit=1000').then(r=>r.json()),
+      fetch('https://fapi.binance.com/futures/data/openInterestHist?symbol=BTCUSDT&period=1d&limit=30').then(r=>r.json())]);
+    const byDay=new Map(); f.forEach(r=>{const d=Math.floor(r.fundingTime/DAY); byDay.set(d,(byDay.get(d)||0)+ +r.fundingRate);});
+    const days=[...byDay.keys()].sort((a,b)=>a-b); const fx=days.map(iso), fy=days.map(d=>byDay.get(d)*365*100);
+    Plotly.react('fundChart',[{x:fx,y:fy,type:'bar',name:'Funding anualizado',marker:{color:fy.map(v=>v>=0?c.blue:c.crit)},hovertemplate:'%{y:.1f}% anual<extra></extra>'}],
+      layout({yaxis:{title:{text:'Funding anualizado %'}},showlegend:false,bargap:0.1}),CFG);
+    const ox=oi.map(r=>iso(Math.floor(r.timestamp/DAY))), oy=oi.map(r=>+r.sumOpenInterestValue/1e9);
+    Plotly.react('oiChart',[{x:ox,y:oy,type:'scatter',mode:'lines+markers',name:'Interés abierto',line:{color:c.violet,width:2},marker:{size:6},hovertemplate:'$%{y:.2f} mil M<extra></extra>'}],
+      layout({yaxis:{title:{text:'Interés abierto (miles de M$)'}},showlegend:false}),CFG);
+    const f7=fy.slice(-7).reduce((a,b)=>a+b,0)/7, oiCh=oy[oy.length-1]/oy[0]-1;
+    $('liqRead').innerHTML=`Funding medio 7 días: <b>${f7.toFixed(1)}% anual</b> (${f7<0?'los cortos pagan: mercado apostando a la baja':f7>15?'largos muy apalancados':'neutral'}). Interés abierto en 30 días: <b>${pct(oiCh)}</b> (${oiCh<-0.1?'gran limpieza de apalancamiento':'sin limpieza grande'}).`;
+  }catch(e){ $('liqRead').textContent='No se pudo conectar con Binance (necesita internet).'; }
+}
+
+// ---------- semanal: velas, RSI, rachas ----------
+let W;
+function weekly(){
+  const map=new Map(); // semana (lunes) -> último precio
+  for(let i=0;i<P.d.length;i++){ const w=Math.floor((P.d[i]+3)/7); map.set(w,{d:P.d[i],p:P.p[i]}); }
+  const ws=[...map.keys()].sort((a,b)=>a-b);
+  W={d:ws.map(w=>map.get(w).d), c:ws.map(w=>map.get(w).p), start:ws.map(w=>w*7-3)};
+  W.r=W.c.map((v,i)=>i?v/W.c[i-1]-1:0);
+  W.open = (P.d[P.d.length-1]+3)%7 !== 6; // la última semana aún no ha cerrado (no es domingo)
+  // racha de semanas CERRADAS
+  const endI = W.r.length-1-(W.open?1:0);
+  W.sign=Math.sign(W.r[endI]); W.streak=0; for(let i=endI;i>0&&Math.sign(W.r[i])===W.sign;i--) W.streak++;
+}
+function rsi(arr,n=14){ const out=new Array(arr.length).fill(null); let g=0,l=0;
+  for(let i=1;i<arr.length;i++){ const ch=arr[i]-arr[i-1]; const up=Math.max(ch,0), dw=Math.max(-ch,0);
+    if(i<=n){ g+=up; l+=dw; if(i===n){ g/=n; l/=n; out[i]=100-100/(1+g/(l||1e-9)); } }
+    else { g=(g*(n-1)+up)/n; l=(l*(n-1)+dw)/n; out[i]=100-100/(1+g/(l||1e-9)); } }
+  return out; }
+function pivots(a,L,high){ const r=[]; for(let i=L;i<a.length-L;i++){ if(a[i]==null) continue; let ok=true; for(let j=i-L;j<=i+L;j++){ if(j===i||a[j]==null) continue; if(high? a[j]>a[i] : a[j]<a[i]){ok=false;break;} } if(ok) r.push(i);} return r; }
+function renderRSI(){
+  const c=C(); const R=rsi(W.c); const from=W.d.findIndex(d=>d>=dn('2017-01-01'));
+  const x=W.d.map(iso);
+  const tr=[{x:x.slice(from),y:W.c.slice(from),name:'Cierre semanal',type:'scatter',mode:'lines',line:{color:c.orange,width:1.6},hovertemplate:'%{y:$,.0f}<extra></extra>'},
+    {x:x.slice(from),y:R.slice(from),name:'RSI 14 semanas',type:'scatter',mode:'lines',line:{color:c.violet,width:1.6},xaxis:'x',yaxis:'y2',hovertemplate:'RSI %{y:.0f}<extra></extra>'}];
+  const divs=[];
+  const hs=pivots(R,3,true).filter(i=>i>=from), ls=pivots(R,3,false).filter(i=>i>=from);
+  for(let k=1;k<hs.length;k++){ const a=hs[k-1], b=hs[k]; if(b-a>40) continue; if(R[a]>60 && R[b]<R[a]-3 && W.c[b]>W.c[a]) divs.push({a,b,t:'bear'}); }
+  for(let k=1;k<ls.length;k++){ const a=ls[k-1], b=ls[k]; if(b-a>40) continue; if(R[a]<45 && R[b]>R[a]+3 && W.c[b]<W.c[a]) divs.push({a,b,t:'bull'}); }
+  divs.forEach((v,k)=>{ const col=v.t==='bear'?c.crit:c.good; const nm=v.t==='bear'?'Divergencia bajista':'Divergencia alcista';
+    tr.push({x:[x[v.a],x[v.b]],y:[W.c[v.a],W.c[v.b]],type:'scatter',mode:'lines+markers',line:{color:col,width:2},marker:{size:7},name:nm,legendgroup:v.t,showlegend:!divs.slice(0,k).some(z=>z.t===v.t),hoverinfo:'skip'});
+    tr.push({x:[x[v.a],x[v.b]],y:[R[v.a],R[v.b]],type:'scatter',mode:'lines+markers',line:{color:col,width:2},marker:{size:7},xaxis:'x',yaxis:'y2',legendgroup:v.t,showlegend:false,hoverinfo:'skip'}); });
+  Plotly.react('rsiChart',tr,layout({grid:{rows:2,columns:1,pattern:'coupled'},yaxis:{type:'log',...LOGT,domain:[0.38,1]},yaxis2:{domain:[0,0.3],range:[10,95],title:{text:'RSI'}},
+    shapes:[70,30].map(v=>({type:'line',xref:'paper',x0:0,x1:1,yref:'y2',y0:v,y1:v,line:{color:css('--muted'),dash:'dot',width:1}}))}),CFG);
+  const r=R[R.length-1]; const lastDiv=divs.sort((a,b)=>b.b-a.b)[0];
+  const minR=Math.min(...R.slice(-30).filter(v=>v!=null));
+  $('rsiRead').innerHTML=`RSI semanal actual: <b>${r.toFixed(0)}</b> ${r<30?'(sobreventa, zona de suelos históricos)':r>70?'(sobrecompra)':''}. Mínimo de las últimas 30 semanas: ${minR.toFixed(0)}. ${lastDiv?`Última divergencia detectada: <b>${lastDiv.t==='bear'?'bajista':'alcista'}</b> confirmada la semana del ${x[lastDiv.b]}.`:''}`;
+}
+function renderRachas(){
+  const c=C(); const n=W.c.length;
+  const cur=W.streak, sign=W.sign;
+  const from=n-156;
+  Plotly.react('rachaChart',[{x:W.start.slice(from).map(iso),y:W.r.slice(from),type:'bar',marker:{color:W.r.slice(from).map(v=>v>=0?c.good:c.crit)},hovertemplate:'Semana del %{x}: %{y:+.1%}<extra></extra>'}],
+    layout({yaxis:{tickformat:'+.0%'},showlegend:false,bargap:0.15,hovermode:'closest'}),CFG);
+  // rachas históricas rojas >=4
+  const st=[]; let i=1;
+  while(i<n){ if(W.r[i]<0){ let j=i; while(j+1<n && W.r[j+1]<0) j++; const len=j-i+1;
+      if(len>=4){ const e=W.c[j]; const f4=j+4<n?W.c[j+4]/e-1:null, f8=j+8<n?W.c[j+8]/e-1:null, f26=j+26<n?W.c[j+26]/e-1:null;
+        st.push({s:W.start[i],e:W.d[j],len,tot:W.c[j]/W.c[i-1]-1,f4,f8,f26}); } i=j+1; } else i++; }
+  st.sort((a,b)=>b.len-a.len||b.s-a.s);
+  const f=v=>v==null?'–':pct(v,0);
+  $('rachaTable').innerHTML='<tr><th>Racha roja</th><th>Semanas</th><th>Caída total</th><th>+4 sem.</th><th>+8 sem.</th><th>+26 sem.</th></tr>'+
+    st.slice(0,14).map(r=>`<tr><td>${iso(r.s)} → ${iso(r.e)}</td><td>${r.len}</td><td>${pct(r.tot,0)}</td><td>${f(r.f4)}</td><td>${f(r.f8)}</td><td>${f(r.f26)}</td></tr>`).join('');
+  const same=st.filter(r=>r.len>=cur && r.f8!=null);
+  $('rachaRead').innerHTML=`Racha actual: <b>${cur} semana${cur>1?'s':''} cerrada${cur>1?'s':''} ${sign<0?'en rojo':'en verde'}</b>${W.open?` (la semana en curso va ${pct(W.r[n-1])})`:''}. `+
+    (sign<0? `Rachas rojas de ${cur}+ semanas en la historia: <b>${st.filter(r=>r.len>=cur).length}</b>${same.length?`; 8 semanas después, de media ${pct(same.reduce((a,r)=>a+r.f8,0)/same.length,0)}`:''}.`:'');
+}
+
+// ---------- estacionalidad ----------
+function renderEst(){
+  const curY=new Date(P.d[P.d.length-1]*DAY).getUTCFullYear(); const years=[]; for(let y=2011;y<=curY;y++) years.push(y);
+  const z=[], txt=[];
+  for(const y of years){ const row=[], tr=[];
+    for(let m=0;m<12;m++){ const a=Date.UTC(y,m,0)/DAY, b=Date.UTC(y,m+1,0)/DAY; const pa=priceAt(a), pb= b<=P.d[P.d.length-1]?priceAt(b):(Date.UTC(y,m,1)/DAY<=P.d[P.d.length-1]?P.p[P.p.length-1]:null);
+      const v=pa&&pb? pb/pa-1 : null; row.push(v); tr.push(v==null?'':pct(v,0)); }
+    z.push(row); txt.push(tr); }
+  const avg=[], med=[]; for(let m=0;m<12;m++){ const col=z.slice(0,-1).map(r=>r[m]).filter(v=>v!=null).sort((a,b)=>a-b); avg.push(col.reduce((a,b)=>a+b,0)/col.length); med.push(col[Math.floor(col.length/2)]); }
+  const mid=[]; for(let m=0;m<12;m++){ const col=[2014,2018,2022].map(y=>z[years.indexOf(y)][m]); mid.push(col.reduce((a,b)=>a+b,0)/3); }
+  const rows=[...z,mid,med,avg], rtx=[...txt,mid.map(v=>pct(v,0)),med.map(v=>pct(v,0)),avg.map(v=>pct(v,0))];
+  const labels=[...years.map(y=>y%4===2?y+' ★':String(y)),'Media midterm','Mediana','Media'];
+  const zc=rows.map(r=>r.map(v=>v==null?null:Math.max(-0.4,Math.min(0.4,v))));
+  const blue=css('--s-blue'), red=css('--crit'), mid0=css('--neutral');
+  Plotly.react('estChart',[{z:zc,x:MONTHS,y:labels,text:rtx,texttemplate:MOBILE?'':'%{text}',textfont:{size:10},type:'heatmap',zmin:-0.4,zmax:0.4,xgap:2,ygap:2,
+    colorscale:[[0,red],[0.5,mid0],[1,blue]],showscale:false,hovertemplate:'%{y} %{x}: %{text}<extra></extra>'}],
+    layout({yaxis:{autorange:'reversed',type:'category',tickfont:{size:11}},xaxis:{side:'top',type:'category'},margin:MOBILE?{l:80,r:4,t:24,b:4}:{l:96,r:8,t:30,b:8},hovermode:'closest'}),CFG);
+  const m=new Date(P.d[P.d.length-1]*DAY).getUTCMonth(); const nm=(m+1)%12;
+  $('estRead').innerHTML=`${MONTHS[m]}: mediana histórica <b>${pct(med[m],0)}</b>, en midterm <b>${pct(mid[m],0)}</b>. Próximo mes (${MONTHS[nm]}): mediana <b>${pct(med[nm],0)}</b>, en midterm <b>${pct(mid[nm],0)}</b>. Este mes va <b>${txt[txt.length-1][m]||'–'}</b>.`;
+}
+
+// ---------- miedo y codicia ----------
+function renderFng(){
+  const c=C(); const F=D.fng; if(!F){ return; }
+  const x=F.d.map(iso);
+  const i0=idxAtOrBefore(F.d[0]);
+  const px=P.d.slice(i0).map(iso), py=P.p.slice(i0);
+  const ext=F.d.map((d,i)=>({d,v:F.v[i]})).filter(o=>o.v<=20);
+  Plotly.react('fngChart',[
+    {x:px,y:py,name:'Bitcoin',type:'scatter',mode:'lines',line:{color:c.other,width:1.4},hovertemplate:'%{y:$,.0f}<extra></extra>'},
+    {x:ext.filter(o=>o.v>10).map(o=>iso(o.d)),y:ext.filter(o=>o.v>10).map(o=>priceAt(o.d)),name:'Miedo 11–20',type:'scatter',mode:'markers',marker:{color:c.serious,size:8,line:{color:css('--surface'),width:1.5}},hovertemplate:'%{y:$,.0f}<extra>miedo 11–20</extra>'},
+    {x:ext.filter(o=>o.v<=10).map(o=>iso(o.d)),y:ext.filter(o=>o.v<=10).map(o=>priceAt(o.d)),name:'Miedo extremo ≤10',type:'scatter',mode:'markers',marker:{color:c.crit,size:11,line:{color:css('--surface'),width:1.5}},hovertemplate:'%{y:$,.0f}<extra>miedo ≤10</extra>'}
+  ],layout({yaxis:{type:'log',...LOGT}}),CFG);
+  Plotly.react('fngLine',[{x,y:F.v,type:'scatter',mode:'lines',line:{color:c.violet,width:1.2},name:'Fear & Greed',hovertemplate:'%{y}<extra></extra>'}],
+    layout({yaxis:{range:[0,100],title:{text:'Índice'}},showlegend:false,shapes:[10,25,75].map(v=>({type:'line',xref:'paper',x0:0,x1:1,y0:v,y1:v,line:{color:v===10?c.crit:css('--muted'),dash:'dot',width:1}}))}),CFG);
+  // estadística de rendimientos futuros
+  const last=P.d[P.d.length-1];
+  function stats(th){ const days=F.d.filter((d,i)=>F.v[i]<=th); const res={};
+    for(const h of [30,60,90,180]){ const r=days.filter(d=>d+h<=last).map(d=>priceAt(d+h)/priceAt(d)-1); res[h]=r.length?{avg:r.reduce((a,b)=>a+b,0)/r.length,pos:r.filter(v=>v>0).length/r.length,n:r.length}:null; }
+    let ep=0,prev=-99; days.forEach(d=>{ if(d-prev>14) ep++; prev=d; }); res.ep=ep; return res; }
+  const rows=[[10,'≤ 10 (extremo)'],[20,'≤ 20'],[100,'Cualquier día']].map(([th,l])=>{ const s=stats(th);
+    return `<tr><td>${l}</td><td>${th<100?s.ep:'–'}</td>${[30,60,90,180].map(h=>s[h]?`<td>${pct(s[h].avg,0)} <span style="color:var(--muted)">(${Math.round(s[h].pos*100)}% sube)</span></td>`:'<td>–</td>').join('')}</tr>`; });
+  $('fngTable').innerHTML='<tr><th>Índice</th><th>Episodios</th><th>+30 días</th><th>+60 días</th><th>+90 días</th><th>+180 días</th></tr>'+rows.join('');
+  const v=F.v[F.v.length-1]; const run=(()=>{let k=0; for(let i=F.v.length-1;i>=0&&F.v[i]<=20;i--) k++; return k;})();
+  $('fngRead').innerHTML=`Índice hoy: <b>${v}</b> (${v<=10?'miedo extremo':v<=25?'miedo':v<55?'neutral':v<75?'codicia':'codicia extrema'}). Lleva <b>${run} días</b> seguidos por debajo de 20. Días con índice ≤10 en la historia: ${F.v.filter(x=>x<=10).length}.`;
+}
+
+// ---------- on-chain corto plazo ----------
+function series(o){ return o&&o.d&&o.d.length? o : null; }
+function renderSTH(){
+  const c=C(); const S=series(D.sthMvrv), RP=series(D.sthRp);
+  if(!S){ $('sthRead').innerHTML='<span class="warnbox">Faltan los datos on-chain (bitcoin-data.com limita a 15 consultas al día). Ejecuta <code>python actualizar_datos.py</code> más tarde.</span>'; $('sthChart').style.display='none'; $('sthPl').style.display='none'; return; }
+  const zones=[[0,0.85,'#0d366b','Muy incómodo'],[0.85,0.95,'#1baf7a','Incómodo'],[0.95,1.1,'#008300','Cómodo'],[1.1,1.25,'#eda100','Muy cómodo'],[1.25,9,'#eb6834','Extremadamente cómodo']];
+  const zoneColor = v => (zones.find(z=>v>=z[0]&&v<z[1])||zones[2]);
+  const x=S.d.map(iso), py=S.d.map(d=>priceAt(d));
+  const tr=[{x,y:py,type:'scatter',mode:'lines',line:{color:c.other,width:1},name:'Bitcoin',hoverinfo:'skip',showlegend:false}];
+  zones.forEach(z=>{ const idx=S.v.map((v,i)=>v>=z[0]&&v<z[1]?i:-1).filter(i=>i>=0);
+    tr.push({x:idx.map(i=>x[i]),y:idx.map(i=>py[i]),type:'scatter',mode:'markers',marker:{color:z[2],size:5},name:z[3],hovertemplate:`%{y:$,.0f} · ${z[3]}<extra></extra>`}); });
+  if(RP) tr.push({x:RP.d.map(iso),y:RP.v,type:'scatter',mode:'lines',line:{color:c.violet,width:1.6,dash:'dash'},name:'Precio de coste corto plazo',hovertemplate:'Coste STH %{y:$,.0f}<extra></extra>'});
+  Plotly.react('sthChart',tr,layout({yaxis:{type:'log',tickformat:'$,.0f'},hovermode:'closest'}),CFG);
+  // ganancias/pérdidas no realizadas vs media de 90 días
+  const pl=S.v.map(v=>v-1); const avgPos=[], avgNeg=[];
+  for(let i=0;i<pl.length;i++){ const w=pl.slice(Math.max(0,i-89),i+1); const p=w.filter(v=>v>0), n=w.filter(v=>v<0);
+    avgPos.push(p.length?p.reduce((a,b)=>a+b,0)/p.length:null); avgNeg.push(n.length?n.reduce((a,b)=>a+b,0)/n.length:null); }
+  Plotly.react('sthPl',[
+    {x,y:pl,name:'Ganancia/pérdida no realizada',type:'scatter',mode:'lines',line:{color:c.blue,width:1.6},hovertemplate:'%{y:+.1%}<extra></extra>'},
+    {x,y:avgPos,name:'Media 90 d. ganancias',type:'scatter',mode:'lines',line:{color:c.crit,width:1.2},hovertemplate:'%{y:+.1%}<extra>media ganancias</extra>'},
+    {x,y:avgNeg,name:'Media 90 d. pérdidas',type:'scatter',mode:'lines',line:{color:c.good,width:1.2},hovertemplate:'%{y:+.1%}<extra>media pérdidas</extra>'}
+  ],layout({yaxis:{tickformat:'+.0%'}}),CFG);
+  const v=S.v[S.v.length-1], z=zoneColor(v), l=pl[pl.length-1], an=avgNeg[avgNeg.length-1];
+  $('sthRead').innerHTML=`Último dato (${x[x.length-1]}): STH-MVRV <b>${v.toFixed(3)}</b> → zona <b>${z[3]}</b>. El inversor de corto plazo está en <b>${pct(l)}</b>${RP?`; su precio medio de coste es ${fmt$(RP.v[RP.v.length-1])}`:''}. ${an!=null&&l<an?'Pérdidas <b>por debajo de la media de 90 días</b> de pérdidas: lectura de capitulación.':''}`;
+}
+
+// ---------- 4 señales ----------
+function rolling(arr,win,fn){ const out=new Array(arr.length).fill(null); for(let i=win-1;i<arr.length;i++){ const w=arr.slice(i-win+1,i+1).filter(v=>v!=null); if(w.length>win*0.8) out[i]=fn(w);} return out; }
+function renderSignals(){
+  const c=C(); const B=D.btc;
+  const avg=w=>w.reduce((a,b)=>a+b,0)/w.length;
+  // 1) MVRV: desviación respecto a su media de 4 años (z-score)
+  const mv=B.mvrv; const mean=rolling(mv,1460,avg); const sd=rolling(mv,1460,w=>{const m=avg(w); return Math.sqrt(w.reduce((a,b)=>a+(b-m)**2,0)/w.length);});
+  const v1=new Map(); B.d.forEach((d,i)=>{ if(mv[i]!=null&&mean[i]!=null) v1.set(d,(mv[i]-mean[i])/sd[i]); });
+  // 2) aSOPR media 7 días
+  const v2=new Map(), A=series(D.asopr); if(A){ const m7=rolling(A.v,7,avg); A.d.forEach((d,i)=>{ if(m7[i]!=null) v2.set(d,m7[i]); }); }
+  // 3) Reserve Risk (umbral = percentil 25 de su historia disponible)
+  const v3=new Map(), RR=series(D.reserveRisk); let rrTh=null; if(RR){ const so=[...RR.v].sort((a,b)=>a-b); rrTh=so[Math.floor(so.length*0.25)]; RR.d.forEach((d,i)=>v3.set(d,RR.v[i])); }
+  // 4) Puell Multiple
+  const iss=B.iss; const ma=rolling(iss,365,avg); const v4=new Map(); B.d.forEach((d,i)=>{ if(iss[i]!=null&&ma[i]) v4.set(d,iss[i]/ma[i]); });
+
+  const SIG=[
+    {n:'MVRV hundido',e:'Compara el precio con lo que pagaron de media todos los holders. Se enciende cuando está muy por debajo de lo normal de los últimos 4 años.',m:v1,on:v=>v<-0.8,f:v=>v.toFixed(2)+' σ',th:'se enciende por debajo de −0,8 σ'},
+    {n:'aSOPR < 1',e:'Indica si las monedas que se mueven hoy se venden con ganancia o con pérdida. Por debajo de 1 = la gente vende perdiendo dinero (capitulación).',m:v2,on:v=>v<0.98,f:v=>v.toFixed(3),th:'se enciende por debajo de 0,98 (media 7 días)'},
+    {n:'Reserve Risk bajo',e:'Mide la confianza de los inversores de largo plazo frente al precio. Muy bajo = precio barato respecto a su convicción.',m:v3,on:v=>v<=rrTh,f:v=>(v*1000).toFixed(2)+'‰',th:rrTh?`se enciende por debajo de ${(rrTh*1000).toFixed(2)}‰`:''},
+    {n:'Puell < 0,6',e:'Compara lo que ganan hoy los mineros con su media del último año. Por debajo de 0,6 los mineros sufren y suelen vender: típico de suelos.',m:v4,on:v=>v<0.6,f:v=>v.toFixed(2),th:'se enciende por debajo de 0,6'}];
+  const lastOf=m=>{ if(!m.size) return null; const k=Math.max(...m.keys()); return {d:k,v:m.get(k)}; };
+  let onCount=0, avail=0;
+  $('sigCards').innerHTML=SIG.map(s=>{ const l=lastOf(s.m); if(!l) return `<div class="sigcard"><div class="t">${s.n}<span class="pill off">sin datos</span></div><div class="e">${s.e}</div><div class="val">Falta descargar (bitcoin-data.com)</div></div>`;
+    const on=s.on(l.v); avail++; if(on) onCount++;
+    return `<div class="sigcard ${on?'on':''}"><div class="t">${s.n}<span class="pill ${on?'on':'off'}">${on?'ENCENDIDA':'apagada'}</span></div><div class="e">${s.e}</div><div class="val">Ahora: <b>${s.f(l.v)}</b> · ${s.th}<br><span style="color:var(--muted)">dato del ${iso(l.d)}</span></div></div>`; }).join('');
+  $('sigRead').innerHTML = `<b>${onCount} de ${avail}</b> señales encendidas ahora${avail<4?` (${4-avail} sin datos todavía)`:''}. ` +
+    (onCount===avail&&avail>=3?'<b>Todas encendidas: zona de compra fuerte según este método.</b>': onCount>=2?'Varias encendidas: el mercado está en zona de miedo/descuento, pero aún no es la señal completa.':'Pocas encendidas: no hay señal de suelo por este método.');
+
+  // gráfica: precio + franjas verdes donde están todas las disponibles encendidas; abajo, nº de encendidas
+  const start=dn('2014-01-01'), i0=idxAtOrBefore(start);
+  const xs=P.d.slice(i0);
+  const cnt=xs.map(d=>{ let a=0,o=0; SIG.forEach(s=>{ const v=s.m.get(d); if(v!=null){ a++; if(s.on(v)) o++; } }); return {a,o}; });
+  const shapes=[]; let runS=null;
+  xs.forEach((d,i)=>{ const all=cnt[i].a>=2&&cnt[i].o===cnt[i].a; if(all&&runS==null) runS=d; if((!all||i===xs.length-1)&&runS!=null){ shapes.push({type:'rect',xref:'x',yref:'paper',x0:iso(runS),x1:iso(all?d:d-1),y0:0.34,y1:1,fillcolor:c.good,opacity:0.22,line:{width:0},layer:'below'}); runS=null; } });
+  const cols=cnt.map(o=>o.a&&o.o===o.a&&o.a>=2?c.good:o.o>=2?c.yellow:o.o===1?c.other:'rgba(0,0,0,0)');
+  Plotly.react('sigChart',[
+    {x:xs.map(iso),y:P.p.slice(i0),type:'scatter',mode:'lines',line:{color:c.orange,width:1.5},name:'Bitcoin',hovertemplate:'%{x}<br>%{y:$,.0f}<extra></extra>',showlegend:false},
+    {x:xs.map(iso),y:cnt.map(o=>o.o),customdata:cnt.map(o=>o.a),type:'bar',marker:{color:cols},xaxis:'x',yaxis:'y2',name:'Señales encendidas',showlegend:false,hovertemplate:'%{x}: %{y} de %{customdata} encendidas<extra></extra>'}
+  ],layout({grid:{rows:2,columns:1,pattern:'coupled'},yaxis:{type:'log',...LOGT,domain:[0.34,1]},yaxis2:{domain:[0,0.26],range:[0,4.2],dtick:1,title:{text:'Encendidas'}},bargap:0,shapes}),CFG);
+  return {onCount,avail};
+}
+
+// ---------- resumen ----------
+function renderTiles(sig){
+  const n=P.p.length, now=P.p[n-1], last=P.d[n-1];
+  const top=P.p[CYC.tops[3]];
+  const F=D.fng; const fv=F?F.v[F.v.length-1]:null;
+  const cur=W.streak, sign=W.sign;
+  const prevTB=[0,1,2].map(k=>P.d[CYC.bots[k+1]]-P.d[CYC.tops[k]]);
+  const ch24 = now/P.p[n-2]-1;
+  const t=[['Precio BTC',fmt$(now),`${pct(ch24)} en 24 h · ${iso(last)}`],
+    ['Desde el máximo',pct(now/top-1,0),`máx. ${fmt$(top)} el ${iso(P.d[CYC.tops[3]])}`],
+    ['Días desde el máximo',String(last-P.d[CYC.tops[3]]),`mínimos anteriores: ${Math.min(...prevTB)}–${Math.max(...prevTB)} días`],
+    ['Miedo y Codicia',fv==null?'–':String(fv),fv!=null&&fv<=10?'miedo extremo':fv!=null&&fv<=25?'miedo':''],
+    ['Racha semanal',`${cur} ${sign<0?'rojas':'verdes'}`,'semanas seguidas'],
+    ['Señales de compra',sig?`${sig.onCount}/${sig.avail}`:'–','ver sección 12']];
+  $('tiles').innerHTML=t.map(([k,v,nn])=>`<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${nn}</div></div>`).join('');
+}
+
+// ---------- arranque ----------
+async function liveMerge(){
+  try{
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),5000);
+    const k=await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=30',{signal:ctl.signal}).then(r=>r.json()); clearTimeout(to);
+    const lastD=P.d[P.d.length-1];
+    for(const c of k){ const d=Math.floor(c[0]/DAY); if(d>lastD){ P.d.push(d); P.p.push(+c[4]); } }
+    return true;
+  }catch(e){ return false; }
+}
+async function init(){
+  const live=await liveMerge(); reindex();
+  $('stamp').textContent=`Histórico: ${D.generado}${live?' · precio de hoy en directo (Binance)':''}.`;
+  computeCycles(); weekly();
+  const safe=(f)=>{ try{ return f(); }catch(e){ console.error(f.name,e); } };
+  buttons($('cycCtl'),[['top','Desde el máximo'],['halv','Desde el halving'],['bot','De mínimo a mínimo']],cycMode,k=>{cycMode=k;renderCycles();});
+  buttons($('midCtl'),[['ytd','Años midterm'],['all','Todos los años'],['sep','Desde septiembre (tipos)']],midMode,k=>{midMode=k;renderMidterm();});
+  buttons($('magCtl'),[[4,'Hace 4 años (2022)'],[8,'Hace 8 años (2018)'],[12,'Hace 12 años (2014)']],magYears,k=>{magYears=k;renderMagic();});
+  buttons($('magCtl2'),[['date','Alinear por fecha'],['top','Alinear por días desde el máximo']],magAlign,k=>{magAlign=k;renderMagic();});
+  buttons($('fibCtl'),[['down','Rebote desde el mínimo'],['up','Toda la subida 2022→2025']],fibMode,k=>{fibMode=k;renderFib();});
+  buttons($('nqCtl'),[['1y','1 año'],['3y','3 años'],['2018','Desde 2018']],nqStart,k=>{nqStart=k;renderNasdaq();});
+  const renderAll=()=>{ computeCycles(); weekly(); [renderCycles,renderMidterm,renderMagic,renderFib,renderNasdaq,renderRSI,renderRachas,renderEst,renderFng,renderSTH].forEach(safe);
+    const sig=safe(renderSignals); safe(()=>renderTiles(sig)); };
+  renderAll(); renderLiq();
+  // precio en directo: cada 60 s se pide el precio a Binance y se redibuja todo
+  setInterval(async()=>{
+    try{
+      const t=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json());
+      const px=+t.price, d=Math.floor(Date.now()/DAY);
+      if(!px) return;
+      if(P.d[P.d.length-1]===d) P.p[P.p.length-1]=px; else { P.d.push(d); P.p.push(px); reindex(); }
+      renderAll();
+      $('stamp').textContent=`Histórico: ${D.generado} · precio en directo (Binance), actualizado ${new Date().toLocaleTimeString('es-ES')}.`;
+    }catch(e){}
+  },60000);
+  setInterval(renderLiq, 15*60000); // funding e interés abierto cada 15 min
+}
+init();
+})();
+</script>
+</body>
+</html>
