@@ -1,5 +1,5 @@
 // Service worker: la app abre al instante y funciona sin conexión con los últimos datos guardados.
-const CACHE = 'ciclo-btc-v1';
+const CACHE = 'ciclo-btc-v2';
 const SHELL = ['./', 'index.html', 'data.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js'];
 self.addEventListener('install', e => {
@@ -15,7 +15,7 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin && !url.href.includes('cdn.jsdelivr.net') && !url.href.includes('fonts.g')) return;
   // página y datos: primero la red (lo más nuevo), si no hay conexión, la copia guardada
   if (url.origin === location.origin && (url.pathname.endsWith('/') || url.pathname.endsWith('.html') || url.pathname.endsWith('data.js'))) {
-    e.respondWith(fetch(e.request).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(e.request, cp)); return r; })
+    e.respondWith(fetch(e.request, {cache: 'no-cache'}).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(e.request, cp)); return r; })
       .catch(() => caches.match(e.request).then(r => r || caches.match('index.html'))));
     return;
   }

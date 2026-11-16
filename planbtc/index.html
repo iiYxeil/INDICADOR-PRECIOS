@@ -592,7 +592,8 @@ function renderFng(){
 function series(o){ return o&&o.d&&o.d.length? o : null; }
 function renderSTH(){
   const c=C(); const S=series(D.sthMvrv), RP=series(D.sthRp);
-  if(!S){ $('sthRead').innerHTML='<span class="warnbox">No se han podido cargar los datos on-chain: bitcoin-data.com (gratis) solo permite 10 consultas por hora y 15 al día por conexión. Vuelve a abrir la página dentro de una hora.</span>'; $('sthChart').style.display='none'; $('sthPl').style.display='none'; return; }
+  if(!S){ $('sthRead').innerHTML='<span class="warnbox">No se han podido cargar los datos on-chain: bitcoin-data.com (gratis) solo permite 10 consultas por hora y 15 al día por conexión. Vuelve a abrir la página dentro de una hora.</span>'; $('sthChart').parentNode.style.display='none'; $('sthPl').parentNode.style.display='none'; return; }
+  $('sthChart').parentNode.style.display=''; $('sthPl').parentNode.style.display='';
   const zones=[[0,0.85,'#0d366b','Muy incómodo'],[0.85,0.95,'#1baf7a','Incómodo'],[0.95,1.1,'#008300','Cómodo'],[1.1,1.25,'#eda100','Muy cómodo'],[1.25,9,'#eb6834','Extremadamente cómodo']];
   const zoneColor = v => (zones.find(z=>v>=z[0]&&v<z[1])||zones[2]);
   const x=S.d.map(iso), py=S.d.map(d=>priceAt(d));
@@ -693,7 +694,7 @@ async function loadOnchain(){
     let cached=null; try{ cached=JSON.parse(localStorage.getItem('bd_'+ep)); }catch(e){}
     if(cached&&Date.now()-cached.ts<20*3600e3){ D[k]=cached.v; continue; }
     let failTs=0; try{ failTs=+localStorage.getItem('bd_fail')||0; }catch(e){}
-    if(Date.now()-failTs<3*3600e3){ if(cached) D[k]=cached.v; continue; } // falló hace poco: no gastar más consultas
+    if(Date.now()-failTs<3600e3){ if(cached) D[k]=cached.v; continue; } // falló hace poco: no gastar más consultas
     try{
       const r=await fetch('https://bitcoin-data.com/v1/'+ep); if(!r.ok) throw new Error(r.status);
       const arr=await r.json(); const o={d:[],v:[]};
