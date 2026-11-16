@@ -1,0 +1,31 @@
+name: Actualizar datos Plan BTC
+
+on:
+  schedule:
+    - cron: "15 6 * * *"   # todos los días a las 06:15 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Descargar datos
+        working-directory: planbtc
+        run: python actualizar_datos.py
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add planbtc/data.js
+          git add planbtc/cache 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -m "Datos Plan BTC $(date -u +%F)"
+          git pull --rebase
+          git push
