@@ -622,5 +622,13 @@
   "min": 1.579,
   "municipio": 1.669,
   "provincia": 1.7835
+ },
+ "2026-11-18": {
+  "brent": null,
+  "crudo_l": null,
+  "fx": 0.91,
+  "min": null,
+  "municipio": null,
+  "provincia": null
  }
 }
